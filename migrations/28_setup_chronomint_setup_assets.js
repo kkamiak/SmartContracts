@@ -14,7 +14,7 @@ const Buffer = require("buffer").Buffer;
 module.exports = function(deployer,network) {
     const TIME_SYMBOL = 'TIME';
     const LHT_SYMBOL = 'LHT';
-
+if (network !== "main") {
     deployer
       .then(() => AssetsManager.deployed())
       .then(_assetsManager => assetsManager = _assetsManager)
@@ -23,7 +23,6 @@ module.exports = function(deployer,network) {
       .then(() => ChronoBankPlatform.deployed())
       .then(_chronoBankPlatform => chronoBankPlatform = _chronoBankPlatform)
       .then(() => {
-          if (network !== "main") {
               return ChronoBankAssetProxy.deployed()
                 .then(_chronoBankAssetProxy => chronoBankAssetProxy = _chronoBankAssetProxy)
                 .then(() => chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, TIME_SYMBOL))
@@ -36,7 +35,6 @@ module.exports = function(deployer,network) {
                           .then(accounts => assetsManager.addAsset(ChronoBankAssetProxy.address, TIME_SYMBOL, accounts[0]))
                   }
                 })
-          }
       })
       .then(() => {
           return ChronoBankAssetWithFeeProxy.deployed()
@@ -62,6 +60,7 @@ module.exports = function(deployer,network) {
       .then(() => chronoBankPlatform.changeContractOwnership(assetsManager.address))
       .then(() => assetsManager.claimPlatformOwnership())
       .then(() => console.log("[MIGRATION] [28] Setup Assets: #done"))
+}
 }
 
 // Util function

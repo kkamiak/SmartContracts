@@ -7,6 +7,7 @@ const ChronoBankPlatform = artifacts.require("./ChronoBankPlatform.sol");
 const MultiEventsHistory = artifacts.require("./MultiEventsHistory.sol");
 
 module.exports = function (deployer, network) {
+	if (network !== "main") {
     deployer.deploy(AssetsManager, Storage.address, 'AssetsManager')
         .then(() =>  StorageManager.deployed())
         .then(_storageManager => _storageManager.giveAccess(AssetsManager.address, 'AssetsManager'))
@@ -16,4 +17,5 @@ module.exports = function (deployer, network) {
         .then(() => MultiEventsHistory.deployed())
         .then(_history => _history.authorize(manager.address))
         .then(() => console.log("[MIGRATION] [25] AssetManager: #done"))
+	}
 }

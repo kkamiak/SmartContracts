@@ -15,14 +15,32 @@ contract VoteActor is Vote, VoteActorEmitter, ListenerInterface {
         return OK;
     }
 
-    //function for user vote. input is a string choice
+    /**
+    * Vote for a some option from a strings list
+    *
+    * @param _pollId poll identifier
+    * @param _choice user's pick from a list of options. Must be between 1 and N
+    *
+    * @return errorCode result code of operation
+    */
     function vote(uint _pollId, uint _choice) returns (uint errorCode) {
+        if (!isPollExist(_pollId)) {
+            return _emitError(ERROR_VOTE_POLL_DOES_NOT_EXIST);
+        }
+        if (!(_choice > 0 && _choice <= store.count(optionsId, bytes32(_pollId)))) {
+            return _emitError(ERROR_VOTE_OPTION_CHOICE_OUT_OF_RANGE);
+        }
+
         if (!store.get(status, _pollId)) {
             return _emitError(ERROR_VOTE_POLL_WRONG_STATUS);
         }
 
-        if (!store.get(active, _pollId)) {
+        if (checkPollIsInactive(_pollId)) {
             return _emitError(ERROR_VOTE_POLL_INACTIVE);
+        }
+
+        if (store.get(memberOption, _pollId, msg.sender) != 0) {
+            return _emitError(ERROR_VOTE_POLL_ALREADY_VOTED);
         }
 
         address timeHolder = lookupManager("TimeHolder");
@@ -32,12 +50,9 @@ contract VoteActor is Vote, VoteActorEmitter, ListenerInterface {
             return _emitError(ERROR_VOTE_POLL_NO_SHARES);
         }
 
-        if (store.get(memberOption, _pollId, msg.sender) != 0) {
-            return _emitError(ERROR_VOTE_POLL_ALREADY_VOTED);
-        }
-
         uint optionsValue = store.get(options, _pollId, _choice) + balance;
         store.set(options, _pollId, _choice, optionsValue);
+        store.set(optionsStats, _pollId, _choice, store.get(optionsStats, _pollId, _choice) + 1);
         store.set(memberVotes, _pollId, msg.sender, balance);
         store.add(members, bytes32(_pollId), msg.sender);
         store.set(memberOption, _pollId, msg.sender, _choice);
@@ -90,6 +105,7 @@ contract VoteActor is Vote, VoteActorEmitter, ListenerInterface {
                 store.set(options, pollId, choice, value);
                 if (_total == 0) {
                     removeMember(pollId, _address);
+                    store.set(optionsStats, pollId, choice, store.get(optionsStats, pollId, choice) - 1);
                 }
             }
         }
@@ -104,11 +120,11 @@ contract VoteActor is Vote, VoteActorEmitter, ListenerInterface {
     }
 
     function _emitError(uint error) internal returns (uint) {
-        VoteActor(getEventsHistory()).emitError(error );
+        VoteActorEmitter(getEventsHistory()).emitError(error);
         return error;
     }
 
     function _emitVoteCreated(uint choice, uint pollId) internal {
-        VoteActor(getEventsHistory()).emitVoteCreated(choice, pollId);
+        VoteActorEmitter(getEventsHistory()).emitVoteCreated(choice, pollId);
     }
 }

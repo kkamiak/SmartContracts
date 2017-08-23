@@ -19,6 +19,11 @@ contract TimeHolderEmmiter is MultiEventsHistoryAdapter {
     event ListenerAdded(address listener);
 
     /**
+    * Shares listener is removed
+    */
+    event ListenerRemoved(address listener);
+
+    /**
     *  Something went wrong.
     */
     event Error(address indexed self, uint errorCode);
@@ -33,6 +38,10 @@ contract TimeHolderEmmiter is MultiEventsHistoryAdapter {
 
     function emitListenerAdded(address listener) {
         ListenerAdded(listener);
+    }
+
+    function emitListenerRemoved(address listener) {
+        ListenerRemoved(listener);
     }
 
     function emitError(uint error) {

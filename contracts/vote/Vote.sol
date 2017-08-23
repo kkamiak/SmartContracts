@@ -16,15 +16,23 @@ contract Vote is VoteEmitter, BaseManager {
     uint constant ERROR_VOTE_POLL_ALREADY_VOTED = 8008;
     uint constant ERROR_VOTE_ACTIVE_POLL_LIMIT_REACHED = 8009;
     uint constant ERROR_VOTE_UNABLE_TO_ACTIVATE_POLL = 8010;
+    uint constant ERROR_VOTE_OPTIONS_LIMIT_REACHED = 8011;
+    uint constant ERROR_VOTE_POLL_SHOULD_BE_INACTIVE = 8013;
+    uint constant ERROR_VOTE_POLL_DOES_NOT_EXIST = 8014;
+    uint constant ERROR_VOTE_OPTION_CHOICE_OUT_OF_RANGE = 8015;
+    uint constant ERROR_VOTE_OPTIONS_EMPTY_LIST = 8016;
+    uint constant ERROR_VOTE_DETAILS_HASH_INVALID_PARAMETER = 8017;
+    uint constant ERROR_VOTE_DEADLINE_INVALID_PARAMETER = 8018;
+    uint constant ERROR_VOTE_HASH_INVALID_PARAMETER = 8019;
+    uint constant ERROR_VOTE_SHARES_PERCENT_OUT_OF_RANGE = 8020;
+    uint constant ERROR_VOTE_OPTION_INVALID_PARAMETER = 8021;
 
-    StorageInterface.UInt pollsIdCounter;
     StorageInterface.UInt activePollsCount;
 
     StorageInterface.OrderedUIntSet polls;
 
     StorageInterface.UIntAddressMapping owner;
-    StorageInterface.UIntBytes32Mapping title;
-    StorageInterface.UIntBytes32Mapping description;
+    StorageInterface.UIntBytes32Mapping detailsIpfsHash;
     StorageInterface.UIntUIntMapping votelimit;
     StorageInterface.UIntUIntMapping deadline;
     StorageInterface.UIntBoolMapping status;
@@ -33,6 +41,7 @@ contract Vote is VoteEmitter, BaseManager {
     StorageInterface.UIntAddressUIntMapping memberOption;
     StorageInterface.UIntAddressUIntMapping memberVotes;
     StorageInterface.UIntUIntUIntMapping options;
+    StorageInterface.UIntUIntUIntMapping optionsStats;
 
     StorageInterface.AddressOrderedSetMapping members;
     StorageInterface.UIntOrderedSetMapping memberPolls;
@@ -40,12 +49,10 @@ contract Vote is VoteEmitter, BaseManager {
     StorageInterface.Bytes32OrderedSetMapping optionsId;
 
      function Vote(Storage _store, bytes32 _crate) BaseManager(_store, _crate) {
-        pollsIdCounter.init('pollsIdCounter');
         activePollsCount.init('activePollsCount');
         polls.init('polls');
         owner.init('owner');
-        title.init('title');
-        description.init('description');
+        detailsIpfsHash.init('detailsIpfsHash');
         votelimit.init('votelimit');
         deadline.init('deadline');
         status.init('status');
@@ -53,6 +60,7 @@ contract Vote is VoteEmitter, BaseManager {
         memberOption.init('memberOption');
         memberVotes.init('memberVotes');
         options.init('options');
+        optionsStats.init('optionsStats');
         members.init('members');
         memberPolls.init('memberPolls');
         ipfsHashes.init('ipfsHashes');
@@ -73,6 +81,10 @@ contract Vote is VoteEmitter, BaseManager {
         }
     }
 
+    function isPollOwner(uint _id) constant returns (bool) {
+        return store.get(owner, _id) == msg.sender;
+    }
+
     //when time or vote limit is reached, set the poll status to false
     function endPoll(uint _pollId) internal returns (uint) {
         if (!store.get(status, _pollId))  {
@@ -87,15 +99,15 @@ contract Vote is VoteEmitter, BaseManager {
         return OK;
     }
 
-    function isPollOwner(uint _id) constant returns (bool) {
-        return store.get(owner, _id) == msg.sender;
-    }
-
     function _emitPollEnded(uint pollId) internal {
         address eventsHistory = getEventsHistory();
         if (eventsHistory != 0x0) {
-            Vote(eventsHistory).emitPollEnded(pollId);
+            VoteEmitter(eventsHistory).emitPollEnded(pollId);
         }
+    }
+
+    function isPollExist(uint _id) internal constant returns (bool) {
+        return store.includes(polls, _id);
     }
 
     function() {

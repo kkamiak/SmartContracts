@@ -5,10 +5,16 @@ import "./PollEmitter.sol";
 import {TimeHolderInterface as TimeHolder} from "../timeholder/TimeHolderInterface.sol";
 
 contract PollManager is PollEmitter, Vote {
+    /**
+    * Presents a percent of shares used for limiting votes. 1 unit == 0.01%.
+    * @dev Used because of absence of floating point numbers
+    */
     StorageInterface.UInt sharesPercent;
+    StorageInterface.UInt pollsIdCounter;
 
     uint8 constant DEFAULT_SHARES_PERCENT = 1;
     uint8 constant ACTIVE_POLLS_MAX = 20;
+    uint8 constant OPTIONS_POLLS_MAX = 16;
     uint8 constant IPFS_HASH_POLLS_MAX = 5;
 
     function PollManager(Storage _store, bytes32 _crate) Vote(_store, _crate) {
@@ -23,25 +29,34 @@ contract PollManager is PollEmitter, Vote {
             store.set(sharesPercent, DEFAULT_SHARES_PERCENT);
         }
 
+        pollsIdCounter.init('pollsIdCounter');
+
         return OK;
     }
 
     function getVoteLimit() constant returns (uint) {
         address timeHolder = lookupManager("TimeHolder");
-        return TimeHolder(timeHolder).totalSupply() / 10000 * store.get(sharesPercent);
+        return TimeHolder(timeHolder).totalSupply() / 10000 * store.get(sharesPercent); // @see sharesPercent description
     }
 
-    function NewPoll(bytes32[16] _options, bytes32[4] _ipfsHashes, bytes32 _title, bytes32 _description, uint _votelimit, uint _deadline) returns (uint errorCode) {
+    function NewPoll(bytes32[16] _options, bytes32[4] _ipfsHashes, bytes32 _detailsIpfsHash, uint _votelimit, uint _deadline) returns (uint errorCode) {
+        if (_detailsIpfsHash == bytes32(0)) {
+            return _emitError(ERROR_VOTE_DETAILS_HASH_INVALID_PARAMETER);
+        }
+
         if (_votelimit > getVoteLimit()) {
             return _emitError(ERROR_VOTE_LIMIT_EXCEEDED);
         }
 
-        uint prevId = store.get(pollsIdCounter);
-        uint id = prevId + 1;
+        if (_deadline < now) {
+            return _emitError(ERROR_VOTE_DEADLINE_INVALID_PARAMETER);
+        }
+
+        uint id = store.get(pollsIdCounter) + 1;
+        store.add(polls, id);
         store.set(pollsIdCounter, id);
         store.set(owner, id, msg.sender);
-        store.set(title, id, _title);
-        store.set(description, id, _description);
+        store.set(detailsIpfsHash, id, _detailsIpfsHash);
         store.set(votelimit, id, _votelimit);
         store.set(deadline, id, _deadline);
         store.set(status, id, true);
@@ -58,44 +73,52 @@ contract PollManager is PollEmitter, Vote {
                 store.add(ipfsHashes, bytes32(id), _ipfsHashes[i]);
             }
         }
-        store.add(polls, id);
         _emitPollCreated(id);
-        errorCode = OK;
+        return OK;
     }
 
     function addIpfsHashToPoll(uint _id, bytes32 _hash) onlyCreator(_id) returns (uint errorCode) {
+        if (!isPollExist(_id)) {
+            return _emitError(ERROR_VOTE_POLL_DOES_NOT_EXIST);
+        }
+        if (_hash == bytes32(0)) {
+            return _emitError(ERROR_VOTE_HASH_INVALID_PARAMETER);
+        }
+
         if (store.count(ipfsHashes, bytes32(_id)) >= IPFS_HASH_POLLS_MAX) {
             return _emitError(ERROR_VOTE_POLL_LIMIT_REACHED);
         }
 
         store.add(ipfsHashes, bytes32(_id), _hash);
         _emitIpfsHashToPollAdded(_id, _hash, store.count(ipfsHashes, bytes32(_id)));
-        errorCode = OK;
+        return OK;
     }
 
     function setVotesPercent(uint _percent) returns (uint errorCode) {
+        if (!(_percent > 0 && _percent < 10000)) {
+            return _emitError(ERROR_VOTE_SHARES_PERCENT_OUT_OF_RANGE);
+        }
+
         uint e = multisig();
         if (OK != e) {
             return _checkAndEmitError(e);
         }
 
-        if (_percent > 0 && _percent < 100) {
-            store.set(sharesPercent, _percent);
-            _emitSharesPercentUpdated();
-            errorCode = OK;
-        }
-        else {
-            errorCode = _emitError(ERROR_VOTE_INVALID_PARAMETER);
-        }
+        store.set(sharesPercent, _percent);
+        _emitSharesPercentUpdated();
+        return OK;
     }
 
     function removePoll(uint _pollId) onlyAuthorized returns (uint errorCode) {
-        if (!store.get(active, _pollId) && store.get(status, _pollId) && store.includes(polls, _pollId)) {
-            errorCode = deletePoll(_pollId);
+        if (!isPollExist(_pollId)) {
+            return _emitError(ERROR_VOTE_POLL_DOES_NOT_EXIST);
         }
-        else {
-            errorCode = _emitError(ERROR_VOTE_INVALID_PARAMETER);
+
+        if (!(checkPollIsInactive(_pollId) && store.get(status, _pollId))) {
+            return _emitError(ERROR_VOTE_INVALID_INVOCATION);
         }
+
+        return deletePoll(_pollId);
     }
 
     function cleanInactivePolls() onlyAuthorized returns (uint errorCode) {
@@ -112,19 +135,30 @@ contract PollManager is PollEmitter, Vote {
 
     function deletePoll(uint _pollId) internal returns (uint) {
         store.remove(polls, _pollId);
-        // TODO: how to deal with hashes
+        store.set(owner, _pollId, 0x0);
+        store.set(detailsIpfsHash, _pollId, bytes32(0));
+        store.set(votelimit, _pollId, 0);
+        store.set(deadline, _pollId, 0);
+
         _emitPollDeleted(_pollId);
         return OK;
     }
 
     function activatePoll(uint _pollId) returns (uint errorCode) {
+        if (!isPollExist(_pollId)) {
+            return _emitError(ERROR_VOTE_POLL_DOES_NOT_EXIST);
+        }
+
+        if (store.count(optionsId, bytes32(_pollId)) < 2) {
+            return _emitError(ERROR_VOTE_OPTIONS_EMPTY_LIST);
+        }
+
         uint e = multisig();
         if (OK != e) {
             return _checkAndEmitError(e);
         }
 
-        uint _activePollsCount = store.get(activePollsCount);
-        if (_activePollsCount + 1 > ACTIVE_POLLS_MAX) {
+        if ((store.get(activePollsCount) + 1) > ACTIVE_POLLS_MAX) {
             return _emitError(ERROR_VOTE_ACTIVE_POLL_LIMIT_REACHED);
         }
 
@@ -133,19 +167,94 @@ contract PollManager is PollEmitter, Vote {
         }
 
         store.set(active, _pollId, true);
-        store.set(activePollsCount, _activePollsCount + 1);
+        store.set(activePollsCount, store.get(activePollsCount) + 1);
         _emitPollActivated(_pollId);
         return OK;
     }
 
     function adminEndPoll(uint _pollId) returns (uint errorCode) {
+        if (!isPollExist(_pollId)) {
+            return _emitError(ERROR_VOTE_POLL_DOES_NOT_EXIST);
+        }
+
         uint e = multisig();
         if (OK != e) {
             return _checkAndEmitError(e);
         }
 
         uint result = endPoll(_pollId);
-        errorCode = _checkAndEmitError(result);
+        return _checkAndEmitError(result);
+    }
+
+    function updatePollDetailsIpfsHash(uint _pollId, bytes32 _detailsIpfsHash) onlyCreator(_pollId) returns (uint errorCode) {
+        if (!isPollExist(_pollId)) {
+            return _emitError(ERROR_VOTE_POLL_DOES_NOT_EXIST);
+        }
+
+        if (checkPollIsActive(_pollId)) {
+            return _emitError(ERROR_VOTE_POLL_SHOULD_BE_INACTIVE);
+        }
+
+        if (_detailsIpfsHash == bytes32(0)) {
+            return _emitError(ERROR_VOTE_DETAILS_HASH_INVALID_PARAMETER);
+        }
+
+        if (store.get(detailsIpfsHash, _pollId) != _detailsIpfsHash) {
+            store.set(detailsIpfsHash, _pollId, _detailsIpfsHash);
+        }
+
+        _emitPollDetailsUpdated(_pollId);
+        return OK;
+    }
+
+    function addPollOption(uint _pollId, bytes32 _option) onlyCreator(_pollId) returns (uint errorCode) {
+        errorCode = _checkUpdatablePollOption(_pollId, _option);
+        if (errorCode != OK) {
+            return _emitError(errorCode);
+        }
+
+        if (store.count(optionsId, bytes32(_pollId)) >= OPTIONS_POLLS_MAX) {
+            return _emitError(ERROR_VOTE_OPTIONS_LIMIT_REACHED);
+        }
+
+        if (store.includes(optionsId, bytes32(_pollId), _option)) {
+            return _emitError(ERROR_VOTE_INVALID_PARAMETER);
+        }
+
+        store.add(optionsId, bytes32(_pollId), _option);
+        _emitOptionAdded(_pollId, _option, store.count(optionsId, bytes32(_pollId)));
+        return OK;
+    }
+
+    function removePollOption(uint _pollId, bytes32 _option) onlyCreator(_pollId) returns (uint errorCode) {
+        errorCode = _checkUpdatablePollOption(_pollId, _option);
+        if (errorCode != OK) {
+            return _emitError(errorCode);
+        }
+
+        if (!store.includes(optionsId, bytes32(_pollId), _option)) {
+            return _emitError(ERROR_VOTE_OPTION_INVALID_PARAMETER);
+        }
+
+        store.remove(optionsId, bytes32(_pollId), _option);
+        _emitOptionRemoved(_pollId, _option, store.count(optionsId, bytes32(_pollId)));
+        return OK;
+    }
+
+    function _checkUpdatablePollOption(uint _pollId, bytes32 _option) private constant returns (uint errorCode) {
+        if (!isPollExist(_pollId)) {
+            return ERROR_VOTE_POLL_DOES_NOT_EXIST;
+        }
+
+        if (checkPollIsActive(_pollId)) {
+            return ERROR_VOTE_POLL_SHOULD_BE_INACTIVE;
+        }
+
+        if (_option == bytes32(0)) {
+            return ERROR_VOTE_OPTION_INVALID_PARAMETER;
+        }
+
+        return OK;
     }
 
     function _emitError(uint error) internal returns (uint) {
@@ -166,7 +275,7 @@ contract PollManager is PollEmitter, Vote {
     }
 
     function _emitPollCreated(uint pollId) internal {
-        emitPollCreated(pollId);
+        PollManager(getEventsHistory()).emitPollCreated(pollId);
     }
 
     function _emitPollDeleted(uint pollId) internal {
@@ -183,5 +292,17 @@ contract PollManager is PollEmitter, Vote {
 
     function _emitIpfsHashToPollAdded(uint id, bytes32 hash, uint count) internal {
         PollManager(getEventsHistory()).emitIpfsHashToPollAdded(id, hash, count);
+    }
+
+    function _emitOptionAdded(uint pollId, bytes32 option, uint count) internal {
+        PollManager(getEventsHistory()).emitOptionAdded(pollId, option, count);
+    }
+
+    function _emitOptionRemoved(uint pollId, bytes32 option, uint count) internal {
+        PollManager(getEventsHistory()).emitOptionRemoved(pollId, option, count);
+    }
+
+    function _emitPollDetailsUpdated(uint pollId) internal {
+        PollManager(getEventsHistory()).emitPollDetailsUpdated(pollId);
     }
 }

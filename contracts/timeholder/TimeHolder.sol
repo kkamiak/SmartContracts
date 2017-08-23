@@ -68,6 +68,13 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
         return OK;
     }
 
+    function removeListener(address _listener) onlyAuthorized {
+        if (store.includes(listeners, _listener)) {
+            store.remove(listeners, _listener);
+            _emitListenerRemoved(_listener);
+        }
+    }
+
     /**
     * Total amount of shares
     *
@@ -273,6 +280,10 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
 
     function _emitListenerAdded(address listener) private {
         TimeHolder(getEventsHistory()).emitListenerAdded(listener);
+    }
+
+    function _emitListenerRemoved(address listener) private {
+        TimeHolder(getEventsHistory()).emitListenerRemoved(listener);
     }
 
     function _emitError(uint e) private returns (uint) {

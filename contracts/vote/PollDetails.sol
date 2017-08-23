@@ -3,6 +3,12 @@ pragma solidity ^0.4.11;
 import "./Vote.sol";
 
 contract PollDetails is Vote {
+    modifier onlyExistedPoll(uint _id) {
+        if (store.includes(polls, _id)) {
+            _;
+        }
+    }
+
     function PollDetails(Storage _store, bytes32 _crate) Vote(_store, _crate) {
     }
 
@@ -47,11 +53,11 @@ contract PollDetails is Vote {
         }
     }
 
-    function getPollTitles() constant returns (bytes32[] result) {
+    function getPollsDetailsIpfsHashes() constant returns (bytes32[] result) {
         StorageInterface.Iterator memory iterator = store.listIterator(polls);
         result = new bytes32[](iterator.count());
         for (uint i = 0; store.canGetNextWithIterator(polls, iterator); ++i) {
-            result[i] = store.get(title, store.getNextWithIterator(polls, iterator));
+            result[i] = store.get(detailsIpfsHash, store.getNextWithIterator(polls, iterator));
         }
     }
 
@@ -64,10 +70,18 @@ contract PollDetails is Vote {
     }
 
     function getMemberVotesForPoll(uint _id) constant returns (uint result) {
+        if (!isPollExist(_id)) {
+            return;
+        }
+
         result = store.get(memberOption, _id, msg.sender);
     }
 
     function getOptionsForPoll(uint _id) constant returns (bytes32[] result) {
+        if (!isPollExist(_id)) {
+            return;
+        }
+
         StorageInterface.Iterator memory iterator = store.listIterator(optionsId, bytes32(_id));
         result = new bytes32[](iterator.count());
         for (uint i = 0; store.canGetNextWithIterator(optionsId, iterator); ++i) {
@@ -75,7 +89,23 @@ contract PollDetails is Vote {
         }
     }
 
+    function getOptionsVotesStatisticForPoll(uint _id) constant returns (uint[] result) {
+        if (!isPollExist(_id)) {
+            return;
+        }
+
+        uint _optionsCount = store.count(optionsId, bytes32(_id));
+        result = new uint[](_optionsCount);
+        for (uint i = 0; i < _optionsCount; i++) {
+            result[i] = store.get(optionsStats, _id, i + 1);
+        }
+    }
+
     function getOptionsVotesForPoll(uint _id) constant returns (uint[] result) {
+        if (!isPollExist(_id)) {
+            return;
+        }
+
         uint _optionsCount = store.count(optionsId, bytes32(_id));
         result = new uint[](_optionsCount);
         for (uint i = 0; i < _optionsCount; i++) {
@@ -84,6 +114,10 @@ contract PollDetails is Vote {
     }
 
     function getIpfsHashesFromPoll(uint _id) constant returns (bytes32[] result) {
+        if (!isPollExist(_id)) {
+            return;
+        }
+
         StorageInterface.Iterator memory hashesIterator = store.listIterator(ipfsHashes, bytes32(_id));
         result = new bytes32[](hashesIterator.count());
         for (uint i = 0; store.canGetNextWithIterator(ipfsHashes, hashesIterator); ++i) {
@@ -91,18 +125,22 @@ contract PollDetails is Vote {
         }
     }
 
-    function getPoll(uint _pollId) constant returns (address _owner,
-    bytes32 _title,
-    bytes32 _description,
+    function getPoll(uint _pollId) constant returns (uint _id,
+    address _owner,
+    bytes32 _detailsIpfsHash,
     uint _votelimit,
     uint _deadline,
     bool _status,
     bool _active,
     bytes32[] _options,
     bytes32[] _hashes) {
+        if (!isPollExist(_pollId)) {
+            return;
+        }
+
+        _id = _pollId;
         _owner = store.get(owner, _pollId);
-        _title = store.get(title, _pollId);
-        _description = store.get(description, _pollId);
+        _detailsIpfsHash = store.get(detailsIpfsHash, _pollId);
         _votelimit = store.get(votelimit, _pollId);
         _deadline = store.get(deadline, _pollId);
         _status = store.get(status, _pollId);

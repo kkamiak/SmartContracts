@@ -101,11 +101,13 @@ contract('Vote', function(accounts) {
     });
 
     it("owner should be able to approve 50 TIME to Vote", function() {
-      return Setup.chronoBankAssetProxy.approve.call(Setup.timeHolder.address, 50, {from: accounts[0]}).then((r) => {
-        return Setup.chronoBankAssetProxy.approve(Setup.timeHolder.address, 50, {from: accounts[0]}).then(() => {
-          assert.isOk(r);
-        });
-      });
+        return Setup.timeHolder.wallet.call().then(_wallet => {
+            return Setup.chronoBankAssetProxy.approve.call(_wallet, 50, {from: accounts[0]}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_wallet, 50, {from: accounts[0]}).then(() => {
+                    assert.isOk(r);
+                });
+            });
+        })
     });
 
     it("should be able to deposit 50 TIME from owner", function() {
@@ -302,11 +304,13 @@ contract('Vote', function(accounts) {
     })
 
     it("owner1 should be able to approve 50 TIME to TimeHolder", function() {
-      return Setup.chronoBankAssetProxy.approve.call(Setup.timeHolder.address, 50, {from: owner1}).then((r) => {
-        return Setup.chronoBankAssetProxy.approve(Setup.timeHolder.address, 50, {from: owner1}).then(() => {
-          assert.isOk(r)
+        return Setup.timeHolder.wallet.call().then(_wallet => {
+            return Setup.chronoBankAssetProxy.approve.call(_wallet, 50, {from: owner1}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_wallet, 50, {from: owner1}).then(() => {
+                    assert.isOk(r)
+                })
+            })
         })
-      })
     })
 
     it("should be able to deposit 50 TIME from owner", function() {
@@ -483,11 +487,13 @@ contract('Vote', function(accounts) {
     })
 
     it("owner should be able to approve 9999975 TIME to Vote", function() {
-      return Setup.chronoBankAssetProxy.approve.call(Setup.timeHolder.address, 99999975, {from: accounts[0]}).then((r) => {
-        return Setup.chronoBankAssetProxy.approve(Setup.timeHolder.address, 99999975, {from: accounts[0]}).then(() => {
-          assert.isOk(r)
+        return Setup.timeHolder.wallet.call().then(_wallet => {
+            return Setup.chronoBankAssetProxy.approve.call(_wallet, 99999975, {from: accounts[0]}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_wallet, 99999975, {from: accounts[0]}).then(() => {
+                    assert.isOk(r)
+                })
+            })
         })
-      })
     })
 
     it("should be able to deposit 9999975 TIME from owner", function() {

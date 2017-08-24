@@ -12,6 +12,7 @@ const AssetsManager = artifacts.require("./AssetsManager.sol")
 const WalletsManager = artifacts.require("./WalletsManager.sol")
 const PendingManager = artifacts.require("./PendingManager.sol")
 const TimeHolder = artifacts.require('./TimeHolder.sol')
+const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 const Rewards = artifacts.require('./Rewards.sol')
 const Storage = artifacts.require('./Storage.sol')
 const UserManager = artifacts.require("./UserManager.sol")
@@ -45,6 +46,7 @@ let chronoBankPlatform
 let chronoMint
 let contractsManager
 let timeHolder
+let timeHolderWallet
 let shareable
 let erc20Manager
 let rewards
@@ -106,6 +108,7 @@ var setup = function (callback) {
       PollManager.deployed(),
       PollDetails.deployed(),
       TimeHolder.deployed(),
+      TimeHolderWallet.deployed(),
       MultiEventsHistory.deployed(),
       StorageManager.deployed()
     ])
@@ -130,6 +133,7 @@ var setup = function (callback) {
       pollManager,
       pollDetails,
       timeHolder,
+      timeHolderWallet,
       multiEventsHistory,
       storageManager
     ] = instances
@@ -142,6 +146,7 @@ var setup = function (callback) {
     module.exports.chronoMint = chronoMint
     module.exports.contractsManager = contractsManager
     module.exports.timeHolder = timeHolder
+    module.exports.timeHolderWallet = timeHolderWallet
     module.exports.shareable = shareable
     module.exports.erc20Manager = erc20Manager
     module.exports.rewards = rewards

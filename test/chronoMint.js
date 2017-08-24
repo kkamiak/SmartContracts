@@ -843,13 +843,13 @@ contract('LOC Manager', function(accounts) {
     });
 
     it("owner should be able to approve 100 TIME to TimeHolder", function () {
-      return Setup.chronoBankAssetProxy.approve.call(Setup.timeHolder.address, 100, {from: owner}).then((r) => {
-        return Setup.chronoBankAssetProxy.approve(Setup.timeHolder.address, 100, {from: owner}).then(() => {
-          assert.isOk(r);
+        return Setup.timeHolder.wallet.call().then(_walletAddress => {
+            return Setup.chronoBankAssetProxy.approve.call(_walletAddress, 100, {from: owner}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_walletAddress, 100, {from: owner}).then(() => {
+                    assert.isOk(r);
+                })
+            })
         })
-         ;
-      })
-       ;
     });
 
     it("should be able to deposit 100 TIME from owner", function () {

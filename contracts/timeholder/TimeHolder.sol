@@ -6,6 +6,7 @@ import "../core/common/ListenerInterface.sol";
 import "../core/common/Deposits.sol";
 import "../core/contracts/ContractsManagerInterface.sol";
 import {ERC20Interface as Asset} from "../core/erc20/ERC20Interface.sol";
+import "./DepositWalletInterface.sol";
 
 
 contract TimeHolder is Deposits, TimeHolderEmmiter {
@@ -20,6 +21,7 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
     uint constant ERROR_TIMEHOLDER_LIMIT_EXCEEDED = 12007;
 
     StorageInterface.OrderedAddressesSet listeners;
+    StorageInterface.Address walletStorage;
     StorageInterface.UInt limitAmount;
 
     function TimeHolder(Storage _store, bytes32 _crate) Deposits(_store, _crate) {
@@ -36,19 +38,18 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
      *
      * @return success.
      */
-    function init(address _contractsManager, address _sharesContract) onlyContractOwner returns (uint) {
+    function init(address _contractsManager, address _sharesContract, address _wallet) onlyContractOwner returns (uint) {
         BaseManager.init(_contractsManager, "TimeHolder");
 
         store.set(sharesContractStorage, _sharesContract);
         store.set(limitAmount, 2**255);
+        store.set(walletStorage, _wallet);
 
         return OK;
     }
 
-    function destroy(address[] tokens) onlyAuthorized returns (uint) {
-        withdrawnTokens(tokens, msg.sender);
+    function destroy() onlyContractOwner {
         selfdestruct(msg.sender);
-        return OK;
     }
 
     function addListener(address _listener) onlyAuthorized returns (uint) {
@@ -73,6 +74,13 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
             store.remove(listeners, _listener);
             _emitListenerRemoved(_listener);
         }
+    }
+
+    /**
+    * Gets an associated wallet for the time holder
+    */
+    function wallet() constant returns (address) {
+        return store.get(walletStorage);
     }
 
     /**
@@ -157,7 +165,7 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
 
         address asset = store.get(sharesContractStorage);
         // TODO: @ahiatsevich: is there really msg.sender?
-        if (_amount != 0 && !ERC20Interface(asset).transferFrom(msg.sender, this, _amount)) {
+        if (!(_amount == 0 || DepositWalletInterface(wallet()).deposit(asset, msg.sender, _amount))) {
             return _emitError(ERROR_TIMEHOLDER_TRANSFER_FAILED);
         }
 
@@ -208,7 +216,7 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
             return _emitError(ERROR_TIMEHOLDER_INSUFFICIENT_BALANCE);
         }
 
-        if (!ERC20Interface(store.get(sharesContractStorage)).transfer(msg.sender, _amount)) {
+        if (!DepositWalletInterface(wallet()).withdraw(sharesContract(), msg.sender, _amount)) {
             return _emitError(ERROR_TIMEHOLDER_TRANSFER_FAILED);
         }
 

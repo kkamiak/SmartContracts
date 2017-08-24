@@ -1,6 +1,7 @@
 const Rewards = artifacts.require("./Rewards.sol");
 const ContractsManager = artifacts.require("./ContractsManager.sol");
 const TimeHolder = artifacts.require("./TimeHolder.sol");
+const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 const LOCManager = artifacts.require('./LOCManager.sol')
 const FakeCoin = artifacts.require("./FakeCoin.sol");
 const FakeCoin2 = artifacts.require("./FakeCoin2.sol");
@@ -21,6 +22,7 @@ contract('Rewards', (accounts) => {
 
   let reward;
   let timeHolder;
+  let timeHolderWallet
   let storage;
   let userManager;
   let multiEventsHistory;
@@ -40,7 +42,8 @@ contract('Rewards', (accounts) => {
     .then(() => reward.init(contractsManager.address, ZERO_INTERVAL))
     .then(() => chronoMint.init(contractsManager.address))
     .then(() => userManager.init(contractsManager.address))
-    .then(() => timeHolder.init(contractsManager.address, shares.address))
+    .then(() => timeHolderWallet.init(contractsManager.address))
+    .then(() => timeHolder.init(contractsManager.address, shares.address, timeHolderWallet.address))
     .then(() => assetsManager.addAsset(asset1.address, 'LHT', chronoMint.address))
     .then(() => multiEventsHistory.authorize(reward.address))
   };
@@ -113,6 +116,8 @@ contract('Rewards', (accounts) => {
     .then((instance) => assetsManager = instance)
     .then(() => LOCManager.new(storage.address, 'LOCManager'))
     .then((instance) => chronoMint = instance)
+    .then(() => TimeHolderWallet.new(storage.address, 'TimeHolderWallet'))
+    .then(instance => timeHolderWallet = instance)
     .then(() => TimeHolder.new(storage.address,'Deposits'))
     .then((instance) => timeHolder = instance)
     .then(() => ContractsManager.new(storage.address, "ContractsManager"))
@@ -232,7 +237,7 @@ contract('Rewards', (accounts) => {
     return storage.setManager(ManagerMock.address)
       .then(() => reward.init(contractsManager.address, ZERO_INTERVAL + 1))
       .then(() => userManager.init(contractsManager.address))
-      .then(() => timeHolder.init(contractsManager.address, shares.address))
+      .then(() => timeHolder.init(contractsManager.address, shares.address, timeHolderWallet.address))
       .then(() => multiEventsHistory.authorize(reward.address))
       .then(() => reward.closePeriod.call())
       .then((res) => assert.notEqual(res, 1))
@@ -409,7 +414,8 @@ contract('Rewards', (accounts) => {
       .then(() => assertDepositBalance(accounts[0], 100))
       .then(() => assertTotalDepositInPeriod(0, 100))
       .then(() => assertSharesBalance(accounts[0], SHARES_BALANCE - 100))
-      .then(() => assertSharesBalance(timeHolder.address, 100));
+      .then(() => timeHolder.wallet.call())
+      .then(_timeHolderWallet => assertSharesBalance(_timeHolderWallet, 100));
   });
 
   it('should withdraw shares without deposit in new period', () => {
@@ -434,7 +440,8 @@ contract('Rewards', (accounts) => {
       .then(() => assertDepositBalanceInPeriod(accounts[0], 0, 50))
       .then(() => assertTotalDepositInPeriod(0, 50))
       .then(() => assertSharesBalance(accounts[0], SHARES_BALANCE - 50))
-      .then(() => assertSharesBalance(timeHolder.address, 50));
+      .then(() => timeHolder.wallet.call())
+      .then(_timeHolderWallet => assertSharesBalance(_timeHolderWallet, 50));
   });
 
   // withdrawRewardFor(address _address, uint _amount, address _assetAddress) returns(bool)

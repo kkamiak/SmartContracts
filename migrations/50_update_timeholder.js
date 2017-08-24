@@ -4,79 +4,43 @@ const StorageManager = artifacts.require('./StorageManager.sol');
 const ContractsManager = artifacts.require("./ContractsManager.sol");
 const MultiEventsHistory = artifacts.require("./MultiEventsHistory.sol");
 const ERC20Manager = artifacts.require("./ERC20Manager.sol");
+const ERC20Interface = artifacts.require('ERC20Interface.sol')
 const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
+const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 
 module.exports = function(deployer, network) {
-    var withdrawnBalances = {}
+      deployer.then(() => TimeHolder.deployed())
+      .then(_oldTimeHolder => oldTimeHolder = _oldTimeHolder)
 
-      deployer.then(() => StorageManager.deployed())
-      .then(_storageManager => _storageManager.blockAccess(TimeHolder.address, 'Deposits'))
-      .then(() => MultiEventsHistory.deployed())
-      .then(_history => _history.reject(TimeHolder.address))
-      .then(() => ERC20Manager.deployed())
-      .then(_erc20Manager => erc20manager = _erc20Manager)
-      .then(() => erc20manager.getTokenAddresses())
-      .then(_tokenAddresses => tokenAddresses = _tokenAddresses)
-      .then(() => {
-          let tokens = []
-          for (let address in tokenAddresses) {
-              tokens.push(ERC20Interface.at(address))
-          }
-          return Promise.all(tokens)
-      })
-      .then(_tokens => {
-          let balances = []
-          for (let token in _tokens) {
-              balances.push(token.balanceOf(timeHolder.address).then(_balance => {
-                  if (_balance > 0) {
-                      withdrawnBalances[token.address] = {
-                          token: token,
-                          balance: _balance
-                      }
-                  }
-              }))
-          }
-
-          return Promise.all(balances)
-      })
-      .then(() => console.log(JSON.stringify(withdrawnBalances, null, 3)))
-      .then(() => TimeHolder.deployed())
-      .then(_timeHolder => _timeHolder.destroy(tokenAddresses))
-
-      .then(() => console.log("[MIGRATION] [50] TimeHolder destroyed: #done"))
-
-      // deploying updated TimeHolder
+      // 1 - deploy an updated TimeHolder
       .then(() => deployer.deploy(TimeHolder, Storage.address, 'Deposits'))
-        .then(() => StorageManager.deployed())
-        .then((_storageManager) => _storageManager.giveAccess(TimeHolder.address, 'Deposits'))
-        .then(() => {
-            if (network == "main") {
-               return ERC20Manager.deployed()
-                  .then(_erc20Manager => _erc20Manager.getTokenBySymbol.call("TIME"))
-                  .then(_token => _token[0]);
-           } else {
-               return ChronoBankAssetProxy.address;
-           }
-        })
-        .then(_timeAddress => timeAddress = _timeAddress)
-        .then(() => TimeHolder.deployed())
-        .then(_timeHolder => timeHolder = _timeHolder)
-        .then(() => timeHolder.init(ContractsManager.address, timeAddress))
-        .then(() => MultiEventsHistory.deployed())
-        .then(_history => _history.authorize(TimeHolder.address))
-        .then(() => {
-            if (network == "main") {
-                return timeHolder.setLimit(100000000);
-            }
-        })
-        .then(() => {
-            var transferPromise = Promise.resolve()
-            for (let withdrawnToken in withdrawnBalances) {
-                transferPromise.then(() => withdrawnToken.token.transfer(timeHolder.address, withdrawnToken.balance))
-            }
+      .then(() => StorageManager.deployed())
+      .then(_storageManager => storageManager = _storageManager)
+      .then(() => TimeHolder.deployed())
+      .then(_timeHolder => updatedTimeHolder = _timeHolder)
+      .then(() => storageManager.giveAccess(updatedTimeHolder.address, 'Deposits'))
+      .then(() => {
+          if (network == "main") {
+             return ERC20Manager.deployed().then(_erc20Manager => _erc20Manager.getTokenAddressBySymbol.call("TIME"))
+         } else {
+             return ChronoBankAssetProxy.address;
+         }
+      })
+      .then(_timeAddress => updatedTimeHolder.init(ContractsManager.address, _timeAddress, TimeHolderWallet.address))
+      .then(() => MultiEventsHistory.deployed())
+      .then(_history => _history.authorize(updatedTimeHolder.address))
+      .then(() => {
+          if (network == "main") {
+              return updatedTimeHolder.setLimit(100000000);
+          }
+      })
+      .then(() => console.log("[MIGRATION] [50.1] updated TimeHolder deployed: #done"))
 
-            return transferPromise
-        })
+      // 2 - remove old TimeHolder
+      .then(() => storageManager.blockAccess(oldTimeHolder.address, 'Deposits'))
+      .then(() => MultiEventsHistory.deployed())
+      .then(_history => _history.reject(oldTimeHolder.address))
+      .then(() => oldTimeHolder.destroy())
 
-        .then(() => console.log("[MIGRATION] [50] TimeHolder update: #done"))
+      .then(() => console.log("[MIGRATION] [50.2] old TimeHolder destroyed: #done"))
 }

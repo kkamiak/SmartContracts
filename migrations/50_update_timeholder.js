@@ -9,7 +9,18 @@ const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
 const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 
 module.exports = function(deployer, network) {
-      deployer.then(() => TimeHolder.deployed())
+      deployer
+      .then(() => {
+          if (!TimeHolderWallet.isDeployed()) {
+            return deployer.deploy(TimeHolderWallet, Storage.address, "TimeHolderWallet")
+              .then(() => StorageManager.deployed())
+              .then((_storageManager) => _storageManager.giveAccess(TimeHolderWallet.address, 'Deposits'))
+              .then(() => TimeHolderWallet.deployed())
+              .then(_wallet => timeHolderWallet = _wallet)
+              .then(() => timeHolderWallet.init(ContractsManager.address))
+          }
+      })
+      .then(() => TimeHolder.deployed())
       .then(_oldTimeHolder => oldTimeHolder = _oldTimeHolder)
 
       // 1 - deploy an updated TimeHolder

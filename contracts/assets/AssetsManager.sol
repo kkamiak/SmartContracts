@@ -8,33 +8,18 @@ import "../core/platform/ChronoBankAssetProxyInterface.sol";
 import "../core/erc20/ERC20Interface.sol";
 import "../core/common/OwnedInterface.sol";
 import "./AssetsManagerEmitter.sol";
+import "../crowdsale/CrowdsaleManager.sol";
+import "../crowdsale/base/BaseCrowdsale.sol";
 
 contract ChronoBankAsset {
     function init(ChronoBankAssetProxyInterface _proxy) returns (bool);
 }
-
 
 contract ProxyFactory {
     function createProxy() returns (address);
     function createAsset() returns (address);
     function createAssetWithFee() returns (address);
 }
-
-
-contract CrowdsaleManager {
-    function createCompain(address _fund,
-    bytes32 _symbol,
-    string _reference,
-    uint256 _startBlock,
-    uint256 _stopBlock,
-    uint256 _minValue,
-    uint256 _maxValue,
-    uint256 _scale,
-    uint256 _startRatio,
-    uint256 _reductionStep,
-    uint256 _reductionValue) returns (address);
-}
-
 
 contract AssetsManager is AssetsManagerEmitter, BaseManager {
 
@@ -44,7 +29,6 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
     uint constant ERROR_ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP = 11003;
     uint constant ERROR_ASSETS_WRONG_PLATFORM = 11004;
     uint constant ERROR_ASSETS_NOT_A_PROXY = 11005;
-    uint constant ERROR_ASSETS_OWNER_ONLY = 11006;
     uint constant ERROR_ASSETS_CANNOT_ADD_TO_REGISTRY = 11007;
     uint constant ERROR_ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP = 11008;
 
@@ -61,7 +45,7 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
         }
     }
 
-    function isAssetSymbolExists(bytes32 _symbol) private constant returns (bool) {
+    function isAssetSymbolExists(bytes32 _symbol) constant returns (bool) {
         return store.get(assets, _symbol) != 0x0;
     }
 
@@ -171,7 +155,7 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
         }
 
         if (!ChronoBankPlatformInterface(_platform).isOwner(this, _symbol)) {
-            return _emitError(ERROR_ASSETS_OWNER_ONLY);
+            return _emitError(UNAUTHORIZED);
         }
 
         uint8 decimals = ChronoBankPlatformInterface(_platform).baseUnit(_symbol);
@@ -238,13 +222,47 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
         return OK;
     }
 
-    function startCompain() {
+    function createCrowdsaleCampaign(bytes32 _symbol) returns (uint) {
+        if (!isAssetOwner(_symbol, msg.sender)) {
+            return _emitError(UNAUTHORIZED);
+        }
 
+        CrowdsaleManager crowdsaleManager = CrowdsaleManager(lookupManager("CrowdsaleManager"));
+
+        var (crowdsale, result) = crowdsaleManager.createCrowdsale(msg.sender, _symbol, "TimeLimitedCrowdsaleFactory");
+        if (OK != result) return _emitError(result);
+
+        result = addAssetOwner(_symbol, crowdsale);
+        if (OK != result) return _emitError(result);
+
+        _emitCrowdsaleCampaignCreated(_symbol, crowdsale);
+
+        return OK;
+    }
+
+    function deleteCrowdsaleCampaign(address _crowdsale) returns (uint result) {
+        bytes32 symbol = BaseCrowdsale(_crowdsale).getSymbol();
+
+        if (!isAssetOwner(symbol, msg.sender)) {
+            return _emitError(UNAUTHORIZED);
+        }
+
+        CrowdsaleManager crowdsaleManager = CrowdsaleManager(lookupManager("CrowdsaleManager"));
+
+        result = crowdsaleManager.deleteCrowdsale(_crowdsale);
+        if (OK != result) return _emitError(result);
+
+        result = deleteAssetOwner(symbol, _crowdsale);
+        if (OK != result) return _emitError(result);
+
+        _emitCrowdsaleCampaignRemoved(symbol, _crowdsale);
+
+        return OK;
     }
 
     function addAssetOwner(bytes32 _symbol, address _owner) returns (uint errorCode) {
         if (!isAssetOwner(_symbol, msg.sender)) {
-            return _emitError(ERROR_ASSETS_OWNER_ONLY);
+            return _emitError(UNAUTHORIZED);
         }
 
         store.set(owners, store.get(assets, _symbol), _owner, 1);
@@ -255,7 +273,7 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
 
     function deleteAssetOwner(bytes32 _symbol, address _owner) returns (uint errorCode) {
         if (!isAssetOwner(_symbol, msg.sender)) {
-            return _emitError(ERROR_ASSETS_OWNER_ONLY);
+            return _emitError(UNAUTHORIZED);
         }
 
         store.set(owners, store.get(assets, _symbol), _owner, 0);
@@ -301,6 +319,7 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
         return result;
     }
 
+    // TODO: ahiatsevich - move to library
     function bytes32ToString(bytes32 x) constant returns (string) {
         bytes memory bytesString = new bytes(32);
         uint charCount = 0;
@@ -337,6 +356,14 @@ contract AssetsManager is AssetsManagerEmitter, BaseManager {
 
     function _emitAssetOwnerRemoved(bytes32 symbol, address owner) internal {
         AssetsManager(getEventsHistory()).emitAssetOwnerRemoved(symbol, owner);
+    }
+
+    function _emitCrowdsaleCampaignCreated(bytes32 symbol, address campaign) internal {
+        AssetsManager(getEventsHistory()).emitCrowdsaleCampaignCreated(symbol, campaign);
+    }
+
+    function _emitCrowdsaleCampaignRemoved(bytes32 symbol, address campaign) internal {
+        AssetsManager(getEventsHistory()).emitCrowdsaleCampaignRemoved(symbol, campaign);
     }
 
     function()

@@ -2,12 +2,17 @@ pragma solidity ^0.4.11;
 
 import "../core/event/MultiEventsHistoryAdapter.sol";
 
-contract CrowdfundingManagerEmitter is MultiEventsHistoryAdapter {
-    event ComplainCreated(address indexed self, address indexed creator, bytes32 symbol, address crowdsale);
+contract CrowdsaleManagerEmitter is MultiEventsHistoryAdapter {
+    event CrowdsaleCreated(address indexed self, address indexed creator, bytes32 symbol, address crowdsale);
+    event CrowdsaleDeleted(address indexed self, address crowdsale);
     event Error(address indexed self, uint errorCode);
 
-    function emitComplainCreated(address creator, bytes32 symbol, address crowdsale) {
-        ComplainCreated(_self(), creator, symbol, crowdsale);
+    function emitCrowdsaleCreated(address creator, bytes32 symbol, address crowdsale) {
+        CrowdsaleCreated(_self(), creator, symbol, crowdsale);
+    }
+
+    function emitCrowdsaleDeleted(address crowdsale) {
+        CrowdsaleDeleted(_self(), crowdsale);
     }
 
     function emitError(uint errorCode) {

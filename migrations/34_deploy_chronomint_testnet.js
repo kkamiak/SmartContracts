@@ -7,6 +7,7 @@ var Stub = artifacts.require("./helpers/Stub.sol");
 var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
 var KrakenPriceTicker = artifacts.require("./KrakenPriceTicker.sol");
 var StorageManager = artifacts.require("./StorageManager.sol");
+var FakePriceTicker = artifacts.require("./FakePriceTicker.sol");
 
 module.exports = function(deployer,network) {
   if(network === 'development' || network === 'test') {
@@ -15,6 +16,7 @@ module.exports = function(deployer,network) {
         .then(() => deployer.deploy(FakeCoin))
         .then(() => deployer.deploy(FakeCoin2))
         .then(() => deployer.deploy(FakeCoin3))
+        .then(() => deployer.deploy(FakePriceTicker))
         .then(() => deployer.deploy(ManagerMock))
         .then(() => deployer.deploy(AssetsManagerMock))
         .then(() => StorageManager.deployed())

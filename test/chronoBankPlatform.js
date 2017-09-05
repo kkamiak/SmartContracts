@@ -1,10 +1,12 @@
-var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
-var EventsHistory = artifacts.require("./EventsHistory.sol");
-var ChronoBankPlatformEmitter = artifacts.require("./ChronoBankPlatformEmitter.sol");
+const MultiEventsHistory = artifacts.require("./MultiEventsHistory.sol");
+const ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
+const Setup = require('../setup/setup')
+const ErrorsEnum = require("../common/errors");
 
 var Reverter = require('./helpers/reverter');
 var bytes32 = require('./helpers/bytes32');
 var eventsHelper = require('./helpers/eventsHelper');
+
 contract('ChronoBankPlatform', function(accounts) {
   var reverter = new Reverter(web3);
   afterEach('revert', reverter.revert);
@@ -28,42 +30,22 @@ contract('ChronoBankPlatform', function(accounts) {
   var IS_REISSUABLE = false;
 
   var chronoBankPlatform;
-  var eventsHistory;
 
   before('setup', function(done) {
-    ChronoBankPlatformTestable.deployed().then(function(instance) {
-    chronoBankPlatform = instance;
-    EventsHistory.deployed().then(function(instance) {
-    eventsHistory = instance;
-    ChronoBankPlatformEmitter.deployed().then(function(instance) {
-    var chronoBankPlatformEmitter = instance;
-    var chronoBankPlatformEmitterAbi = web3.eth.contract(chronoBankPlatformEmitter.abi).at('0x0');
-    var fakeArgs = [0,0,0,0,0,0,0,0];
-    chronoBankPlatform.setupEventsHistory(eventsHistory.address).then(function() {
-      return eventsHistory.addVersion(chronoBankPlatform.address, "Origin", "Initial version.");
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitIssue.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitApprove.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      return eventsHistory.addEmitter(chronoBankPlatformEmitterAbi.emitError.getData.apply(this, fakeArgs).slice(0, 10), chronoBankPlatformEmitter.address);
-    }).then(function() {
-      eventsHistory = ChronoBankPlatformEmitter.at(eventsHistory.address);
-      reverter.snapshot(done);
-    });
-   });
-   });
-   });
+    Setup.setup(function () {})
+    .then(() => ChronoBankPlatformTestable.deployed())
+    .then(instance => chronoBankPlatform = instance)
+    .then(() => {
+      return chronoBankPlatform.setupEventsHistory(Setup.multiEventsHistory.address).then(function() {
+          return Setup.multiEventsHistory.authorize(chronoBankPlatform.address)
+      }).then(function() {
+          console.log("setup completed");
+        reverter.snapshot(done);
+      });
+  }).catch((e) => {console.log("setup failed" + e); done(e)});
   });
 
+context("with one CBE key", function(){
   it('should not be possible to issue asset with existing symbol', function() {
     var symbol = SYMBOL;
     var value = 1001;
@@ -76,13 +58,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var baseUnit2 = 4;
     var isReissuable = false;
     var isReissuable2 = true;
-    var watcher;
     return chronoBankPlatform.issueAsset(symbol, value, name, description, baseUnit, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Issue();
       return chronoBankPlatform.issueAsset(symbol, value2, name2, description2, baseUnit2, isReissuable2);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Issue");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.name.call(symbol);
@@ -211,10 +190,8 @@ contract('ChronoBankPlatform', function(accounts) {
     var description = 'Test Description';
     var baseUnit = 2;
     var isReissuable = false;
-    var watcher = eventsHistory.Issue();
-    eventsHelper.setupEvents(eventsHistory);
     return chronoBankPlatform.issueAsset(symbol, value, name, description, baseUnit, isReissuable).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Issue")
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.symbol.valueOf(), symbol);
@@ -506,12 +483,10 @@ contract('ChronoBankPlatform', function(accounts) {
   });
   it('should not be possible to change ownership to the same owner', function() {
     var owner = accounts[0];
-    var watcher = eventsHistory.OwnershipChange();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.changeOwnership(SYMBOL, owner);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher)
+      return eventsHelper.extractEvents(txHash, "OwnershipChange")
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.owner.call(SYMBOL);
@@ -537,12 +512,10 @@ contract('ChronoBankPlatform', function(accounts) {
   it('should be possible to change ownership of asset', function() {
     var owner = accounts[0];
     var newOwner = accounts[1];
-    var watcher = eventsHistory.OwnershipChange();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.changeOwnership(SYMBOL, newOwner);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "OwnershipChange");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), owner);
@@ -710,12 +683,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var owner = accounts[0];
     var nonOwner = accounts[1];
     var amount = 0;
-    var watcher = eventsHistory.Transfer();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.transfer(nonOwner, amount, SYMBOL);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(nonOwner, SYMBOL);
@@ -729,12 +700,10 @@ contract('ChronoBankPlatform', function(accounts) {
   it('should not be possible to transfer to oneself', function() {
     var owner = accounts[0];
     var amount = 100;
-    var watcher = eventsHistory.Transfer();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.transfer(owner, amount, SYMBOL);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -921,15 +890,12 @@ contract('ChronoBankPlatform', function(accounts) {
     var holder2 = accounts[1];
     var amount = 100;
     var amount2 = 33;
-    var watcher;
     return chronoBankPlatform.issueAsset(symbol, value, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.issueAsset(symbol2, value2, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE);
     }).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transfer(holder2, amount, symbol);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -937,11 +903,9 @@ contract('ChronoBankPlatform', function(accounts) {
       assert.equal(events[0].args.symbol.valueOf(), symbol);
       assert.equal(events[0].args.value.valueOf(), amount);
       assert.equal(events[0].args.reference.valueOf(), "");
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transfer(holder2, amount2, symbol2);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -967,13 +931,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var holder = accounts[0];
     var holder2 = accounts[1];
     var reference = "Invoice#AS001";
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transferWithReference(holder2, VALUE, SYMBOL, reference);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -1025,13 +986,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var owner = accounts[0];
     var isReissuable = true;
     var amount = 0;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Issue();
       return chronoBankPlatform.reissueAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Issue");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1068,13 +1026,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = UINT_256_MINUS_1;
     var isReissuable = true;
     var amount = 1;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Issue();
       return chronoBankPlatform.reissueAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Issue");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1090,13 +1045,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = 1;
     var isReissuable = true;
     var amount = UINT_256_MINUS_1;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Issue();
       return chronoBankPlatform.reissueAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Issue");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1259,12 +1211,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var owner = accounts[0];
     var amount = 0;
     var isReissuable = false;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1279,12 +1229,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var owner = accounts[0];
     var amount = 0;
     var isReissuable = true;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1300,12 +1248,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = 0;
     var amount = 1;
     var isReissuable = true;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1320,12 +1266,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var owner = accounts[0];
     var value = 1;
     var amount = 2;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1341,12 +1285,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = UINT_256_MINUS_2;
     var amount = UINT_256_MINUS_1;
     var isReissuable = true;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1362,12 +1304,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = UINT_255_MINUS_1;
     var amount = UINT_255;
     var isReissuable = true;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1383,14 +1323,12 @@ contract('ChronoBankPlatform', function(accounts) {
     var nonOwner = accounts[1];
     var balance = 100;
     var revokeAmount = 10;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.transfer(nonOwner, balance, SYMBOL);
     }).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, revokeAmount, {from: nonOwner});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 1);
       return chronoBankPlatform.balanceOf.call(owner, SYMBOL);
@@ -1409,12 +1347,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = 1;
     var amount = 1;
     var isReissuable = false;
-    var watcher = eventsHistory.Revoke();
     return chronoBankPlatform.issueAsset(SYMBOL, value, NAME, DESCRIPTION, BASE_UNIT, isReissuable).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.revokeAsset(SYMBOL, amount);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Revoke");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.symbol.valueOf(), SYMBOL);
@@ -1556,13 +1492,13 @@ contract('ChronoBankPlatform', function(accounts) {
     return chronoBankPlatform.trust(trustee).then(function() {
       return chronoBankPlatform.trust.call(trustee);
     }).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ALREADY_TRUSTED);
     });
   });
   it('should not be possible to trust to oneself', function() {
     var holder = accounts[0];
     return chronoBankPlatform.trust.call(holder).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_CANNOT_APPLY_TO_ONESELF);
     });
   });
   it('should be possible to trust by existing holder', function() {
@@ -1571,14 +1507,14 @@ contract('ChronoBankPlatform', function(accounts) {
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.trust.call(trustee);
     }).then(function(result) {
-      assert.isTrue(result);
+      assert.equal(result, ErrorsEnum.OK);
     });
   });
   it('should be possible to trust by missing holder', function() {
     var holder = accounts[0];
     var trustee = accounts[1];
     return chronoBankPlatform.trust.call(trustee).then(function(result) {
-      assert.isTrue(result);
+      assert.equal(result, ErrorsEnum.OK);
     });
   });
   it('should be possible to trust to multiple addresses', function() {
@@ -1604,20 +1540,20 @@ contract('ChronoBankPlatform', function(accounts) {
     return chronoBankPlatform.trust(trustee).then(function() {
       return chronoBankPlatform.distrust.call(untrustee);
     }).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED);
     });
   });
   it('should not be possible to distrust by missing holder', function() {
     var holder = accounts[0];
     var untrustee = accounts[1];
     return chronoBankPlatform.distrust.call(untrustee).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED);
     });
   });
   it('should not be possible to distrust oneself', function() {
     var holder = accounts[0];
     return chronoBankPlatform.distrust.call(holder).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED);
     });
   });
   it('should be possible to distrust a trusted address', function() {
@@ -1675,7 +1611,7 @@ contract('ChronoBankPlatform', function(accounts) {
     }).then(function() {
       return chronoBankPlatform.recover.call(holder, recoverTo, {from: trustee});
     }).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_SHOULD_RECOVER_TO_NEW_ADDRESS);
     });
   });
   it('should not be possible to recover by untrusted', function() {
@@ -1686,7 +1622,7 @@ contract('ChronoBankPlatform', function(accounts) {
     return chronoBankPlatform.trust(trustee).then(function() {
       return chronoBankPlatform.recover.call(holder, recoverTo, {from: untrustee});
     }).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED);
     });
   });
   it('should not be possible to recover from missing holder', function() {
@@ -1694,7 +1630,7 @@ contract('ChronoBankPlatform', function(accounts) {
     var untrustee = accounts[2];
     var recoverTo = accounts[3];
     return chronoBankPlatform.recover.call(holder, recoverTo, {from: untrustee}).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED);
     });
   });
   it('should not be possible to recover by oneself', function() {
@@ -1704,7 +1640,7 @@ contract('ChronoBankPlatform', function(accounts) {
     return chronoBankPlatform.trust(trustee).then(function() {
       return chronoBankPlatform.recover.call(holder, recoverTo, {from: holder});
     }).then(function(result) {
-      assert.isFalse(result);
+        assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED);
     });
   });
   it('should not be possible to recover to oneself', function() {
@@ -1713,7 +1649,7 @@ contract('ChronoBankPlatform', function(accounts) {
     return chronoBankPlatform.trust(trustee).then(function() {
       return chronoBankPlatform.recover.call(holder, holder, {from: trustee});
     }).then(function(result) {
-      assert.isFalse(result);
+      assert.equal(result, ErrorsEnum.CHRONOBANK_PLATFORM_SHOULD_RECOVER_TO_NEW_ADDRESS);
     });
   });
   it('should not be possible to recover to the same address', function() {
@@ -1759,15 +1695,12 @@ contract('ChronoBankPlatform', function(accounts) {
     var holder = accounts[0];
     var trustee = accounts[1];
     var recoverTo = accounts[2];
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.trust(trustee);
     }).then(function() {
-      watcher = eventsHistory.Recovery();
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.recover(holder, recoverTo, {from: trustee});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Recovery");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -1800,17 +1733,14 @@ contract('ChronoBankPlatform', function(accounts) {
     var trustee = accounts[1];
     var recoverTo = accounts[2];
     var recoverTo2 = accounts[3];
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.trust(trustee);
     }).then(function() {
       return chronoBankPlatform.recover(holder, recoverTo, {from: trustee});
     }).then(function() {
-      watcher = eventsHistory.Recovery();
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.recover(holder, recoverTo2, {from: trustee});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Recovery");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), recoverTo);
@@ -1955,17 +1885,14 @@ contract('ChronoBankPlatform', function(accounts) {
     var trustee = accounts[1];
     var newOwner = accounts[2];
     var recoverTo = accounts[3];
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.trust(trustee);
     }).then(function() {
       return chronoBankPlatform.recover(holder, recoverTo, {from: trustee});
     }).then(function() {
-      watcher = eventsHistory.OwnershipChange();
-      eventsHelper.setupEvents(eventsHistory);
       return chronoBankPlatform.changeOwnership(SYMBOL, newOwner, {from: holder});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "OwnershipChange");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), recoverTo);
@@ -2099,13 +2026,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var owner = accounts[0];
     var spender = accounts[1];
     var missingSymbol = bytes32(33);
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Approve();
       return chronoBankPlatform.approve(spender, 100, missingSymbol);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Approve");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.allowance.call(owner, spender, missingSymbol);
@@ -2116,13 +2040,10 @@ contract('ChronoBankPlatform', function(accounts) {
   it('should not be possible to set allowance for missing symbol for oneself', function() {
     var owner = accounts[0];
     var missingSymbol = bytes32(33);
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Approve();
       return chronoBankPlatform.approve(owner, 100, missingSymbol);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Approve");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.allowance.call(owner, owner, missingSymbol);
@@ -2132,13 +2053,10 @@ contract('ChronoBankPlatform', function(accounts) {
   });
   it('should not be possible to set allowance for oneself', function() {
     var owner = accounts[0];
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Approve();
       return chronoBankPlatform.approve(owner, 100, SYMBOL);
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Approve");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.allowance.call(owner, owner, SYMBOL);
@@ -2150,13 +2068,10 @@ contract('ChronoBankPlatform', function(accounts) {
     var holder = accounts[1];
     var spender = accounts[2];
     var value = 100;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Approve();
       return chronoBankPlatform.approve(spender, value, SYMBOL, {from: holder});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Approve");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -2363,15 +2278,12 @@ contract('ChronoBankPlatform', function(accounts) {
   it('should not be possible to do allowance transfer from and to the same holder', function() {
     var holder = accounts[0];
     var spender = accounts[1];
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.approve(spender, 50, SYMBOL);
     }).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transferFrom(holder, holder, 50, SYMBOL, {from: spender});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(holder, SYMBOL);
@@ -2383,7 +2295,6 @@ contract('ChronoBankPlatform', function(accounts) {
     var holder = accounts[0];
     var receiver = accounts[1];
     var amount = 50;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.transferFrom(holder, receiver, amount, SYMBOL);
     }).then(function() {
@@ -2400,15 +2311,12 @@ contract('ChronoBankPlatform', function(accounts) {
     var spender = accounts[1];
     var value = 0;
     var resultValue = 0;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.approve(spender, 100, SYMBOL);
     }).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transferFrom(holder, spender, value, SYMBOL, {from: spender});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 0);
       return chronoBankPlatform.balanceOf.call(holder, SYMBOL);
@@ -2635,17 +2543,14 @@ contract('ChronoBankPlatform', function(accounts) {
     var value = 300;
     var expectedHolderBalance = VALUE - existValue - value;
     var expectedReceiverBalance = existValue + value;
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.transfer(receiver, existValue, SYMBOL);
     }).then(function() {
       return chronoBankPlatform.approve(spender, value, SYMBOL);
     }).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transferFrom(holder, receiver, value, SYMBOL, {from: spender});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -2834,15 +2739,12 @@ contract('ChronoBankPlatform', function(accounts) {
     var expectedHolderBalance = VALUE - value;
     var expectedReceiverBalance = value;
     var reference = "just some arbitrary string.";
-    var watcher;
     return chronoBankPlatform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE).then(function() {
       return chronoBankPlatform.approve(spender, value, SYMBOL);
     }).then(function() {
-      eventsHelper.setupEvents(eventsHistory);
-      watcher = eventsHistory.Transfer();
       return chronoBankPlatform.transferFromWithReference(holder, receiver, value, SYMBOL, reference, {from: spender});
     }).then(function(txHash) {
-      return eventsHelper.getEvents(txHash, watcher);
+      return eventsHelper.extractEvents(txHash, "Transfer");
     }).then(function(events) {
       assert.equal(events.length, 1);
       assert.equal(events[0].args.from.valueOf(), holder);
@@ -3078,3 +2980,5 @@ contract('ChronoBankPlatform', function(accounts) {
     });
   });
 });
+
+})

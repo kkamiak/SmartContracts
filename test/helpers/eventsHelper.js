@@ -7,7 +7,7 @@ function EventsHelper() {
       var transactionCheck = function() {
        //web3.eth.getTransactionReceipt(transactionHash.transactionHash, function(err, transaction) {
       //  console.info(transaction);    
-        receipt = transactionHash.receipt;
+        var receipt = transactionHash.receipt;
        // console.log(receipt);
         if (receipt) {
           var count = 0;
@@ -74,6 +74,22 @@ function EventsHelper() {
 
   this.setupEvents = function(contract) {
     allEventsWatcher = contract.allEvents();
+    console.log("all events for contract:" + allEventsWatcher);
+  }
+
+  this.extractEvents = function(txHash, eventName) {
+      if (txHash.logs.length == 0) {
+          return [];
+      }
+
+      const logs = txHash.logs;
+      var filteredLogs = [];
+      for (logEntry of logs) {
+          if (logEntry.event.toLowerCase() == eventName.toLowerCase()) {
+              filteredLogs.push(logEntry);
+          }
+      }
+      return filteredLogs
   }
 };
 

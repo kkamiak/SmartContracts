@@ -8,6 +8,7 @@ var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable
 var KrakenPriceTicker = artifacts.require("./KrakenPriceTicker.sol");
 var StorageManager = artifacts.require("./StorageManager.sol");
 var FakePriceTicker = artifacts.require("./FakePriceTicker.sol");
+var Clock = artifacts.require("./Clock.sol");
 
 module.exports = function(deployer,network) {
   if(network === 'development' || network === 'test') {
@@ -18,6 +19,7 @@ module.exports = function(deployer,network) {
         .then(() => deployer.deploy(FakeCoin3))
         .then(() => deployer.deploy(FakePriceTicker))
         .then(() => deployer.deploy(ManagerMock))
+        .then(() => deployer.deploy(Clock))
         .then(() => deployer.deploy(AssetsManagerMock))
         .then(() => StorageManager.deployed())
         .then(_storageManager => _storageManager.giveAccess(AssetsManagerMock.address, 'AssetsManager'))

@@ -9,7 +9,6 @@ const Exchange = artifacts.require('./Exchange.sol')
 const ERC20Manager = artifacts.require("./ERC20Manager.sol")
 const ExchangeManager = artifacts.require("./ExchangeManager.sol")
 const AssetsManager = artifacts.require("./AssetsManager.sol")
-const AssetsPlatformRegistry = artifacts.require('./AssetsPlatformRegistry.sol')
 const WalletsManager = artifacts.require("./WalletsManager.sol")
 const PendingManager = artifacts.require("./PendingManager.sol")
 const TimeHolder = artifacts.require('./TimeHolder.sol')
@@ -44,7 +43,6 @@ const contractTypes = {
 
 let storage
 let assetsManager
-let assetsPlatformRegistry
 let walletsManager
 let chronoBankPlatform
 let chronoMint
@@ -59,10 +57,10 @@ let pollManager
 let pollDetails
 let userManager
 let exchangeManager
-// let chronoBankAsset
-// let chronoBankAssetProxy
-// let chronoBankAssetWithFee
-// let chronoBankAssetWithFeeProxy
+let chronoBankAsset
+let chronoBankAssetProxy
+let chronoBankAssetWithFee
+let chronoBankAssetWithFeeProxy
 let multiEventsHistory
 let storageManager
 let crowdsaleManager
@@ -100,12 +98,11 @@ var setup = function (callback) {
       PendingManager.deployed(),
       LOCManager.deployed(),
       ChronoBankPlatform.deployed(),
-    //   ChronoBankAsset.deployed(),
-    //   ChronoBankAssetWithFee.deployed(),
-    //   ChronoBankAssetProxy.deployed(),
-    //   ChronoBankAssetWithFeeProxy.deployed(),
+      ChronoBankAsset.deployed(),
+      ChronoBankAssetWithFee.deployed(),
+      ChronoBankAssetProxy.deployed(),
+      ChronoBankAssetWithFeeProxy.deployed(),
       AssetsManager.deployed(),
-      AssetsPlatformRegistry.deployed(),
       WalletsManager.deployed(),
       ERC20Manager.deployed(),
       ExchangeManager.deployed(),
@@ -127,12 +124,11 @@ var setup = function (callback) {
       shareable,
       chronoMint,
       chronoBankPlatform,
-    //   chronoBankAsset,
-    //   chronoBankAssetWithFee,
-    //   chronoBankAssetProxy,
-    //   chronoBankAssetWithFeeProxy,
+      chronoBankAsset,
+      chronoBankAssetWithFee,
+      chronoBankAssetProxy,
+      chronoBankAssetWithFeeProxy,
       assetsManager,
-      assetsPlatformRegistry,
       walletsManager,
       erc20Manager,
       exchangeManager,
@@ -150,7 +146,6 @@ var setup = function (callback) {
     module.exports.storage = storage
     module.exports.accounts = accounts
     module.exports.assetsManager = assetsManager
-    module.exports.assetsPlatformRegistry = assetsPlatformRegistry
     module.exports.walletsManager = walletsManager
     module.exports.chronoBankPlatform = chronoBankPlatform
     module.exports.chronoMint = chronoMint
@@ -162,10 +157,10 @@ var setup = function (callback) {
     module.exports.rewards = rewards
     module.exports.userManager = userManager
     module.exports.exchangeManager = exchangeManager
-    // module.exports.chronoBankAsset = chronoBankAsset
-    // module.exports.chronoBankAssetProxy = chronoBankAssetProxy
-    // module.exports.chronoBankAssetWithFee = chronoBankAssetWithFee
-    // module.exports.chronoBankAssetWithFeeProxy = chronoBankAssetWithFeeProxy
+    module.exports.chronoBankAsset = chronoBankAsset
+    module.exports.chronoBankAssetProxy = chronoBankAssetProxy
+    module.exports.chronoBankAssetWithFee = chronoBankAssetWithFee
+    module.exports.chronoBankAssetWithFeeProxy = chronoBankAssetWithFeeProxy
     module.exports.vote = { manager: pollManager, details: pollDetails, actor: voteActor }
     module.exports.multiEventsHistory = multiEventsHistory
     module.exports.storageManager = storageManager

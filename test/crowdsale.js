@@ -4,7 +4,6 @@ var eventsHelper = require('./helpers/eventsHelper');
 const bytes32 = require('./helpers/bytes32');
 
 const AssetsManager = artifacts.require('./AssetsManager.sol')
-const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol")
 const TimeLimitedCrowdsale = artifacts.require('./TimeLimitedCrowdsale.sol')
 const CrowdsaleManager = artifacts.require('./CrowdsaleManager.sol')
 const TimeLimitedCrowdsaleFactory = artifacts.require('./TimeLimitedCrowdsaleFactory.sol')
@@ -21,20 +20,8 @@ contract('CrowdsaleManager', function(accounts) {
     before('setup', function(done) {
         AssetsManager.deployed()
             .then(_assetsManager => assetsManager = _assetsManager)
-            .then(() => {
-                return assetsManager.requestNewAsset(TOKEN_1, { from: tokenOwner }).then(tx => {
-                    let event = eventsHelper.extractEvents(tx, "NewAssetRequested")[0]
-                    assert.isDefined(event)
-                    return assetsManager.redeemNewAsset(event.args.requestId, "Awesome Token 1",'Token 1', 0, 0, true, false, {from: tokenOwner})
-                })
-            })
-            .then(() => {
-                return assetsManager.requestNewAsset(TOKEN_2, { from: tokenOwner }).then(tx => {
-                    let event = eventsHelper.extractEvents(tx, "NewAssetRequested")[0]
-                    assert.isDefined(event)
-                    return assetsManager.redeemNewAsset(event.args.requestId, "Awesome Token 2",'Token 2', 100, 0, false, false, {from: tokenOwner})
-                })
-            })
+            .then(() => assetsManager.createAsset(TOKEN_1, "Awesome Token 1",'Token 1', 0, 0, true, false, {from: tokenOwner}))
+            .then(() => assetsManager.createAsset(TOKEN_2, "Awesome Token 2",'Token 2', 100, 0, false, false, {from: tokenOwner}))
             .then(() => TimeLimitedCrowdsaleFactory.deployed())
             .then(crowdsaleFactory => crowdsaleFactory.setPriceTicker(FakePriceTicker.address))
             .then(() => Setup.setup(done));
@@ -85,35 +72,35 @@ contract('CrowdsaleManager', function(accounts) {
         var campaign;
 
         it("Should not be possible to start crowdsale campaign by non-asset-owner", function() {
-          return Setup.assetsPlatformRegistry.createCrowdsaleCampaign.call(TOKEN_1, {from: nonOwner}).then(function(r) {
+          return Setup.assetsManager.createCrowdsaleCampaign.call(TOKEN_1, {from: nonOwner}).then(function(r) {
               assert.equal(r, ErrorsEnum.UNAUTHORIZED);
           });
         });
 
         it("Should be possible to start crowdsale campaign by asset-owner", function() {
-          return Setup.assetsPlatformRegistry.createCrowdsaleCampaign.call(TOKEN_1, {from: tokenOwner}).then(function(r) {
+          return Setup.assetsManager.createCrowdsaleCampaign.call(TOKEN_1, {from: tokenOwner}).then(function(r) {
               assert.equal(r, ErrorsEnum.OK);
-              return Setup.assetsPlatformRegistry.createCrowdsaleCampaign(TOKEN_1, {from: tokenOwner})
+              return Setup.assetsManager.createCrowdsaleCampaign(TOKEN_1, {from: tokenOwner})
                     .then((tx) => eventsHelper.extractEvents(tx, "CrowdsaleCampaignCreated"))
                     .then(event => campaign = event[0].args.campaign.valueOf())
-                    .then(() => Setup.assetsPlatformRegistry.isAssetOwner.call(TOKEN_1, campaign))
+                    .then(() => Setup.assetsManager.isAssetOwner.call(TOKEN_1, campaign))
                     .then((r) => assert.isTrue(r));
           });
         });
 
         it("Should not be possible to delete crowdsale campaign by non-asset-owner", function() {
-            return Setup.assetsPlatformRegistry.deleteCrowdsaleCampaign.call(campaign, {from: nonOwner})
+            return Setup.assetsManager.deleteCrowdsaleCampaign.call(campaign, {from: nonOwner})
                 .then((r) => assert.equal(r, ErrorsEnum.UNAUTHORIZED));
         });
 
         it("Should be possible to delete newly created and not started crowdsale campaign by asset-owner", function() {
-            return Setup.assetsPlatformRegistry.deleteCrowdsaleCampaign.call(campaign, {from: tokenOwner})
+            return Setup.assetsManager.deleteCrowdsaleCampaign.call(campaign, {from: tokenOwner})
                 .then((r) => assert.equal(r, ErrorsEnum.OK))
-                .then(() => Setup.assetsPlatformRegistry.deleteCrowdsaleCampaign(campaign, {from: tokenOwner}))
+                .then(() => Setup.assetsManager.deleteCrowdsaleCampaign(campaign, {from: tokenOwner}))
                 .then((tx) => eventsHelper.extractEvents(tx, "CrowdsaleCampaignRemoved"))
                 .then(event => deletedCampaign = event[0].args.campaign.valueOf())
                 .then(() => assert.equal(deletedCampaign, campaign))
-                .then(() => Setup.assetsPlatformRegistry.isAssetOwner.call(TOKEN_1, deletedCampaign))
+                .then(() => Setup.assetsManager.isAssetOwner.call(TOKEN_1, deletedCampaign))
                 .then((r) => assert.isFalse(r));
         });
     })
@@ -122,12 +109,12 @@ contract('CrowdsaleManager', function(accounts) {
         var campaign;
 
         it("Should be possible to start Ether crowdsale campaign by asset-owner", function() {
-          return Setup.assetsPlatformRegistry.createCrowdsaleCampaign.call(TOKEN_1, {from: tokenOwner})
+          return Setup.assetsManager.createCrowdsaleCampaign.call(TOKEN_1, {from: tokenOwner})
                 .then((r) => assert.equal(r, ErrorsEnum.OK))
-                .then(() => Setup.assetsPlatformRegistry.createCrowdsaleCampaign(TOKEN_1, {from: tokenOwner}))
+                .then(() => Setup.assetsManager.createCrowdsaleCampaign(TOKEN_1, {from: tokenOwner}))
                 .then((tx) => eventsHelper.extractEvents(tx, "CrowdsaleCampaignCreated"))
                 .then(event => campaignAddress = event[0].args.campaign.valueOf())
-                .then(() => Setup.assetsPlatformRegistry.isAssetOwner.call(TOKEN_1, campaignAddress))
+                .then(() => Setup.assetsManager.isAssetOwner.call(TOKEN_1, campaignAddress))
                 .then((r) => assert.isTrue(r))
                 .then(() => TimeLimitedCrowdsale.at(campaignAddress))
                 .then(_campaign => campaign = _campaign)
@@ -201,18 +188,14 @@ contract('CrowdsaleManager', function(accounts) {
         it("Should be possible to send Ether to crowdsale", function() {
 
           return sendEtherPromise(accounts[0], campaign.address, 10)
-          .then(() => Setup.assetsManager.getAssetBySymbol.call(TOKEN_1))
-          .then(_assetAddress => ChronoBankAssetProxy.at(_assetAddress))
-          .then(_asset => _asset.balanceOf(accounts[0]))
-          .then((balance) => assert.equal(10, balance))
+                .then(() => Setup.chronoBankPlatform.balanceOf.call(accounts[0], TOKEN_1))
+                .then((balance) => assert.equal(10, balance));
         });
 
         it("Should be possible to send Ether to crowdsale twice", function() {
           return sendEtherPromise(accounts[0], campaign.address, 10)
-          .then(() => Setup.assetsManager.getAssetBySymbol.call(TOKEN_1))
-          .then(_assetAddress => ChronoBankAssetProxy.at(_assetAddress))
-          .then(_asset => _asset.balanceOf(accounts[0]))
-          .then((balance) => assert.equal(20, balance))
+                .then(() => Setup.chronoBankPlatform.balanceOf.call(accounts[0], TOKEN_1))
+                .then((balance) => assert.equal(20, balance));
         });
 
         it("Should be not possible to withdraw Ether if running", function() {

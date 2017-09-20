@@ -2,7 +2,6 @@ pragma solidity ^0.4.11;
 
 import "../core/common/BaseManager.sol";
 import "../assets/AssetsManagerInterface.sol";
-import "../assets/PlatformRegistryInterface.sol";
 import "./base/BaseCrowdsale.sol";
 import "./CrowdsaleFactory.sol";
 import "./CrowdsaleManagerEmitter.sol";
@@ -24,8 +23,8 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     StorageInterface.AddressesSet compains;
     StorageInterface.Bytes32AddressMapping factories;
 
-    modifier onlyAssetsPlatformRegistry() {
-        if (msg.sender ==  AssetsManagerInterface(lookupManager("AssetsManager")).getPlatformRegistry()) {
+    modifier onlyAssetManager() {
+        if (msg.sender == lookupManager("AssetsManager")) {
             _;
         }
     }
@@ -50,8 +49,8 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     /**
     *  Creates Crowdsale with a type produced by CrowdsaleFactory with given _factoryName.
     */
-    function createCrowdsale(address _creator, bytes32 _symbol, bytes32 _factoryName) onlyAssetsPlatformRegistry returns (address, uint) {
-        if (!lookupAssetsPlatformRegistry().isAssetOwner(_symbol, _creator)) {
+    function createCrowdsale(address _creator, bytes32 _symbol, bytes32 _factoryName) onlyAssetManager returns (address, uint) {
+        if (!lookupAssetsManager().isAssetOwner(_symbol, _creator)) {
             return (0x0, _emitError(ERROR_CROWDFUNDING_NOT_ASSET_OWNER));
         }
 
@@ -70,8 +69,8 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     /**
     *  Deletes Crowdsale if It is allowed.
     */
-    function deleteCrowdsale(address crowdsale) onlyAssetsPlatformRegistry returns (uint) {
-        if (!lookupAssetsPlatformRegistry().isAssetOwner(BaseCrowdsale(crowdsale).getSymbol(), crowdsale)) {
+    function deleteCrowdsale(address crowdsale) onlyAssetManager returns (uint) {
+        if (!lookupAssetsManager().isAssetOwner(BaseCrowdsale(crowdsale).getSymbol(), crowdsale)) {
             return _emitError(ERROR_CROWDFUNDING_NOT_ASSET_OWNER);
         }
 
@@ -101,9 +100,8 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     /**
     *  Returns AssetsManager.
     */
-    function lookupAssetsPlatformRegistry() internal constant returns (PlatformRegistryInterface) {
-        AssetsManagerInterface assetsManager = AssetsManagerInterface(lookupManager("AssetsManager"));
-        return PlatformRegistryInterface(assetsManager.getPlatformRegistry());
+    function lookupAssetsManager() internal constant returns (AssetsManagerInterface) {
+        return AssetsManagerInterface(lookupManager("AssetsManager"));
     }
 
     function _emitCrowdsaleCreated(address creator, bytes32 symbol, address crowdsale) internal {

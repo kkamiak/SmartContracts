@@ -23,7 +23,9 @@ contract('AssetDonator', function(accounts) {
     });
 
     it("Platform is able to add TIME and LHT assets", function() {
-          return Setup.assetsPlatformRegistry.addPlatformOwner(AssetDonator.address)
+        return Setup.assetsManager.addAsset(Setup.chronoBankAssetProxy.address, TIME_SYMBOL, owner)
+          .then(() => Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address, LHT_SYMBOL, Setup.chronoMint.address))
+          .then(() => Setup.assetsManager.addAssetOwner(TIME_SYMBOL, AssetDonator.address))
     });
 
     it("Platform is able to transfer TIMEs for test purposes", function() {

@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 import "../common/Object.sol";
 import "./ChronoBankPlatformEmitter.sol";
 
-contract ProxyEventsEmitter {
+contract Proxy {
     function emitTransfer(address _from, address _to, uint _value);
     function emitApprove(address _from, address _spender, uint _value);
 }
@@ -301,7 +301,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
      *
      * @return success.
      */
-    function setProxy(address _address, bytes32 _symbol) returns(uint errorCode) {
+    function setProxy(address _address, bytes32 _symbol) onlyContractOwner() returns(uint errorCode) {
         errorCode = checkOnlyContractOwner();
         if (errorCode != OK) {
             return errorCode;
@@ -407,7 +407,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
             // Internal Out Of Gas/Throw: revert this transaction too;
             // Call Stack Depth Limit reached: n/a after HF 4;
             // Recursive Call: safe, all changes already made.
-            ProxyEventsEmitter(proxies[_symbol]).emitTransfer(_address(_fromId), _address(_toId), _value);
+            Proxy(proxies[_symbol]).emitTransfer(_address(_fromId), _address(_toId), _value);
         }
     }
 
@@ -696,7 +696,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
             // Internal Out Of Gas/Throw: revert this transaction too;
             // Call Stack Depth Limit reached: n/a after HF 4;
             // Recursive Call: safe, all changes already made.
-            ProxyEventsEmitter(proxies[_symbol]).emitApprove(_address(_senderId), _address(_spenderId), _value);
+            Proxy(proxies[_symbol]).emitApprove(_address(_senderId), _address(_spenderId), _value);
         }
         return OK;
     }

@@ -100,8 +100,6 @@ library StorageInterface {
         Bool innerMapping;
     }
 
-    bytes32 constant SET_IDENTIFIER = "set";
-
     struct Set {
         UInt count;
         Mapping indexes;
@@ -132,18 +130,6 @@ library StorageInterface {
 
     struct OrderedAddressesSet {
         OrderedSet innerSet;
-    }
-
-    struct Bytes32SetMapping {
-        Set innerMapping;
-    }
-
-    struct AddressesSetMapping {
-        Bytes32SetMapping innerMapping;
-    }
-
-    struct UIntSetMapping {
-        Bytes32SetMapping innerMapping;
     }
 
     struct Bytes32OrderedSetMapping {
@@ -298,18 +284,6 @@ library StorageInterface {
         init(self.innerSet, _id);
     }
 
-    function init(Bytes32SetMapping storage self, bytes32 _id) internal {
-        init(self.innerMapping, _id);
-    }
-
-    function init(AddressesSetMapping storage self, bytes32 _id) internal {
-        init(self.innerMapping, _id);
-    }
-
-    function init(UIntSetMapping storage self, bytes32 _id) internal {
-        init(self.innerMapping, _id);
-    }
-
     function init(Bytes32OrderedSetMapping storage self, bytes32 _id) internal {
         init(self.innerMapping, _id);
     }
@@ -452,19 +426,6 @@ library StorageInterface {
         set(self, item.innerMapping, bytes32(_key), bytes32(_key2), bytes32(_key3), _value);
     }
 
-    function set(Config storage self, Bytes32SetMapping storage item, bytes32 _key, Set storage _value) internal {
-        // TODO copy _value to this storage with updated keys
-        throw;
-    }
-
-    function set(Config storage self, AddressesSetMapping storage item, bytes32 _key, AddressesSet storage _value) internal {
-        set(self, item.innerMapping, _key, _value.innerSet);
-    }
-
-    function set(Config storage self, UIntSetMapping storage item, bytes32 _key, CounterSet storage _value) internal {
-        set(self, item.innerMapping, _key, _value.innerSet);
-    }
-
     function set(Config storage self, Bytes32OrderedSetMapping storage item, bytes32 _key, OrderedSet storage _value) internal {
         // TODO copy _value to this storage with updated keys
         throw;
@@ -482,17 +443,13 @@ library StorageInterface {
     /** `add` operation */
 
     function add(Config storage self, Set storage item, bytes32 _value) internal {
-        add(self, item, SET_IDENTIFIER, _value);
-    }
-
-    function add(Config storage self, Set storage item, bytes32 _salt, bytes32 _value) private {
-        if (includes(self, item, _salt, _value)) {
+        if (includes(self, item, _value)) {
             return;
         }
-        uint newCount = count(self, item, _salt) + 1;
-        set(self, item.values, _salt, bytes32(newCount), _value);
-        set(self, item.indexes, _salt, _value, bytes32(newCount));
-        set(self, item.count, _salt, newCount);
+        uint newCount = count(self, item) + 1;
+        set(self, item.values, bytes32(newCount), _value);
+        set(self, item.indexes, _value, bytes32(newCount));
+        set(self, item.count, newCount);
     }
 
     function add(Config storage self, AddressesSet storage item, address _value) internal {
@@ -526,18 +483,6 @@ library StorageInterface {
         set(self, item.count, _salt, get(self, item.count, _salt) + 1);
     }
 
-    function add(Config storage self, Bytes32SetMapping storage item, bytes32 _key, bytes32 _value) internal {
-        add(self, item.innerMapping, _key, _value);
-    }
-
-    function add(Config storage self, AddressesSetMapping storage item, bytes32 _key, address _value) internal {
-        add(self, item.innerMapping, _key, bytes32(_value));
-    }
-
-    function add(Config storage self, UIntSetMapping storage item, bytes32 _key, uint _value) internal {
-        add(self, item.innerMapping, _key, bytes32(_value));
-    }
-
     function add(Config storage self, Bytes32OrderedSetMapping storage item, bytes32 _key, bytes32 _value) internal {
         add(self, item.innerMapping, _key, _value);
     }
@@ -559,17 +504,13 @@ library StorageInterface {
     }
 
     function set(Config storage self, Set storage item, bytes32 _oldValue, bytes32 _newValue) internal {
-        set(self, item, SET_IDENTIFIER, _oldValue, _newValue);
-    }
-
-    function set(Config storage self, Set storage item, bytes32 _salt, bytes32 _oldValue, bytes32 _newValue) private {
-        if (!includes(self, item, _salt, _oldValue)) {
+        if (!includes(self, item, _oldValue)) {
             return;
         }
-        uint index = uint(get(self, item.indexes, _salt, _oldValue));
-        set(self, item.values, _salt, bytes32(index), _newValue);
-        set(self, item.indexes, _salt, _newValue, bytes32(index));
-        set(self, item.indexes, _salt, _oldValue, bytes32(0));
+        uint index = uint(get(self, item.indexes, _oldValue));
+        set(self, item.values, bytes32(index), _newValue);
+        set(self, item.indexes, _newValue, bytes32(index));
+        set(self, item.indexes, _oldValue, bytes32(0));
     }
 
     function set(Config storage self, AddressesSet storage item, address _oldValue, address _newValue) internal {
@@ -579,23 +520,19 @@ library StorageInterface {
     /** `remove` operation */
 
     function remove(Config storage self, Set storage item, bytes32 _value) internal {
-        remove(self, item, SET_IDENTIFIER, _value);
-    }
-
-    function remove(Config storage self, Set storage item, bytes32 _salt, bytes32 _value) private {
-        if (!includes(self, item, _salt, _value)) {
+        if (!includes(self, item, _value)) {
             return;
         }
-        uint lastIndex = count(self, item, _salt);
-        bytes32 lastValue = get(self, item.values, _salt, bytes32(lastIndex));
-        uint index = uint(get(self, item.indexes, _salt, _value));
+        uint lastIndex = count(self, item);
+        bytes32 lastValue = get(self, item.values, bytes32(lastIndex));
+        uint index = uint(get(self, item.indexes, _value));
         if (index < lastIndex) {
-            set(self, item.indexes, _salt, lastValue, bytes32(index));
-            set(self, item.values, _salt, bytes32(index), lastValue);
+            set(self, item.indexes, lastValue, bytes32(index));
+            set(self, item.values, bytes32(index), lastValue);
         }
-        set(self, item.indexes, _salt, _value, bytes32(0));
-        set(self, item.values, _salt, bytes32(lastIndex), bytes32(0));
-        set(self, item.count, _salt, lastIndex - 1);
+        set(self, item.indexes, _value, bytes32(0));
+        set(self, item.values, bytes32(lastIndex), bytes32(0));
+        set(self, item.count, lastIndex - 1);
     }
 
     function remove(Config storage self, AddressesSet storage item, address _value) internal {
@@ -636,18 +573,6 @@ library StorageInterface {
 
     function remove(Config storage self, OrderedAddressesSet storage item, address _value) internal {
         remove(self, item.innerSet, bytes32(_value));
-    }
-
-    function remove(Config storage self, Bytes32SetMapping storage item, bytes32 _key, bytes32 _value) internal {
-        remove(self, item.innerMapping, _key, _value);
-    }
-
-    function remove(Config storage self, AddressesSetMapping storage item, bytes32 _key, address _value) internal {
-        remove(self, item.innerMapping, _key, bytes32(_value));
-    }
-
-    function remove(Config storage self, UIntSetMapping storage item, bytes32 _key, uint _value) internal {
-        remove(self, item.innerMapping, _key, bytes32(_value));
     }
 
     function remove(Config storage self, Bytes32OrderedSetMapping storage item, bytes32 _key, bytes32 _value) internal {
@@ -795,11 +720,7 @@ library StorageInterface {
     /** `includes` operation */
 
     function includes(Config storage self, Set storage item, bytes32 _value) internal constant returns(bool) {
-        return includes(self, item, SET_IDENTIFIER, _value);
-    }
-
-    function includes(Config storage self, Set storage item, bytes32 _salt, bytes32 _value) internal constant returns(bool) {
-        return get(self, item.indexes, _salt, _value) != 0;
+        return get(self, item.indexes, _value) != 0;
     }
 
     function includes(Config storage self, AddressesSet storage item, address _value) internal constant returns(bool) {
@@ -826,18 +747,6 @@ library StorageInterface {
         return includes(self, item.innerSet, bytes32(_value));
     }
 
-    function includes(Config storage self, Bytes32SetMapping storage item, bytes32 _key, bytes32 _value) internal constant returns(bool) {
-        return includes(self, item.innerMapping, _key, _value);
-    }
-
-    function includes(Config storage self, AddressesSetMapping storage item, bytes32 _key, address _value) internal constant returns(bool) {
-        return includes(self, item.innerMapping, _key, bytes32(_value));
-    }
-
-    function includes(Config storage self, UIntSetMapping storage item, bytes32 _key, uint _value) internal constant returns(bool) {
-        return includes(self, item.innerMapping, _key, bytes32(_value));
-    }
-
     function includes(Config storage self, Bytes32OrderedSetMapping storage item, bytes32 _key, bytes32 _value) internal constant returns(bool) {
         return includes(self, item.innerMapping, _key, _value);
     }
@@ -851,11 +760,7 @@ library StorageInterface {
     }
 
     function getIndex(Config storage self, Set storage item, bytes32 _value) internal constant returns(uint) {
-        return getIndex(self, item, SET_IDENTIFIER, _value);
-    }
-
-    function getIndex(Config storage self, Set storage item, bytes32 _salt, bytes32 _value) private constant returns(uint) {
-        return uint(get(self, item.indexes, _salt, _value));
+        return uint(get(self, item.indexes, _value));
     }
 
     function getIndex(Config storage self, AddressesSet storage item, address _value) internal constant returns(uint) {
@@ -866,26 +771,10 @@ library StorageInterface {
         return getIndex(self, item.innerSet, bytes32(_value));
     }
 
-    function getIndex(Config storage self, Bytes32SetMapping storage item, bytes32 _key, bytes32 _value) internal constant returns(uint) {
-        return getIndex(self, item.innerMapping, _key, _value);
-    }
-
-    function getIndex(Config storage self, AddressesSetMapping storage item, bytes32 _key, address _value) internal constant returns(uint) {
-        return getIndex(self, item.innerMapping, _key, bytes32(_value));
-    }
-
-    function getIndex(Config storage self, UIntSetMapping storage item, bytes32 _key, uint _value) internal constant returns(uint) {
-        return getIndex(self, item.innerMapping, _key, bytes32(_value));
-    }
-
     /** `count` operation */
 
     function count(Config storage self, Set storage item) internal constant returns(uint) {
-        return count(self, item, SET_IDENTIFIER);
-    }
-
-    function count(Config storage self, Set storage item, bytes32 _salt) internal constant returns(uint) {
-        return get(self, item.count, _salt);
+        return get(self, item.count);
     }
 
     function count(Config storage self, AddressesSet storage item) internal constant returns(uint) {
@@ -912,18 +801,6 @@ library StorageInterface {
         return count(self, item.innerSet);
     }
 
-    function count(Config storage self, Bytes32SetMapping storage item, bytes32 _key) internal constant returns(uint) {
-        return count(self, item.innerMapping, _key);
-    }
-
-    function count(Config storage self, AddressesSetMapping storage item, bytes32 _key) internal constant returns(uint) {
-        return count(self, item.innerMapping, _key);
-    }
-
-    function count(Config storage self, UIntSetMapping storage item, bytes32 _key) internal constant returns(uint) {
-        return count(self, item.innerMapping, _key);
-    }
-
     function count(Config storage self, Bytes32OrderedSetMapping storage item, bytes32 _key) internal constant returns(uint) {
         return count(self, item.innerMapping, _key);
     }
@@ -936,16 +813,13 @@ library StorageInterface {
         return count(self, item.innerMapping, _key);
     }
 
-    function get(Config storage self, Set storage item) internal constant returns(bytes32[] result) {
-        result = get(self, item, SET_IDENTIFIER);
-    }
-
-    function get(Config storage self, Set storage item, bytes32 _salt) private constant returns(bytes32[] result) {
-        uint valuesCount = count(self, item, _salt);
-        result = new bytes32[](valuesCount);
+    function get(Config storage self, Set storage item) internal constant returns(bytes32[]) {
+        uint valuesCount = count(self, item);
+        bytes32[] memory result = new bytes32[](valuesCount);
         for (uint i = 0; i < valuesCount; i++) {
-            result[i] = get(self, item, _salt, i);
+            result[i] = get(self, item, i);
         }
+        return result;
     }
 
     function get(Config storage self, AddressesSet storage item) internal constant returns(address[]) {
@@ -956,24 +830,8 @@ library StorageInterface {
         return toUInt(get(self, item.innerSet));
     }
 
-    function get(Config storage self, Bytes32SetMapping storage item, bytes32 _key) internal constant returns(bytes32[]) {
-        return get(self, item.innerMapping, _key);
-    }
-
-    function get(Config storage self, AddressesSetMapping storage item, bytes32 _key) internal constant returns(address[]) {
-        return toAddresses(get(self, item.innerMapping, _key));
-    }
-
-    function get(Config storage self, UIntSetMapping storage item, bytes32 _key) internal constant returns(uint[]) {
-        return toUInt(get(self, item.innerMapping, _key));
-    }
-
     function get(Config storage self, Set storage item, uint _index) internal constant returns(bytes32) {
-        return get(self, item, SET_IDENTIFIER, _index);
-    }
-
-    function get(Config storage self, Set storage item, bytes32 _salt, uint _index) private constant returns(bytes32) {
-        return get(self, item.values, _salt, bytes32(_index+1));
+        return get(self, item.values, bytes32(_index+1));
     }
 
     function get(Config storage self, AddressesSet storage item, uint _index) internal constant returns(address) {
@@ -982,18 +840,6 @@ library StorageInterface {
 
     function get(Config storage self, CounterSet storage item, uint _index) internal constant returns(uint) {
         return uint(get(self, item.innerSet, _index));
-    }
-
-    function get(Config storage self, Bytes32SetMapping storage item, bytes32 _key, uint _index) internal constant returns(bytes32) {
-        return get(self, item.innerMapping, _key, _index);
-    }
-
-    function get(Config storage self, AddressesSetMapping storage item, bytes32 _key, uint _index) internal constant returns(address) {
-        return address(get(self, item.innerMapping, _key, _index));
-    }
-
-    function get(Config storage self, UIntSetMapping storage item, bytes32 _key, uint _index) internal constant returns(uint) {
-        return uint(get(self, item.innerMapping, _key, _index));
     }
 
     function getNextValue(Config storage self, OrderedSet storage item, bytes32 _value) internal constant returns(bytes32) {

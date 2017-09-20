@@ -1,6 +1,5 @@
 const Wallet = artifacts.require('./Wallet.sol')
 const FakeCoin = artifacts.require("./FakeCoin.sol")
-const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol")
 const bytes32 = require('./helpers/bytes32')
 const Setup = require('../setup/setup')
 const eventsHelper = require('./helpers/eventsHelper')
@@ -32,14 +31,6 @@ contract('Wallets Manager', function(accounts) {
   const BALANCE_ETH = 1000;
   const fakeArgs = [0,0,0,0,0,0,0,0];
 
-  const TOKEN_SYMBOL = 'TOKEN'
-  const TOKEN_DESCRIPTION = ''
-  const TOKEN_URL = ''
-  const TOKEN_DECIMALS = 2
-  const TOKEN_IPFS_HASH = bytes32('0x0')
-  const TOKEN_SWARM_HASH = bytes32('0x0')
-
-
   before('setup', function(done) {
 
     Setup.setup(done);
@@ -53,7 +44,7 @@ contract('Wallets Manager', function(accounts) {
         coin = instance;
         return Wallet.new([owner1], 2, Setup.contractsManager.address, "Wallet1").then(function (instance) {
           wallet = instance;
-          return Setup.erc20Manager.addToken(coin.address, TOKEN_SYMBOL, TOKEN_SYMBOL, TOKEN_URL, TOKEN_DECIMALS, TOKEN_IPFS_HASH, TOKEN_SWARM_HASH, {
+          return Setup.erc20Manager.addToken(coin.address, 'TOKEN', 'TOKEN', '', 2, bytes32('0x0'), bytes32('0x0'), {
             from: owner,
             gas: 3000000
           }).then(function (tx) {
@@ -145,13 +136,10 @@ contract('Wallets Manager', function(accounts) {
     });
 
     it("doesn't allow add non Multisig Wallet contract", function() {
-        return Setup.erc20Manager.getTokenAddressBySymbol(SYMBOL).then(_address => ChronoBankAssetProxy.at(_address))
-        .then(_proxy => _proxy.getLatestVersion.call())
-        .then(_assetAddress => {
-            return Setup.walletsManager.addWallet.call(_assetAddress).then(_code => {
-                assert.equal(_code, ErrorsEnum.ERROR_WALLET_UNKNOWN)
-            })
-        })
+      return Setup.walletsManager.addWallet.call(Setup.chronoBankAsset.address).then(function(r) {
+        console.log(r)
+        assert.equal(r, ErrorsEnum.ERROR_WALLET_UNKNOWN)
+      })
     })
 
     it('should be able to multisig send ETH', function() {

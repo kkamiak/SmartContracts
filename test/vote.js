@@ -6,7 +6,6 @@ const eventsHelper = require('./helpers/eventsHelper')
 const Setup = require('../setup/setup')
 const MultiEventsHistory = artifacts.require('./MultiEventsHistory.sol')
 const PendingManager = artifacts.require("./PendingManager.sol")
-const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol")
 const ErrorsEnum = require("../common/errors");
 
 var reverter = new Reverter(web3)
@@ -38,11 +37,6 @@ contract('Vote', function(accounts) {
     }
 
     return Q.all(chain);
-  }
-
-  function proxyForSymbol(symbol) {
-      return Setup.erc20Manager.getTokenAddressBySymbol.call(symbol)
-      .then(_tokenAddress => ChronoBankAssetProxy.at(_tokenAddress))
   }
 
   // let endPolls = (count) => {
@@ -77,29 +71,39 @@ contract('Vote', function(accounts) {
 
   context("owner shares deposit", function(){
 
+    it("allow add TIME Asset", function() {
+      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetProxy.address, SYMBOL, owner).then(function(r) {
+        return Setup.assetsManager.addAsset(Setup.chronoBankAssetProxy.address, SYMBOL, owner, {
+          from: accounts[0],
+          gas: 3000000
+        }).then(function(tx) {
+          return Setup.assetsManager.getAssets.call().then(function(r) {
+            assert.equal(r.length,1);
+          });
+        });
+      });
+    });
+
     it("AssetsManager should be able to send 100 TIME to owner", function() {
-      return Setup.assetsManager.sendAsset.call(SYMBOL, owner,100000000).then(function(r) {
-        return Setup.assetsManager.sendAsset(SYMBOL,owner,100000000,{from: accounts[0], gas: 3000000}).then(function() {
+      return Setup.assetsManager.sendAsset.call(bytes32(SYMBOL),owner,100000000).then(function(r) {
+        return Setup.assetsManager.sendAsset(bytes32(SYMBOL),owner,100000000,{from: accounts[0], gas: 3000000}).then(function() {
           assert.isOk(r);
         });
       });
     });
 
     it("check Owner has 100 TIME", function() {
-      return proxyForSymbol(SYMBOL).then(_proxy => _proxy.balanceOf.call(owner))
-      .then(_balance => {
-        assert.equal(_balance,100000000);
+      return Setup.chronoBankAssetProxy.balanceOf.call(owner).then(function(r) {
+        assert.equal(r,100000000);
       });
     });
 
     it("owner should be able to approve 50 TIME to Vote", function() {
         return Setup.timeHolder.wallet.call().then(_wallet => {
-            return proxyForSymbol(SYMBOL).then(_proxy => {
-                return _proxy.approve.call(_wallet, 50, {from: owner}).then(_isSuccess => {
-                    return _proxy.approve(_wallet, 50, {from: owner}).then(() => {
-                        assert.isOk(_isSuccess);
-                    })
-                })
+            return Setup.chronoBankAssetProxy.approve.call(_wallet, 50, {from: accounts[0]}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_wallet, 50, {from: accounts[0]}).then(() => {
+                    assert.isOk(r);
+                });
             });
         })
     });
@@ -284,31 +288,25 @@ contract('Vote', function(accounts) {
   context("owner1 shares deposit and voting", function() {
 
     it("ChronoMint should be able to send 50 TIME to owner1", function() {
-      return Setup.assetsManager.sendAsset.call(SYMBOL,owner1,50).then(function(r) {
-        return Setup.assetsManager.sendAsset(SYMBOL,owner1,50,{from: accounts[0], gas: 3000000}).then(function() {
+      return Setup.assetsManager.sendAsset.call(bytes32(SYMBOL),owner1,50).then(function(r) {
+        return Setup.assetsManager.sendAsset(bytes32(SYMBOL),owner1,50,{from: accounts[0], gas: 3000000}).then(function() {
           assert.isOk(r)
         })
       })
     })
 
     it("check Owner1 has 50 TIME", function() {
-      return proxyForSymbol(SYMBOL)
-      .then(_proxy => _proxy.balanceOf.call(owner1))
-      .then(_balance => {
-        assert.equal(_balance,50)
+      return Setup.chronoBankAssetProxy.balanceOf.call(owner1).then(function(r) {
+        assert.equal(r,50)
       })
     })
 
     it("owner1 should be able to approve 50 TIME to TimeHolder", function() {
         return Setup.timeHolder.wallet.call().then(_wallet => {
-            return proxyForSymbol(SYMBOL)
-            .then(_proxy => {
-                return _proxy.approve.call(_wallet, 50, {from: owner1}).then((r) => {
-                    return _proxy.approve(_wallet, 50, {from: owner1}).then(() => {
-                        assert.isOk(r)
-                    })
+            return Setup.chronoBankAssetProxy.approve.call(_wallet, 50, {from: owner1}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_wallet, 50, {from: owner1}).then(() => {
+                    assert.isOk(r)
                 })
-
             })
         })
     })
@@ -488,14 +486,10 @@ contract('Vote', function(accounts) {
 
     it("owner should be able to approve 9999975 TIME to Vote", function() {
         return Setup.timeHolder.wallet.call().then(_wallet => {
-            return proxyForSymbol(SYMBOL)
-            .then(_proxy => {
-                return _proxy.approve.call(_wallet, 99999975, {from: accounts[0]}).then((r) => {
-                    return _proxy.approve(_wallet, 99999975, {from: accounts[0]}).then(() => {
-                        assert.isOk(r)
-                    })
+            return Setup.chronoBankAssetProxy.approve.call(_wallet, 99999975, {from: accounts[0]}).then((r) => {
+                return Setup.chronoBankAssetProxy.approve(_wallet, 99999975, {from: accounts[0]}).then(() => {
+                    assert.isOk(r)
                 })
-
             })
         })
     })

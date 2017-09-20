@@ -5,25 +5,25 @@ import "../core/platform/ChronoBankAssetWithFee.sol";
 
 contract ProxyFactory {
 
-    function createAsset() returns(address) {
+    function createAsset() returns (address) {
         address asset;
         asset = new ChronoBankAsset();
         return asset;
     }
 
-    function createAssetWithFee(address owner) returns(address) {
-        ChronoBankAssetWithFee asset;
+    function createAssetWithFee() returns (address) {
+        address asset;
         asset = new ChronoBankAssetWithFee();
-        asset.changeContractOwnership(owner);
         return asset;
     }
 
-    function createProxy() returns(address) {
+    function createProxy() returns (address) {
         address proxy = new Proxy();
         return proxy;
     }
 
-    function() {
+    function()
+    {
         throw;
     }
 }

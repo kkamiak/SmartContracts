@@ -6,7 +6,7 @@ function EventsHelper() {
     return new Promise(function(resolve, reject) {
       var transactionCheck = function() {
        //web3.eth.getTransactionReceipt(transactionHash.transactionHash, function(err, transaction) {
-      //  console.info(transaction);    
+      //  console.info(transaction);
         var receipt = transactionHash.receipt;
        // console.log(receipt);
         if (receipt) {
@@ -19,7 +19,7 @@ function EventsHelper() {
             count = receipt.logs.length;
           }
           return resolve(count);
-        } 
+        }
 //else {
 //          setTimeout(transactionCheck, 100);
 //        }
@@ -74,7 +74,7 @@ function EventsHelper() {
 
   this.setupEvents = function(contract) {
     allEventsWatcher = contract.allEvents();
-    console.log("all events for contract:" + allEventsWatcher);
+    console.log("all events for contract:" + JSON.stringify(allEventsWatcher, null, 5));
   }
 
   this.extractEvents = function(txHash, eventName) {

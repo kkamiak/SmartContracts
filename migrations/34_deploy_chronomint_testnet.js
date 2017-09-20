@@ -3,6 +3,7 @@ var FakeCoin2 = artifacts.require("./FakeCoin2.sol");
 var FakeCoin3 = artifacts.require("./FakeCoin3.sol");
 var ManagerMock = artifacts.require("./ManagerMock.sol");
 var AssetsManagerMock = artifacts.require("./AssetsManagerMock.sol");
+var AssetsPlatformRegistryMock = artifacts.require('./AssetsPlatformRegistryMock.sol')
 var Stub = artifacts.require("./helpers/Stub.sol");
 var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
 var KrakenPriceTicker = artifacts.require("./KrakenPriceTicker.sol");
@@ -21,8 +22,11 @@ module.exports = function(deployer,network) {
         .then(() => deployer.deploy(ManagerMock))
         .then(() => deployer.deploy(Clock))
         .then(() => deployer.deploy(AssetsManagerMock))
+        .then(() => deployer.deploy(AssetsPlatformRegistryMock))
         .then(() => StorageManager.deployed())
-        .then(_storageManager => _storageManager.giveAccess(AssetsManagerMock.address, 'AssetsManager'))
+        .then(_storageManager => storageManager = _storageManager)
+        .then(() => storageManager.giveAccess(AssetsManagerMock.address, 'AssetsManager'))
+        .then(() => storageManager.giveAccess(AssetsPlatformRegistryMock.address, 'PlatformRegistry'))
         .then(() => deployer.deploy(KrakenPriceTicker, true))
         .then(() => console.log("[MIGRATION] [34] Deploy Test contracts: #done"))
     }

@@ -152,8 +152,8 @@ contract ERC20Manager is ERC20ManagerEmitter, BaseManager {
 
         bool changed;
         if(_symbol != store.get(symbol,_token)) {
-            if (store.get(tokenBySymbol,_symbol) == address(0)) {
-                store.set(tokenBySymbol,store.get(symbol,_token),address(0));
+            if (store.get(tokenBySymbol,_symbol) == 0x0) {
+                store.set(tokenBySymbol,store.get(symbol,_token),0x0);
                 if(_token != _newToken) {
                     store.set(tokenBySymbol,_symbol,_newToken);
                     store.set(symbol,_newToken,_symbol);
@@ -245,7 +245,7 @@ contract ERC20Manager is ERC20ManagerEmitter, BaseManager {
         store.get(swarmHash,_token)
         );
 
-        store.set(tokenBySymbol,store.get(symbol,_token),address(0));
+        store.set(tokenBySymbol,store.get(symbol,_token),0x0);
         store.remove(tokenAddresses,_token);
         return OK;
     }
@@ -339,13 +339,12 @@ contract ERC20Manager is ERC20ManagerEmitter, BaseManager {
       uint8 decimals,
       bytes32 ipfsHash,
       bytes32 swarmHash
-    )
-    {
+    ) {
         if (!isTokenSymbolExists(_symbol)) {
           return;
         }
 
-        address _token = store.get(tokenBySymbol,_symbol);
+        address _token = store.get(tokenBySymbol, _symbol);
         return getTokenMetaData(_token);
     }
 
@@ -374,6 +373,6 @@ contract ERC20Manager is ERC20ManagerEmitter, BaseManager {
     }
 
     function isTokenSymbolExists(bytes32 _symbol) private constant returns (bool) {
-        return (store.get(tokenBySymbol, _symbol) != address(0));
+        return store.get(tokenBySymbol, _symbol) != 0x0;
     }
 }

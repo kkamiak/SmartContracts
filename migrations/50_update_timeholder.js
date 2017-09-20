@@ -30,13 +30,8 @@ module.exports = function(deployer, network) {
       .then(() => TimeHolder.deployed())
       .then(_timeHolder => updatedTimeHolder = _timeHolder)
       .then(() => storageManager.giveAccess(updatedTimeHolder.address, 'Deposits'))
-      .then(() => {
-          if (network == "main") {
-             return ERC20Manager.deployed().then(_erc20Manager => _erc20Manager.getTokenAddressBySymbol.call("TIME"))
-         } else {
-             return ChronoBankAssetProxy.address;
-         }
-      })
+      .then(() => ERC20Manager.deployed())
+      .then(_erc20Manager => _erc20Manager.getTokenAddressBySymbol.call("TIME"))
       .then(_timeAddress => updatedTimeHolder.init(ContractsManager.address, _timeAddress, TimeHolderWallet.address))
       .then(() => MultiEventsHistory.deployed())
       .then(_history => _history.authorize(updatedTimeHolder.address))

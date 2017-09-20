@@ -13,7 +13,8 @@ const errorScope = {
     timeholder: 12000,
     ercmanager: 13000,
     walletsmanager: 14000,
-    chronobankplatform: 15000
+    chronobankplatform: 15000,
+    platformregistry: 19000
 }
 
 const errorsLibrary = {
@@ -131,14 +132,15 @@ const errorsLibrary = {
     ERCMANAGER_TOKEN_UNCHANGED: errorScope.ercmanager + 6,
 
     ASSETS_INVALID_INVOCATION: errorScope.assets + 0,
-    ASSETS_EXISTS: errorScope.assets + 1,
-    ASSETS_TOKEN_EXISTS: errorScope.assets + 2,
-    ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP: errorScope.assets + 3,
-    ASSETS_WRONG_PLATFORM: errorScope.assets + 4,
-    ASSETS_NOT_A_PROXY: errorScope.assets + 5,
-    ASSETS_OWNER_ONLY: errorScope.assets + 6,
-    ASSETS_CANNOT_ADD_TO_REGISTRY: errorScope.assets + 7,
-    ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP: errorScope.assets + 8,
+    ASSETS_TOKEN_EXISTS: errorScope.assets + 1,
+    ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP: errorScope.assets + 2,
+    ASSETS_WRONG_PLATFORM: errorScope.assets + 3,
+    ASSETS_NOT_A_PROXY: errorScope.assets + 4,
+    ASSETS_CANNOT_ADD_TO_REGISTRY: errorScope.assets + 5,
+    ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP: errorScope.assets + 6,
+    ASSETS_CANNOT_FIND_REQUEST_FOR_CREATION: errorScope.assets + 7,
+    ASSETS_CANNON_PASS_ASSET_OWNERSHIP: errorScope.assets + 8,
+    ASSETS_CANNON_CLAIM_ASSET_OWNERSHIP: errorScope.assets + 9,
 
     ERROR_WALLET_INVALID_INVOCATION: errorScope.walletsmanager + 0,
     ERROR_WALLET_EXISTS: errorScope.walletsmanager + 1,
@@ -163,7 +165,13 @@ const errorsLibrary = {
     CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_OWNER: errorScope.chronobankplatform + 14,
     CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_PROXY: errorScope.chronobankplatform + 15,
     CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED: errorScope.chronobankplatform + 16,
-    CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17
+    CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17,
+
+    PLATFORM_REGISTRY_INVALID_INVOCATION: errorScope.platformregistry + 0,
+    PLATFORM_REGISTRY_PLATFORM_IS_ALREADY_ATTACHED: errorScope.platformregistry + 1,
+    PLATFORM_REGISTRY_PLATFORM_IS_ALREADY_DETACHED: errorScope.platformregistry + 2,
+    PLATFORM_REGISTRY_OWNER_CANNOT_OWN_MORE_THAN_ONE_PLATFORM: errorScope.platformregistry + 3,
+    PLATFORM_REGISTRY_PLATFORM_SHOULD_HAVE_AT_LEAST_ONE_OWNER: errorScope.platformregistry + 4
 }
 
 module.exports = errorsLibrary

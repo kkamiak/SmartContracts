@@ -3,6 +3,7 @@ pragma solidity ^0.4.11;
 import {TimeHolderInterface as TimeHolder} from "../timeholder/TimeHolderInterface.sol";
 import {ERC20Interface as Asset} from "../core/erc20/ERC20Interface.sol";
 import "../assets/AssetsManagerInterface.sol";
+import "../assets/PlatformRegistryInterface.sol";
 import "../core/common/Managed.sol";
 import "../core/common/Deposits.sol";
 import "../reward/RewardsEmitter.sol";
@@ -139,25 +140,15 @@ contract Rewards is Deposits, RewardsEmitter {
     }
 
     function getAssets() constant returns(address[] result) {
-        address assetsManager = lookupManager("AssetsManager");
+        AssetsManagerInterface assetsManager = AssetsManagerInterface(lookupManager("AssetsManager"));
         address chronoMint = lookupManager("LOCManager");
-        uint counter;
-        uint i;
-        uint assetsCount = AssetsManagerInterface(assetsManager).getAssetsCount();
-        for(i=0;i<assetsCount;i++) {
-            if(AssetsManagerInterface(assetsManager).isAssetOwner(AssetsManagerInterface(assetsManager).getSymbolById(i),chronoMint))
-            counter++;
+        uint assetsCount = assetsManager.getAssetsForOwnerCount(chronoMint);
+        result = new address[](assetsCount);
+        bytes32 symbol;
+        for (uint idx = 0; idx < assetsCount; ++idx) {
+            symbol = assetsManager.getAssetForOwnerAtIndex(chronoMint, idx);
+            result[idx] = assetsManager.getAssetBySymbol(symbol);
         }
-        result = new address[](counter);
-        counter = 0;
-        for(i=0;i<assetsCount;i++) {
-            if(AssetsManagerInterface(assetsManager).isAssetOwner(AssetsManagerInterface(assetsManager).getSymbolById(i),chronoMint)) {
-                bytes32 symbol = AssetsManagerInterface(assetsManager).getSymbolById(i);
-                result[counter] = AssetsManagerInterface(assetsManager).getAssetBySymbol(symbol);
-                counter++;
-            }
-        }
-        return result;
     }
 
     /**
@@ -167,7 +158,7 @@ contract Rewards is Deposits, RewardsEmitter {
      *
      * @return success.
      */
-    function closePeriod() onlyAuthorized returns (uint) {
+    function closePeriod() onlyAuthorized returns (uint resultCode) {
         uint period = lastPeriod();
         if ((store.get(startDate,period) + (store.get(closeInterval) * 1 days)) > now) {
             return _emitError(ERROR_REWARD_CANNOT_CLOSE_PERIOD);
@@ -178,9 +169,9 @@ contract Rewards is Deposits, RewardsEmitter {
         store.set(totalShares, period, _totalSharesPeriod);
         store.set(shareholdersCount, period, _shareholdersCount);
         address[] memory assets = getAssets();
-        if(assets.length != 0) {
-            for(uint i = 0; i<assets.length; i++) {
-                uint result = registerAsset(assets[i],period);
+        if (assets.length != 0) {
+            for (uint i = 0; i < assets.length; i++) {
+                uint result = registerAsset(assets[i], period);
                 if (OK != result) {
                     // do not interrupt, just emit an Event
                     emitError(result);
@@ -189,13 +180,10 @@ contract Rewards is Deposits, RewardsEmitter {
         }
         store.set(periods,++period);
         store.set(startDate,period,now);
-        uint resultCode;
-        resultCode = storeDeposits();
+        resultCode = storeDeposits(assets);
         if (resultCode == OK) {
             _emitPeriodClosed();
         }
-
-        return resultCode;
     }
 
     function getPeriodStartDate(uint _period) constant returns (uint) {
@@ -206,10 +194,13 @@ contract Rewards is Deposits, RewardsEmitter {
     *  @return error code and still left shares. `sharesLeft` is actual only
     *  if `errorCode` == OK, otherwise `sharesLeft` must be ignored.
     */
-    function storeDeposits() onlyAuthorized returns (uint result) {
+    function storeDeposits() onlyAuthorized returns (uint resultCode) {
+        resultCode = storeDeposits(getAssets());
+    }
+
+    function storeDeposits(address[] assets) internal returns (uint result) {
         uint period = lastClosedPeriod();
         uint period_end = getPeriodStartDate(lastPeriod());
-        address[] memory assets = getAssets();
         StorageInterface.Iterator memory iterator = store.listIterator(shareholders);
         uint amount;
         uint j;

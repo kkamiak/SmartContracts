@@ -9,7 +9,15 @@ contract Bounty {
     function reissueAsset(bytes32 _symbol, uint _value) returns (bool);
     function sendAsset(bytes32 _symbol, address _to, uint _value) returns (bool);
     function isAssetSymbolExists(bytes32 _symbol) returns (bool);
+}
+
+contract BountyRegistryProvider {
+    function getPlatformRegistry() returns (address);
+}
+
+contract BountyRegistry {
     function isAssetOwner(bytes32 _symbol, address _owner) returns (bool);
+
 }
 
 /**
@@ -51,7 +59,7 @@ contract BaseCrowdsale is Object {
 
     /** @dev Access rights checks */
     modifier onlyAuthorised() {
-        if (lookupBounty().isAssetOwner(symbol, msg.sender)) _;
+        if (lookupBountyRegistry().isAssetOwner(symbol, msg.sender)) _;
     }
 
     /**
@@ -167,6 +175,10 @@ contract BaseCrowdsale is Object {
 
     function lookupBounty() constant returns (Bounty) {
         return Bounty(lookupService("AssetsManager"));
+    }
+
+    function lookupBountyRegistry() constant returns (BountyRegistry) {
+        return BountyRegistry(BountyRegistryProvider(lookupService("AssetsManager")).getPlatformRegistry());
     }
 
     function lookupService(bytes32 _identifier) constant returns (address manager) {

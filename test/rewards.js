@@ -8,6 +8,7 @@ const FakeCoin2 = artifacts.require("./FakeCoin2.sol");
 const FakeCoin3 = artifacts.require("./FakeCoin3.sol");
 const UserManager = artifacts.require("./UserManager.sol");
 const AssetsManagerMock = artifacts.require("./AssetsManagerMock.sol");
+const AssetsPlatformRegistryMock = artifacts.require('./AssetsPlatformRegistryMock.sol')
 const MultiEventsHistory = artifacts.require('./MultiEventsHistory.sol');
 const Storage = artifacts.require("./Storage.sol");
 const ManagerMock = artifacts.require('./ManagerMock.sol');
@@ -27,6 +28,7 @@ contract('Rewards', (accounts) => {
   let userManager;
   let multiEventsHistory;
   let assetsManager;
+  let assetsPlatformRegistry;
   let chronoMint;
   let shares;
   let asset1;
@@ -38,7 +40,8 @@ contract('Rewards', (accounts) => {
 
   let defaultInit = () => {
     return storage.setManager(ManagerMock.address)
-    .then(() => assetsManager.init(contractsManager.address))
+    .then(() => assetsManager.init(contractsManager.address, assetsPlatformRegistry.address))
+    .then(() => assetsPlatformRegistry.init(contractsManager.address, assetsManager.address))
     .then(() => reward.init(contractsManager.address, ZERO_INTERVAL))
     .then(() => chronoMint.init(contractsManager.address))
     .then(() => userManager.init(contractsManager.address))
@@ -46,6 +49,7 @@ contract('Rewards', (accounts) => {
     .then(() => timeHolder.init(contractsManager.address, shares.address, timeHolderWallet.address))
     .then(() => assetsManager.addAsset(asset1.address, 'LHT', chronoMint.address))
     .then(() => multiEventsHistory.authorize(reward.address))
+    .then(() => {})
   };
 
   let assertSharesBalance = (address, expectedBalance) => {
@@ -114,6 +118,8 @@ contract('Rewards', (accounts) => {
     .then((instance) => reward = instance)
     .then(() => AssetsManagerMock.deployed())
     .then((instance) => assetsManager = instance)
+    .then(() => AssetsPlatformRegistryMock.deployed())
+    .then((instance) => assetsPlatformRegistry = instance)
     .then(() => LOCManager.new(storage.address, 'LOCManager'))
     .then((instance) => chronoMint = instance)
     .then(() => TimeHolderWallet.new(storage.address, 'TimeHolderWallet'))
@@ -162,8 +168,10 @@ contract('Rewards', (accounts) => {
   // init(address _timeHolder, uint _closeIntervalDays) returns(bool)
   it('should receive the rigth reward assets list', () => {
     return defaultInit()
-      .then(reward.getAssets)
-      .then((result) => assert.equal(result[0], asset1.address));
+      .then(() => reward.getAssets.call())
+      .then((result) => {
+          assert.equal(result[0], asset1.address)
+      });
   });
 
   // depositFor(address _address, uint _amount) returns(bool)

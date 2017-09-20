@@ -4,6 +4,7 @@ contract ChronoBankPlatformInterface {
     mapping(bytes32 => address) public proxies;
     function name(bytes32 _symbol) returns(string);
     function setProxy(address _address, bytes32 _symbol) returns(uint errorCode);
+    function isCreated(bytes32 _symbol) constant returns(bool);
     function isOwner(address _owner, bytes32 _symbol) returns(bool);
     function totalSupply(bytes32 _symbol) returns(uint);
     function balanceOf(address _holder, bytes32 _symbol) returns(uint);

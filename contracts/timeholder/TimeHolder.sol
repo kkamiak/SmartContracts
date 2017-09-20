@@ -164,7 +164,6 @@ contract TimeHolder is Deposits, TimeHolderEmmiter {
         }
 
         address asset = store.get(sharesContractStorage);
-        // TODO: @ahiatsevich: is there really msg.sender?
         if (!(_amount == 0 || DepositWalletInterface(wallet()).deposit(asset, msg.sender, _amount))) {
             return _emitError(ERROR_TIMEHOLDER_TRANSFER_FAILED);
         }

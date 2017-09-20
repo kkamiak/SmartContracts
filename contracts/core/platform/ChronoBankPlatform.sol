@@ -3,10 +3,15 @@ pragma solidity ^0.4.11;
 import "../common/Object.sol";
 import "./ChronoBankPlatformEmitter.sol";
 
-contract Proxy {
+contract ProxyEventsEmitter {
     function emitTransfer(address _from, address _to, uint _value);
     function emitApprove(address _from, address _spender, uint _value);
 }
+
+contract AssetOwnershipListener {
+    function assetOwnershipChanged(address _platform, bytes32 _symbol, address _from, address _to);
+}
+
 
 /**
  * @title ChronoBank Platform.
@@ -55,6 +60,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         bool isReissuable;                // Indicates if asset have dynamic or fixed supply.
         uint8 baseUnit;                   // Proposed number of decimals.
         mapping(uint => Wallet) wallets;  // Holders wallets.
+        mapping(uint => bool) partowners; // Part-owners of an asset; have less access rights than owner
     }
 
     // Structure of an asset holder wallet for particular asset.
@@ -82,8 +88,14 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
     // Asset symbol to asset proxy mapping.
     mapping(bytes32 => address) public proxies;
 
+    /** Co-owners of a platform. Has less access rights than a root contract owner */
+    mapping(address => bool) public partowners;
+
     // Should use interface of the emitter, but address of events history.
     address public eventsHistory;
+
+    /** Listener contract to changes of asset owners */
+    address public assetOwnershipListener;
 
     /**
      * Emits Error event with specified error message.
@@ -153,6 +165,13 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         return _error(CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_OWNER, "Only owner: access denied");
     }
 
+    function checkIsOnlyOneOfOwners(bytes32 _symbol) internal constant returns (uint errorCode) {
+        if (hasAssetRights(msg.sender, _symbol)) {
+            return OK;
+        }
+        return _error(CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_OWNER, "Only owners: access denied");
+    }
+
     function checkIsOnlyProxy(bytes32 _symbol) internal constant returns(uint errorCode) {
         if (proxies[_symbol] == msg.sender) {
             return OK;
@@ -165,6 +184,39 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
             return OK;
         }
         return _error(CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED, "Only trusted: access denied");
+    }
+
+    function checkOnlyOneOfContractOwners() internal constant returns (uint errorCode) {
+        errorCode = checkOnlyContractOwner();
+        if (errorCode == OK || partowners[msg.sender]) {
+            return OK;
+        }
+    }
+
+    /**
+    * Adds a co-owner of a contract. Might be more than one co-owner
+    * @dev Allowed to only contract onwer
+    *
+    * @param _partowner a co-owner of a contract
+    *
+    * @return result code of an operation
+    */
+    function addPartOwner(address _partowner) onlyContractOwner returns (uint) {
+        partowners[_partowner] = true;
+        return OK;
+    }
+
+    /**
+    * Removes a co-owner of a contract
+    * @dev Should be performed only by root contract owner
+    *
+    * @param _partowner a co-owner of a contract
+    *
+    * @return result code of an operation
+    */
+    function removePartOwner(address _partowner) onlyContractOwner returns (uint) {
+        delete partowners[_partowner];
+        return OK;
     }
 
     /**
@@ -246,6 +298,19 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
     }
 
     /**
+    * Checks if a specified address has asset owner or co-owner rights.
+    *
+    * @param _owner address to check.
+    * @param _symbol asset symbol.
+    *
+    * @return owner rights availability.
+    */
+    function hasAssetRights(address _owner, bytes32 _symbol) constant returns (bool) {
+        uint holderId = getHolderId(_owner);
+        return isCreated(_symbol) && (assets[_symbol].owner == holderId || assets[_symbol].partowners[holderId]);
+    }
+
+    /**
      * Returns asset total supply.
      *
      * @param _symbol asset symbol.
@@ -292,6 +357,63 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
     }
 
     /**
+    * Adds a co-owner for an asset with provided symbol.
+    * @dev Should be performed by a contract owner or its co-owners
+    *
+    * @param _symbol asset's symbol
+    * @param _partowner a co-owner of an asset
+    *
+    * @return errorCode result code of an operation
+    */
+    function addAssetPartOwner(bytes32 _symbol, address _partowner) returns (uint errorCode) {
+        errorCode = checkIsOnlyOneOfOwners(_symbol);
+        if (errorCode != OK) {
+            return errorCode;
+        }
+
+        uint holderId = _createHolderId(_partowner);
+        assets[_symbol].partowners[holderId] = true;
+        _invokeAssetOwnershipChanged(_symbol, 0x0, _partowner);
+        return OK;
+    }
+
+    /**
+    * Removes a co-owner for an asset with provided symbol.
+    * @dev Should be performed by a contract owner or its co-owners
+    *
+    * @param _symbol asset's symbol
+    * @param _partowner a co-owner of an asset
+    *
+    * @return errorCode result code of an operation
+    */
+    function removeAssetPartOwner(bytes32 _symbol, address _partowner) returns (uint errorCode) {
+        errorCode = checkIsOnlyOneOfOwners(_symbol);
+        if (errorCode != OK) {
+            return errorCode;
+        }
+
+        uint holderId = getHolderId(_partowner);
+        delete assets[_symbol].partowners[holderId];
+        _invokeAssetOwnershipChanged(_symbol, _partowner, 0x0);
+        return OK;
+    }
+
+    /**
+    * Sets an address of ownership listener compatible with AssetOwnershipListener interface.
+    * @dev Should be set by a contract owner
+    *
+    * @param _listener listener contract address
+    *
+    * @return result code of an operation
+    */
+    function setAssetOwnershipListener(address _listener) onlyContractOwner public returns (uint) {
+        if (assetOwnershipListener != _listener) {
+            assetOwnershipListener = _listener;
+        }
+        return OK;
+    }
+
+    /**
      * Sets Proxy contract address for a particular asset.
      *
      * Can be set only once for each asset, and only by contract owner.
@@ -301,8 +423,8 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
      *
      * @return success.
      */
-    function setProxy(address _address, bytes32 _symbol) onlyContractOwner() returns(uint errorCode) {
-        errorCode = checkOnlyContractOwner();
+    function setProxy(address _address, bytes32 _symbol) returns(uint errorCode) {
+        errorCode = checkOnlyOneOfContractOwners();
         if (errorCode != OK) {
             return errorCode;
         }
@@ -407,7 +529,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
             // Internal Out Of Gas/Throw: revert this transaction too;
             // Call Stack Depth Limit reached: n/a after HF 4;
             // Recursive Call: safe, all changes already made.
-            Proxy(proxies[_symbol]).emitTransfer(_address(_fromId), _address(_toId), _value);
+            ProxyEventsEmitter(proxies[_symbol]).emitTransfer(_address(_fromId), _address(_toId), _value);
         }
     }
 
@@ -455,7 +577,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
      * @return success.
      */
     function issueAsset(bytes32 _symbol, uint _value, string _name, string _description, uint8 _baseUnit, bool _isReissuable) returns(uint errorCode) {
-        errorCode = checkOnlyContractOwner();
+        errorCode = checkOnlyOneOfContractOwners();
         if (errorCode != OK) {
             return errorCode;
         }
@@ -474,6 +596,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
         // Recursive Call: safe, all changes already made.
+        _invokeAssetOwnershipChanged(_symbol, 0x0, msg.sender);
         ChronoBankPlatformEmitter(eventsHistory).emitIssue(_symbol, _value, _address(holderId));
         return OK;
     }
@@ -490,7 +613,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
      * @return success.
      */
     function reissueAsset(bytes32 _symbol, uint _value) returns(uint errorCode) {
-        errorCode = checkIsOnlyOwner(_symbol);
+        errorCode = checkIsOnlyOneOfOwners(_symbol);
         if (errorCode != OK) {
             return errorCode;
         }
@@ -576,11 +699,25 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         }
         address oldOwner = _address(asset.owner);
         asset.owner = newOwnerId;
+        _invokeAssetOwnershipChanged(_symbol, oldOwner, _newOwner);
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
         // Recursive Call: safe, all changes already made.
-        ChronoBankPlatformEmitter(eventsHistory).emitOwnershipChange(oldOwner, _address(newOwnerId), _symbol);
+        ChronoBankPlatformEmitter(eventsHistory).emitOwnershipChange(oldOwner, _newOwner, _symbol);
         return OK;
+    }
+
+    /**
+    * Invokes a delegate method for asset ownership listener.
+    *
+    * @param _symbol asset's symbol
+    * @param _from an address previously owned an asset
+    * @param _to an address that receives ownership rights
+    */
+    function _invokeAssetOwnershipChanged(bytes32 _symbol, address _from, address _to) internal {
+        if (assetOwnershipListener != 0x0) {
+            AssetOwnershipListener(assetOwnershipListener).assetOwnershipChanged(address(this), _symbol, _from, _to);
+        }
     }
 
     /**
@@ -696,7 +833,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
             // Internal Out Of Gas/Throw: revert this transaction too;
             // Call Stack Depth Limit reached: n/a after HF 4;
             // Recursive Call: safe, all changes already made.
-            Proxy(proxies[_symbol]).emitApprove(_address(_senderId), _address(_spenderId), _value);
+            ProxyEventsEmitter(proxies[_symbol]).emitApprove(_address(_senderId), _address(_spenderId), _value);
         }
         return OK;
     }

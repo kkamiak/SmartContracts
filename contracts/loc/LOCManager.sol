@@ -1,12 +1,11 @@
 pragma solidity ^0.4.11;
 
 import "../core/common/BaseManager.sol";
-import "../assets/AssetsManagerInterface.sol";
-import "../core/erc20/ERC20Interface.sol";
-import "../core/erc20/ERC20ManagerInterface.sol";
 import "../assets/FeeInterface.sol";
+import "../core/erc20/ERC20ManagerInterface.sol";
 import "../core/platform/ChronoBankAssetProxyInterface.sol";
 import "./LOCManagerEmitter.sol";
+import "./ReissuableWalletInterface.sol";
 
 contract LOCManager is LOCManagerEmitter, BaseManager {
 
@@ -32,6 +31,7 @@ contract LOCManager is LOCManagerEmitter, BaseManager {
     StorageInterface.Bytes32UIntMapping expDate;
     StorageInterface.Bytes32UIntMapping status;
     StorageInterface.Bytes32UIntMapping createDate;
+    StorageInterface.Address walletStorage;
 
     enum Status {maintenance, active, suspended, bankrupt}
 
@@ -45,23 +45,17 @@ contract LOCManager is LOCManagerEmitter, BaseManager {
         expDate.init('expDate');
         status.init('status');
         createDate.init('createDate');
+        walletStorage.init('walletStorage');
     }
 
-    function init(address _contractsManager) onlyContractOwner returns (uint) {
+    function init(address _contractsManager, address _wallet) onlyContractOwner returns (uint) {
         BaseManager.init(_contractsManager, "LOCManager");
+        store.set(walletStorage, _wallet);
         return OK;
     }
 
-    function destroy(address[] tokens) onlyContractOwner {
-        withdrawnTokens(tokens, msg.sender);
-        BaseManager.destroy();
-    }
-
-    /**
-    *  @dev Use destroy(address[] tokens) instead
-    */
-    function destroy() onlyContractOwner {
-        throw;
+    function wallet() public constant returns (address) {
+        return store.get(walletStorage);
     }
 
     function isLOCExist(bytes32 _locName) private constant returns (bool) {
@@ -78,7 +72,9 @@ contract LOCManager is LOCManagerEmitter, BaseManager {
             return _handleResult(errorCode);
         }
 
-        if (!AssetsManagerInterface(lookupManager("AssetsManager")).sendAsset(_symbol, _to, _value)) {
+        var (_, _token) = _getPlatformAndTokenForSymbol(_symbol);
+        ReissuableWalletInterface _wallet = ReissuableWalletInterface(wallet());
+        if (!_wallet.withdraw(_token, _to, _value)) {
             return _emitError(ERROR_LOC_SEND_ASSET);
         }
 
@@ -98,7 +94,10 @@ contract LOCManager is LOCManagerEmitter, BaseManager {
 
         uint _issued = store.get(issued, _locName);
         if (_value <= store.get(issueLimit, _locName) - _issued) {
-            if (AssetsManagerInterface(lookupManager("AssetsManager")).reissueAsset(store.get(currency, _locName), _value)) {
+            bytes32 _symbol = store.get(currency, _locName);
+            var (_platform, _) = _getPlatformAndTokenForSymbol(_symbol);
+            ReissuableWalletInterface _wallet = ReissuableWalletInterface(wallet());
+            if (_wallet.reissue(_platform, _symbol, _value) == OK) {
                 store.set(issued, _locName, _issued + _value);
                 _emitReissue(_locName, _value);
                 errorCode = OK;
@@ -122,7 +121,10 @@ contract LOCManager is LOCManagerEmitter, BaseManager {
 
         uint _issued = store.get(issued, _locName);
         if (_value <= _issued) {
-            if (AssetsManagerInterface(lookupManager("AssetsManager")).revokeAsset(store.get(currency, _locName), _value)) {
+            bytes32 _symbol = store.get(currency, _locName);
+            var (_platform, _) = _getPlatformAndTokenForSymbol(_symbol);
+            ReissuableWalletInterface _wallet = ReissuableWalletInterface(wallet());
+            if (_wallet.revoke(_platform, _symbol, _value) == OK) {
                 store.set(issued, _locName, _issued - _value);
                 _emitRevoke(_locName, _value);
                 errorCode = OK;
@@ -279,6 +281,12 @@ contract LOCManager is LOCManagerEmitter, BaseManager {
 
     function getLOCCount() constant returns (uint) {
         return store.count(offeringCompaniesNames);
+    }
+
+    function _getPlatformAndTokenForSymbol(bytes32 _symbol) private constant returns (address _platform, address _token) {
+        ERC20ManagerInterface _erc20Manager = ERC20ManagerInterface(lookupManager("ERC20Manager"));
+        _token = _erc20Manager.getTokenAddressBySymbol(_symbol);
+        _platform = ChronoBankAssetProxyInterface(_token).chronoBankPlatform();
     }
 
     function _emitNewLOC(bytes32 _locName, uint count) internal {

@@ -4,6 +4,7 @@ const ChronoBankAssetWithFeeProxy = artifacts.require('./ChronoBankAssetWithFeeP
 const ChronoBankAsset = artifacts.require('./ChronoBankAsset.sol')
 const ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
 const LOCManager = artifacts.require('./LOCManager.sol')
+const LOCWallet = artifacts.require('./LOCWallet.sol')
 const ContractsManager = artifacts.require('./ContractsManager.sol')
 const Exchange = artifacts.require('./Exchange.sol')
 const ERC20Manager = artifacts.require("./ERC20Manager.sol")
@@ -46,6 +47,7 @@ let assetsManager
 let walletsManager
 let chronoBankPlatform
 let chronoMint
+let chronoMintWallet
 let contractsManager
 let timeHolder
 let timeHolderWallet
@@ -97,6 +99,7 @@ var setup = function (callback) {
       ContractsManager.deployed(),
       PendingManager.deployed(),
       LOCManager.deployed(),
+      LOCWallet.deployed(),
       ChronoBankPlatform.deployed(),
       ChronoBankAsset.deployed(),
       ChronoBankAssetWithFee.deployed(),
@@ -123,6 +126,7 @@ var setup = function (callback) {
       contractsManager,
       shareable,
       chronoMint,
+      chronoMintWallet,
       chronoBankPlatform,
       chronoBankAsset,
       chronoBankAssetWithFee,
@@ -149,6 +153,7 @@ var setup = function (callback) {
     module.exports.walletsManager = walletsManager
     module.exports.chronoBankPlatform = chronoBankPlatform
     module.exports.chronoMint = chronoMint
+    module.exports.chronoMintWallet = chronoMintWallet
     module.exports.contractsManager = contractsManager
     module.exports.timeHolder = timeHolder
     module.exports.timeHolderWallet = timeHolderWallet

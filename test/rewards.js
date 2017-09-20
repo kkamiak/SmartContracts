@@ -3,6 +3,7 @@ const ContractsManager = artifacts.require("./ContractsManager.sol");
 const TimeHolder = artifacts.require("./TimeHolder.sol");
 const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 const LOCManager = artifacts.require('./LOCManager.sol')
+const LOCWallet = artifacts.require('./LOCWallet.sol')
 const FakeCoin = artifacts.require("./FakeCoin.sol");
 const FakeCoin2 = artifacts.require("./FakeCoin2.sol");
 const FakeCoin3 = artifacts.require("./FakeCoin3.sol");
@@ -28,6 +29,7 @@ contract('Rewards', (accounts) => {
   let multiEventsHistory;
   let assetsManager;
   let chronoMint;
+  let chronoMintWallet;
   let shares;
   let asset1;
   let asset2;
@@ -40,7 +42,8 @@ contract('Rewards', (accounts) => {
     return storage.setManager(ManagerMock.address)
     .then(() => assetsManager.init(contractsManager.address))
     .then(() => reward.init(contractsManager.address, ZERO_INTERVAL))
-    .then(() => chronoMint.init(contractsManager.address))
+    .then(() => chronoMintWallet.init(contractsManager.address))
+    .then(() => chronoMint.init(contractsManager.address, chronoMintWallet.address))
     .then(() => userManager.init(contractsManager.address))
     .then(() => timeHolderWallet.init(contractsManager.address))
     .then(() => timeHolder.init(contractsManager.address, shares.address, timeHolderWallet.address))
@@ -114,6 +117,8 @@ contract('Rewards', (accounts) => {
     .then((instance) => reward = instance)
     .then(() => AssetsManagerMock.deployed())
     .then((instance) => assetsManager = instance)
+    .then(() => LOCWallet.new(storage.address, 'LOCWallet'))
+    .then((instance) => chronoMintWallet = instance)
     .then(() => LOCManager.new(storage.address, 'LOCManager'))
     .then((instance) => chronoMint = instance)
     .then(() => TimeHolderWallet.new(storage.address, 'TimeHolderWallet'))

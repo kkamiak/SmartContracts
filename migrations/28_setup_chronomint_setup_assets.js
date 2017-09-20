@@ -7,6 +7,7 @@ const AssetsManager = artifacts.require("./AssetsManager.sol");
 const Rewards = artifacts.require("./Rewards.sol");
 const ERC20Manager = artifacts.require("./ERC20Manager.sol");
 const LOCManager = artifacts.require('./LOCManager.sol');
+const LOCWallet = artifacts.require('./LOCWallet.sol');
 
 const bs58 = require("bs58");
 const Buffer = require("buffer").Buffer;
@@ -44,6 +45,7 @@ if (network !== "main") {
               .then(() => chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, LHT_SYMBOL))
               .then(() => chronoBankAssetWithFeeProxy.proposeUpgrade(ChronoBankAssetWithFee.address))
               .then(() => chronoBankAssetWithFee.setupFee(Rewards.address, 100))
+              .then(() => chronoBankPlatform.addAssetPartOwner(LHT_SYMBOL, LOCWallet.address))
               .then(() => chronoBankPlatform.changeOwnership(LHT_SYMBOL, assetsManager.address))
               .then(() => {
                 if (network !== "test") {

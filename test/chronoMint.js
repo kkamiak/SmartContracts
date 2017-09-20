@@ -725,7 +725,7 @@ contract('LOC Manager', function(accounts) {
           return Setup.shareable.confirm(conf_sign, {from: owner1}).then(function () {
             return Setup.shareable.confirm(conf_sign, {from: owner2}).then(function () {
               return Setup.shareable.confirm(conf_sign, {from: owner3}).then(function () {
-                return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(Setup.assetsManager.address).then(function (r2) {
+                return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(Setup.chronoMintWallet.address).then(function (r2) {
                   assert.equal(r2, 1000000);
                 });
               });
@@ -747,7 +747,7 @@ contract('LOC Manager', function(accounts) {
           return Setup.shareable.confirm(conf_sign, {from: owner1}).then(function () {
             return Setup.shareable.confirm(conf_sign, {from: owner2}).then(function () {
               return Setup.shareable.confirm(conf_sign, {from: owner3}).then(function () {
-                return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(Setup.assetsManager.address).then(function (r2) {
+                return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(Setup.chronoMintWallet.address).then(function (r2) {
                   assert.equal(r2, 1000000);
                 });
               });
@@ -781,7 +781,7 @@ contract('LOC Manager', function(accounts) {
           return Setup.shareable.confirm(conf_sign, {from: owner1}).then(function () {
             return Setup.shareable.confirm(conf_sign, {from: owner2}).then(function () {
               return Setup.shareable.confirm(conf_sign, {from: owner3}).then(function () {
-                return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(Setup.assetsManager.address).then(function (r2) {
+                return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(Setup.chronoMintWallet.address).then(function (r2) {
                   assert.equal(r2, 500000);
                 });
               });
@@ -855,6 +855,7 @@ contract('LOC Manager', function(accounts) {
     it("should be able to deposit 100 TIME from owner", function () {
       return Setup.timeHolder.deposit(100, {from: owner}).then(() => {
         return Setup.timeHolder.depositBalance(owner, {from: owner}).then((r) => {
+            console.log(r);
           assert.equal(r, 100);
         })
       })
@@ -862,6 +863,7 @@ contract('LOC Manager', function(accounts) {
 
     it("should show 100 TIME for currnet rewards period", function () {
       return Setup.rewards.totalDepositInPeriod.call(0).then((r) => {
+          console.log(r);
         assert.equal(r, 100);
       })
     })
@@ -873,12 +875,16 @@ contract('LOC Manager', function(accounts) {
     })
 
     it("should be able to close rewards period and destribute rewards", function() {
+        return Setup.rewards.closePeriod.call({from: owner}).then((_closePeriodCode) => {
+            console.log(_closePeriodCode);
+            assert.equal(_closePeriodCode, ErrorsEnum.OK)
       return Setup.rewards.closePeriod({from: owner}).then(() => {
         return Setup.rewards.depositBalanceInPeriod.call(owner, 0, {from: owner}).then((r1) => {
           return Setup.rewards.totalDepositInPeriod.call(0, {from: owner}).then((r2) => {
             return Setup.rewards.rewardsFor.call(Setup.chronoBankAssetWithFeeProxy.address, owner).then((r3) => {
-              return Setup.rewards.withdrawReward(Setup.chronoBankAssetWithFeeProxy.address, r3).then(() => {
+              return Setup.rewards.withdrawReward(Setup.chronoBankAssetWithFeeProxy.address, r3, { from: owner }).then(() => {
                 return Setup.chronoBankAssetWithFeeProxy.balanceOf.call(owner).then((r4) => {
+                    console.log(r1, r2, r3, r4);
                   assert.equal(r1, 100);
                   assert.equal(r2, 100);
                   assert.equal(r3, 4951); //issue reward + exchage sell + exchange buy
@@ -889,6 +895,7 @@ contract('LOC Manager', function(accounts) {
           })
         })
       })
+  })
     })
 
     /*   it("should be able to TIME exchange rate from Bittrex", function() {

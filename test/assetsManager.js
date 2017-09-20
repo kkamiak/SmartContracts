@@ -132,8 +132,8 @@ contract('Assets Manager', function(accounts) {
     });
 
     it("doesn't allow to add LHT Asset with TIME symbol", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetWithFeeProxy.address,'TIME', Setup.chronoMint.address).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address,'TIME', Setup.chronoMint.address, {
+      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetWithFeeProxy.address,'TIME', Setup.chronoMintWallet.address).then(function(r) {
+        return Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address,'TIME', Setup.chronoMintWallet.address, {
           from: accounts[0],
           gas: 3000000
         }).then(function(tx) {
@@ -146,8 +146,8 @@ contract('Assets Manager', function(accounts) {
     });
 
     it("allow add LHT Asset", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetWithFeeProxy.address,bytes32('LHT'), Setup.chronoMint.address).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address,bytes32('LHT'), Setup.chronoMint.address, {
+      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetWithFeeProxy.address,bytes32('LHT'), Setup.chronoMintWallet.address).then(function(r) {
+        return Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address,bytes32('LHT'), Setup.chronoMintWallet.address, {
           from: accounts[0],
           gas: 3000000
         }).then(function(tx) {

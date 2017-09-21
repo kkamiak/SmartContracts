@@ -7,11 +7,12 @@ const AssetsManager = artifacts.require("./AssetsManager.sol");
 const Rewards = artifacts.require("./Rewards.sol");
 const ERC20Manager = artifacts.require("./ERC20Manager.sol");
 const LOCWallet = artifacts.require('./LOCWallet.sol');
+const LOCManager = artifacts.require('./LOCManager.sol')
 
 const bs58 = require("bs58");
 const Buffer = require("buffer").Buffer;
 
-module.exports = function(deployer,network) {
+module.exports = function(deployer, network, accounts) {
     const TIME_SYMBOL = 'TIME';
     const LHT_SYMBOL = 'LHT';
     if (network !== "main") {
@@ -31,12 +32,7 @@ module.exports = function(deployer,network) {
             .then(() => chronoBankPlatform.changeOwnership(TIME_SYMBOL, assetsManager.address))
             .then(() => {
                 if (network !== "test") {
-                    return getAccountsPromise()
-                    .then(accounts => assetsManager.addAsset.call(ChronoBankAssetProxy.address, TIME_SYMBOL, accounts[0]))
-                    .then(_r => {
-                        console.log("add time:", _r);
-                        return assetsManager.addAsset(ChronoBankAssetProxy.address, TIME_SYMBOL, accounts[0])
-                    })
+                    return assetsManager.addAsset(ChronoBankAssetProxy.address, TIME_SYMBOL, accounts[0])
                 }
             })
         })
@@ -83,15 +79,3 @@ module.exports = function(deployer,network) {
 let ipfsHashToBytes32 = (value) => {
     return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
 }
-
-let getAccountsPromise = () => {
-    return new Promise(function (resolve, reject) {
-        web3.eth.getAccounts(function (e, accounts) {
-            if (e != null) {
-                reject(e);
-            } else {
-                resolve(accounts);
-            }
-        });
-    });
-};

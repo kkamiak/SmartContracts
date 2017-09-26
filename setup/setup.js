@@ -23,7 +23,7 @@ const StorageManager = artifacts.require('StorageManager.sol')
 const VoteActor = artifacts.require("./VoteActor.sol");
 const PollManager = artifacts.require("./PollManager.sol");
 const PollDetails = artifacts.require("./PollDetails.sol");
-const CrowdsaleManager = artifacts.require("./CrowdsaleManager.sol");
+//const CrowdsaleManager = artifacts.require("./CrowdsaleManager.sol");
 
 const contractTypes = {
   LOCManager: "LOCManager", // LOCManager
@@ -116,8 +116,8 @@ var setup = function (callback) {
       TimeHolder.deployed(),
       TimeHolderWallet.deployed(),
       MultiEventsHistory.deployed(),
-      StorageManager.deployed(),
-      CrowdsaleManager.deployed()
+      StorageManager.deployed()
+      //CrowdsaleManager.deployed()
     ])
   }).then((instances) => {
     [
@@ -143,8 +143,8 @@ var setup = function (callback) {
       timeHolder,
       timeHolderWallet,
       multiEventsHistory,
-      storageManager,
-      crowdsaleManager
+      storageManager
+      //crowdsaleManager
     ] = instances
   }).then(() => {
     module.exports.storage = storage
@@ -169,7 +169,7 @@ var setup = function (callback) {
     module.exports.vote = { manager: pollManager, details: pollDetails, actor: voteActor }
     module.exports.multiEventsHistory = multiEventsHistory
     module.exports.storageManager = storageManager
-    module.exports.crowdsaleManager = crowdsaleManager
+    //module.exports.crowdsaleManager = crowdsaleManager
   }).then(() => {
     callback()
   }).catch(function (e) {

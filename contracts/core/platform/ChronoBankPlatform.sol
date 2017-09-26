@@ -2,6 +2,7 @@ pragma solidity ^0.4.11;
 
 import "../common/Object.sol";
 import "./ChronoBankPlatformEmitter.sol";
+import "../lib/SafeMath.sol";
 
 contract ProxyEventsEmitter {
     function emitTransfer(address _from, address _to, uint _value);
@@ -30,6 +31,7 @@ contract AssetOwnershipListener {
  * didn't happen yet.
  */
 contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
+    using SafeMath for uint;
 
     uint constant CHRONOBANK_PLATFORM_SCOPE = 15000;
     uint constant CHRONOBANK_PLATFORM_PROXY_ALREADY_EXISTS = CHRONOBANK_PLATFORM_SCOPE + 0;
@@ -445,8 +447,8 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
      * @param _symbol asset symbol.
      */
     function _transferDirect(uint _fromId, uint _toId, uint _value, bytes32 _symbol) internal {
-        assets[_symbol].wallets[_fromId].balance -= _value;
-        assets[_symbol].wallets[_toId].balance += _value;
+        assets[_symbol].wallets[_fromId].balance = assets[_symbol].wallets[_fromId].balance.sub(_value);
+        assets[_symbol].wallets[_toId].balance = assets[_symbol].wallets[_toId].balance.add(_value);
     }
 
     /**
@@ -484,7 +486,7 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         _transferDirect(_fromId, _toId, _value, _symbol);
         // Adjust allowance.
         if (_fromId != _senderId) {
-            assets[_symbol].wallets[_fromId].allowance[_senderId] -= _value;
+            assets[_symbol].wallets[_fromId].allowance[_senderId] = assets[_symbol].wallets[_fromId].allowance[_senderId].sub(_value);
         }
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
@@ -631,8 +633,8 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
             return _error(CHRONOBANK_PLATFORM_SUPPLY_OVERFLOW, "Total supply overflow");
         }
         uint holderId = getHolderId(msg.sender);
-        asset.wallets[holderId].balance += _value;
-        asset.totalSupply += _value;
+        asset.wallets[holderId].balance = asset.wallets[holderId].balance.add(_value);
+        asset.totalSupply = asset.totalSupply.add(_value);
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
         // Recursive Call: safe, all changes already made.
@@ -660,8 +662,8 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         if (asset.wallets[holderId].balance < _value) {
             return _error(CHRONOBANK_PLATFORM_NOT_ENOUGH_TOKENS, "Not enough tokens to revoke");
         }
-        asset.wallets[holderId].balance -= _value;
-        asset.totalSupply -= _value;
+        asset.wallets[holderId].balance = asset.wallets[holderId].balance.sub(_value);
+        asset.totalSupply = asset.totalSupply.sub(_value);
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
         // Recursive Call: safe, all changes already made.

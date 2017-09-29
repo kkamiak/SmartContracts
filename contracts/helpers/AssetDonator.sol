@@ -24,7 +24,7 @@ contract AssetDonator {
     }
 
     /**
-    *  @notice Sends 1000 TIME to caller.
+    *  @notice Sends 10 TIME to caller.
     *  @notice It is permitted to send TIMEs only once.
     *
     *  @return success or not

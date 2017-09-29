@@ -4,8 +4,9 @@ const PlatformsManager = artifacts.require('./PlatformsManager.sol')
 const AssetsManager = artifacts.require('./AssetsManager.sol')
 const LOCWallet = artifacts.require('./LOCWallet.sol')
 const ChronoBankAssetOwnershipManager = artifacts.require('./ChronoBankAssetOwnershipManager.sol')
-const AssetDonator = artifacts.require('./AssetDonator.sol')
 const ERC20Interface = artifacts.require('./ERC20Interface.sol')
+const AssetDonator = artifacts.require('./AssetDonator.sol')
+const ContractsManager = artifacts.require('./ContractsManager.sol')
 
 module.exports = function (deployer, network, accounts) {
     const TIME_SYMBOL = "TIME"
@@ -26,6 +27,9 @@ module.exports = function (deployer, network, accounts) {
     .then(() => {
         if (network !== 'main') {
             return Promise.resolve()
+            .then(() => deployer.deploy(AssetDonator))
+            .then(() => AssetDonator.deployed())
+            .then(_donator => _donator.init(ContractsManager.address))
             .then(() => chronoBankPlatform.proxies(TIME_SYMBOL))
             .then(_proxyAddress => ERC20Interface.at(_proxyAddress))
             .then(_token => _token.transfer(AssetDonator.address, 1000000000000))

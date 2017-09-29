@@ -14,7 +14,7 @@ module.exports = function(deployer,network) {
       deployer
         .then(() => ChronoBankPlatform.deployed())
         .then(_platform => platform = _platform)
-        .then(() => platform.issueAsset(TIME_SYMBOL, 1000000000000, TIME_NAME, TIME_DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE))
+        .then(() => platform.issueAsset(TIME_SYMBOL, 2000000000000, TIME_NAME, TIME_DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE))
         .then(() => deployer.deploy(ChronoBankAssetProxy))
         .then(() => ChronoBankAssetProxy.deployed())
         .then(_proxy => _proxy.init(ChronoBankPlatform.address, TIME_SYMBOL, TIME_NAME))

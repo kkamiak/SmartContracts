@@ -4,6 +4,10 @@ import "./ReissuableWalletInterface.sol";
 import "../core/common/Managed.sol";
 import "../core/erc20/ERC20Interface.sol";
 import "../core/platform/ChronoBankPlatformInterface.sol";
+import "../assets/AssetsManagerInterface.sol";
+import "../assets/TokenManagementInterface.sol";
+import "../assets/ChronoBankWalletFallbackSupporter.sol";
+
 
 /**
 * @title LOCManager's wallet contract defines a basic implementation of DepositWalletInterface
@@ -13,7 +17,7 @@ import "../core/platform/ChronoBankPlatformInterface.sol";
 * @dev Specifies a contract that helps in updating LOCManager interface by delegating token's ownership
 * to LOCManagerWallet contract
 */
-contract LOCWallet is ReissuableWalletInterface, Managed {
+contract LOCWallet is ReissuableWalletInterface, ChronoBankWalletFallbackSupporter {
 
     /**
     * Restricts calls only for LOCManager contract
@@ -25,7 +29,7 @@ contract LOCWallet is ReissuableWalletInterface, Managed {
         _;
     }
 
-    function LOCWallet(Storage _store, bytes32 _crate) Managed(_store, _crate) {
+    function LOCWallet(Storage _store, bytes32 _crate) ChronoBankWalletFallbackSupporter(_store, _crate) {
     }
 
     /**
@@ -74,7 +78,13 @@ contract LOCWallet is ReissuableWalletInterface, Managed {
     * @return result code of an operation
     */
     function reissue(address _platform, bytes32 _symbol, uint256 _amount) onlyLOCManager public returns (uint) {
-        return ChronoBankPlatformInterface(_platform).reissueAsset(_symbol, _amount);
+        address _assetsManager = lookupManager("AssetsManager");
+        address _tokenExtension = AssetsManagerInterface(_assetsManager).getTokenExtension(_platform);
+        if (_tokenExtension == 0x0) {
+            return ChronoBankPlatformInterface(_platform).reissueAsset(_symbol, _amount);
+        }
+
+        return TokenManagementInterface(_tokenExtension).getReissueAssetProxy().reissueAsset(_symbol, _amount);
     }
 
     /**
@@ -88,7 +98,13 @@ contract LOCWallet is ReissuableWalletInterface, Managed {
     * @return result code of an operation
     */
     function revoke(address _platform, bytes32 _symbol, uint256 _amount) onlyLOCManager public returns (uint) {
-        return ChronoBankPlatformInterface(_platform).revokeAsset(_symbol, _amount);
+        address _assetsManager = lookupManager("AssetsManager");
+        address _tokenExtension = AssetsManagerInterface(_assetsManager).getTokenExtension(_platform);
+        if (_tokenExtension == 0x0) {
+            return ChronoBankPlatformInterface(_platform).revokeAsset(_symbol, _amount);
+        }
+
+        return TokenManagementInterface(_tokenExtension).getRevokeAssetProxy().revokeAsset(_symbol, _amount);
     }
 
     /**

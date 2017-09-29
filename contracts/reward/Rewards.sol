@@ -1,11 +1,20 @@
 pragma solidity ^0.4.11;
 
 import {TimeHolderInterface as TimeHolder} from "../timeholder/TimeHolderInterface.sol";
-import {ERC20Interface as Asset} from "../core/erc20/ERC20Interface.sol";
+import "../core/erc20/ERC20Interface.sol";
 import "../assets/AssetsManagerInterface.sol";
+import "../assets/PlatformsManagerInterface.sol";
+import "../timeholder/DepositWalletInterface.sol";
 import "../core/common/Managed.sol";
 import "../core/common/Deposits.sol";
 import "../reward/RewardsEmitter.sol";
+
+/**
+* @dev TODO
+*/
+contract WalletBackedManagerInterface {
+    function wallet() constant returns (address);
+}
 
 /**
  * @title Universal decentralized ERC20 tokens rewards contract.
@@ -19,7 +28,7 @@ import "../reward/RewardsEmitter.sol";
  *
  * When calculating rewards distribution, resulting amount is always rounded down.
  *
- * In order to be able to deposit shares, user needs to create allowance for this contract, using
+ * In order to be able to deposit shares, user needs to create allowance for wallet contract, using
  * standard ERC20 approve() function, so that contract can take shares from the user, when user
  * makes a dpeosit.
  *
@@ -63,6 +72,8 @@ contract Rewards is Deposits, RewardsEmitter {
     StorageInterface.UIntUIntMapping shareholdersCount;
     StorageInterface.UIntAddressUIntMapping assetBalances;
     StorageInterface.UIntAddressAddressBoolMapping calculated;
+    StorageInterface.UInt targetPlatformId;
+    StorageInterface.Address walletStorage;
 
     function Rewards(Storage _store, bytes32 _crate) Deposits(_store, _crate) {
         closeInterval.init('closeInterval');
@@ -77,6 +88,8 @@ contract Rewards is Deposits, RewardsEmitter {
         assetBalances.init('assetBalances');
         calculated.init('calculated');
         shares.init('shares');
+        targetPlatformId.init('targetPlatformId');
+        walletStorage.init("walletStorage");
     }
 
     /**
@@ -90,10 +103,12 @@ contract Rewards is Deposits, RewardsEmitter {
      *
      * @return result code, @see Errors
      */
-    function init(address _contractsManager, uint _closeIntervalDays) onlyContractOwner returns (uint) {
+    function init(address _contractsManager, address _wallet, uint _targetPlatformId, uint _closeIntervalDays) onlyContractOwner returns (uint) {
         uint result = BaseManager.init(_contractsManager, "Rewards");
 
         store.set(closeInterval, _closeIntervalDays);
+        store.set(targetPlatformId, _targetPlatformId);
+        store.set(walletStorage, _wallet);
 
         // do not update default values if reinitialization
         if (REINITIALIZED != result) {
@@ -102,6 +117,13 @@ contract Rewards is Deposits, RewardsEmitter {
         }
 
         return OK;
+    }
+
+    /**
+    * @dev TODO
+    */
+    function wallet() public constant returns (address) {
+        return store.get(walletStorage);
     }
 
     function getCloseInterval() constant returns(uint) {
@@ -139,25 +161,17 @@ contract Rewards is Deposits, RewardsEmitter {
     }
 
     function getAssets() constant returns(address[] result) {
-        address assetsManager = lookupManager("AssetsManager");
-        address chronoMint = lookupManager("LOCManager");
-        uint counter;
-        uint i;
-        uint assetsCount = AssetsManagerInterface(assetsManager).getAssetsCount();
-        for(i=0;i<assetsCount;i++) {
-            if(AssetsManagerInterface(assetsManager).isAssetOwner(AssetsManagerInterface(assetsManager).getSymbolById(i),chronoMint))
-            counter++;
+        PlatformsManagerInterface platformsManager = PlatformsManagerInterface(lookupManager("PlatformsManager"));
+        address targetPlatform = platformsManager.getPlatformWithId(store.get(targetPlatformId));
+        AssetsManagerInterface assetsManager = AssetsManagerInterface(lookupManager("AssetsManager"));
+        address chronoMintWallet = WalletBackedManagerInterface(lookupManager("LOCManager")).wallet();
+        uint assetsCount = assetsManager.getAssetsForOwnerCount(targetPlatform, chronoMintWallet);
+        result = new address[](assetsCount);
+        bytes32 symbol;
+        for (uint idx = 0; idx < assetsCount; ++idx) {
+            symbol = assetsManager.getAssetForOwnerAtIndex(targetPlatform, chronoMintWallet, idx);
+            result[idx] = assetsManager.getAssetBySymbol(symbol);
         }
-        result = new address[](counter);
-        counter = 0;
-        for(i=0;i<assetsCount;i++) {
-            if(AssetsManagerInterface(assetsManager).isAssetOwner(AssetsManagerInterface(assetsManager).getSymbolById(i),chronoMint)) {
-                bytes32 symbol = AssetsManagerInterface(assetsManager).getSymbolById(i);
-                result[counter] = AssetsManagerInterface(assetsManager).getAssetBySymbol(symbol);
-                counter++;
-            }
-        }
-        return result;
     }
 
     /**
@@ -167,7 +181,7 @@ contract Rewards is Deposits, RewardsEmitter {
      *
      * @return success.
      */
-    function closePeriod() onlyAuthorized returns (uint) {
+    function closePeriod() onlyAuthorized returns (uint resultCode) {
         uint period = lastPeriod();
         if ((store.get(startDate,period) + (store.get(closeInterval) * 1 days)) > now) {
             return _emitError(ERROR_REWARD_CANNOT_CLOSE_PERIOD);
@@ -178,9 +192,9 @@ contract Rewards is Deposits, RewardsEmitter {
         store.set(totalShares, period, _totalSharesPeriod);
         store.set(shareholdersCount, period, _shareholdersCount);
         address[] memory assets = getAssets();
-        if(assets.length != 0) {
-            for(uint i = 0; i<assets.length; i++) {
-                uint result = registerAsset(assets[i],period);
+        if (assets.length != 0) {
+            for (uint i = 0; i < assets.length; i++) {
+                uint result = registerAsset(assets[i], period);
                 if (OK != result) {
                     // do not interrupt, just emit an Event
                     emitError(result);
@@ -189,13 +203,10 @@ contract Rewards is Deposits, RewardsEmitter {
         }
         store.set(periods,++period);
         store.set(startDate,period,now);
-        uint resultCode;
-        resultCode = storeDeposits();
+        resultCode = storeDeposits(assets);
         if (resultCode == OK) {
             _emitPeriodClosed();
         }
-
-        return resultCode;
     }
 
     function getPeriodStartDate(uint _period) constant returns (uint) {
@@ -206,10 +217,13 @@ contract Rewards is Deposits, RewardsEmitter {
     *  @return error code and still left shares. `sharesLeft` is actual only
     *  if `errorCode` == OK, otherwise `sharesLeft` must be ignored.
     */
-    function storeDeposits() onlyAuthorized returns (uint result) {
+    function storeDeposits() onlyAuthorized returns (uint resultCode) {
+        resultCode = storeDeposits(getAssets());
+    }
+
+    function storeDeposits(address[] assets) internal returns (uint result) {
         uint period = lastClosedPeriod();
         uint period_end = getPeriodStartDate(lastPeriod());
-        address[] memory assets = getAssets();
         StorageInterface.Iterator memory iterator = store.listIterator(shareholders);
         uint amount;
         uint j;
@@ -247,7 +261,7 @@ contract Rewards is Deposits, RewardsEmitter {
             return _emitError(ERROR_REWARD_ASSET_ALREADY_REGISTERED);
         }
 
-        uint balance = ERC20Interface(_asset).balanceOf(this);
+        uint balance = ERC20Interface(_asset).balanceOf(wallet());
         uint left = store.get(rewardsLeft,_asset);
         store.set(assetBalances,_period,_asset,balance - left);
         store.set(rewardsLeft,_asset,balance);
@@ -360,12 +374,13 @@ contract Rewards is Deposits, RewardsEmitter {
         // Assuming that transfer(amount) of unknown asset may not result in exactly
         // amount being taken from rewards contract(i. e. fees taken) we check contracts
         // balance before and after transfer, and proceed with the difference.
-        uint startBalance = ERC20Interface(_asset).balanceOf(this);
-        if (!ERC20Interface(_asset).transfer(_address, _amount)) {
+        address _wallet = wallet();
+        uint startBalance = ERC20Interface(_asset).balanceOf(_wallet);
+        if (!DepositWalletInterface(_wallet).withdraw(_asset, _address, _amount)) {
             return _emitError(ERROR_REWARD_ASSET_TRANSFER_FAILED);
         }
 
-        uint endBalance = ERC20Interface(_asset).balanceOf(this);
+        uint endBalance = ERC20Interface(_asset).balanceOf(_wallet);
         uint diff = startBalance - endBalance;
         if (rewardsFor(_asset, _address) < diff) {
             throw;

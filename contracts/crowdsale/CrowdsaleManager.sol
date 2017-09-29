@@ -23,10 +23,8 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     StorageInterface.AddressesSet compains;
     StorageInterface.Bytes32AddressMapping factories;
 
-    modifier onlyAssetManager() {
-        if (msg.sender == lookupManager("AssetsManager")) {
-            _;
-        }
+    function checkOnlyTokenExtension() private constant returns (bool) {
+        return TokenExtensionRegistry(lookupManager("AssetsManager")).containsTokenExtension(msg.sender);
     }
 
     /**
@@ -49,7 +47,11 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     /**
     *  Creates Crowdsale with a type produced by CrowdsaleFactory with given _factoryName.
     */
-    function createCrowdsale(address _creator, bytes32 _symbol, bytes32 _factoryName) onlyAssetManager returns (address, uint) {
+    function createCrowdsale(address _creator, bytes32 _symbol, bytes32 _factoryName) returns (address, uint) {
+        if (!checkOnlyTokenExtension()) {
+            return (0x0, _emitError(UNAUTHORIZED));
+        }
+
         if (!lookupAssetsManager().isAssetOwner(_symbol, _creator)) {
             return (0x0, _emitError(ERROR_CROWDFUNDING_NOT_ASSET_OWNER));
         }
@@ -69,7 +71,11 @@ contract CrowdsaleManager is CrowdsaleManagerEmitter, BaseManager {
     /**
     *  Deletes Crowdsale if It is allowed.
     */
-    function deleteCrowdsale(address crowdsale) onlyAssetManager returns (uint) {
+    function deleteCrowdsale(address crowdsale) returns (uint) {
+        if (!checkOnlyTokenExtension()) {
+            return _emitError(UNAUTHORIZED);
+        }
+
         if (!lookupAssetsManager().isAssetOwner(BaseCrowdsale(crowdsale).getSymbol(), crowdsale)) {
             return _emitError(ERROR_CROWDFUNDING_NOT_ASSET_OWNER);
         }

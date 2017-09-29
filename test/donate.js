@@ -1,7 +1,9 @@
 const Setup = require('../setup/setup');
 const bytes32 = require('./helpers/bytes32');
-const AssetDonator = artifacts.require('./AssetDonator.sol');
 const Reverter = require('./helpers/reverter');
+const ErrorsEnum = require("../common/errors")
+const AssetDonator = artifacts.require('./AssetDonator.sol');
+
 
 contract('AssetDonator', function(accounts) {
     let owner = accounts[0];
@@ -17,16 +19,11 @@ contract('AssetDonator', function(accounts) {
     const LHT_SYMBOL = 'LHT';
 
     before('setup', function(done) {
-      AssetDonator.deployed()
+        AssetDonator.deployed()
         .then((_assetDonator) => assetDonator = _assetDonator)
         .then(() => Setup.setup(done))
-    });
+});
 
-    it("Platform is able to add TIME and LHT assets", function() {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetProxy.address, TIME_SYMBOL, owner)
-          .then(() => Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address, LHT_SYMBOL, Setup.chronoMint.address))
-          .then(() => Setup.assetsManager.addAssetOwner(TIME_SYMBOL, AssetDonator.address))
-    });
 
     it("Platform is able to transfer TIMEs for test purposes", function() {
         return assetDonator.sendTime.call({from: owner5}).then(function(r) {

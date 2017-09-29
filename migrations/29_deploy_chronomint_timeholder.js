@@ -4,7 +4,6 @@ const StorageManager = artifacts.require('./StorageManager.sol');
 const ContractsManager = artifacts.require("./ContractsManager.sol");
 const MultiEventsHistory = artifacts.require("./MultiEventsHistory.sol");
 const ERC20Manager = artifacts.require("./ERC20Manager.sol");
-const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
 const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 
 module.exports = function(deployer, network) {
@@ -20,15 +19,8 @@ module.exports = function(deployer, network) {
     .then(() => deployer.deploy(TimeHolder,Storage.address,'Deposits'))
     .then(() => StorageManager.deployed())
     .then((_storageManager) => _storageManager.giveAccess(TimeHolder.address, 'Deposits'))
-    .then(() => {
-        if (network == "main") {
-            return ERC20Manager.deployed()
-            .then(_erc20Manager => _erc20Manager.getTokenBySymbol.call("TIME"))
-            .then(_token => _token[0]);
-        } else {
-            return ChronoBankAssetProxy.address;
-        }
-    })
+    .then(() => ERC20Manager.deployed())
+    .then(_erc20Manager => _erc20Manager.getTokenAddressBySymbol("TIME"))
     .then(_timeAddress => timeAddress = _timeAddress)
     .then(() => TimeHolder.deployed())
     .then(_timeHolder => timeHolder = _timeHolder)

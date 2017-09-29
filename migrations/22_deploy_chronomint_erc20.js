@@ -12,6 +12,8 @@ module.exports = function(deployer, network) {
       .then(_manager => manager = _manager)
       .then(() => manager.init(ContractsManager.address))
       .then(() => MultiEventsHistory.deployed())
-      .then(_history => _history.authorize(manager.address))
+      .then(_history => history = _history)
+      .then(() => history.authorize(manager.address))
+      .then(() => manager.setEventsHistory(history.address))
       .then(() => console.log("[MIGRATION] [22] ERC20Manager: #done"))
 }

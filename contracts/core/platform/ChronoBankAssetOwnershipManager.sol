@@ -9,4 +9,6 @@ contract ChronoBankAssetOwnershipManager {
 
     function addPartOwner(address _partowner) returns (uint);
     function removePartOwner(address _partowner) returns (uint);
+
+    function changeOwnership(bytes32 _symbol, address _newOwner) returns(uint errorCode);
 }

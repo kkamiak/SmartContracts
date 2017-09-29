@@ -6,6 +6,7 @@ const eventsHelper = require('./helpers/eventsHelper')
 const Setup = require('../setup/setup')
 const MultiEventsHistory = artifacts.require('./MultiEventsHistory.sol')
 const PendingManager = artifacts.require("./PendingManager.sol")
+const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol")
 const ErrorsEnum = require("../common/errors");
 
 var reverter = new Reverter(web3)
@@ -16,15 +17,24 @@ function cleanStr(str) {
 
 
 contract('Vote', function(accounts) {
-  const owner = accounts[0];
-  const owner1 = accounts[1];
-  const owner2 = accounts[2];
-  const owner3 = accounts[3];
-  const owner4 = accounts[4];
-  const owner5 = accounts[5];
-  const nonOwner = accounts[6];
+  const admin = accounts[0];
+  const owner = accounts[1]
+  const owner1 = accounts[2];
+  const owner2 = accounts[3];
+  const owner3 = accounts[4];
+  const owner4 = accounts[5];
+  const owner5 = accounts[6];
+  const nonOwner = accounts[7];
   const SYMBOL = 'TIME'
   let unix = Math.round(+new Date()/1000);
+
+  const totalTimeTokens = 100000000
+  const timeTokensBalance = 50
+  let timeTokensToWithdraw75Balance = 75
+  let timeTokensToWithdraw45Balance = 45
+  let timeTokensToWithdraw20Balance = 20
+  let timeTokensToWithdraw25Balance = 25
+  let timeTokensToWithdraw5Balance = 5
 
   let createPolls = (count) => {
     var chain = Q.when();
@@ -32,11 +42,16 @@ contract('Vote', function(accounts) {
 	       chain = chain.then(function() {
            return Setup.vote.manager.NewPoll([bytes32('1'),bytes32('2')],[bytes32('1'), bytes32('2')], bytes32('New Poll'),150, unix + 10000, {from: owner, gas:3000000})
            .then((r) => r.logs[0] ? r.logs[0].args.pollId : 0)
-           .then((createdPollId) => Setup.vote.manager.activatePoll(createdPollId, {from: owner}))
+           .then((createdPollId) => Setup.vote.manager.activatePoll(createdPollId, {from: admin}))
 	       });
     }
 
     return Q.all(chain);
+  }
+
+  function proxyForSymbol(symbol) {
+      return Setup.erc20Manager.getTokenAddressBySymbol.call(symbol)
+      .then(_tokenAddress => ChronoBankAssetProxy.at(_tokenAddress))
   }
 
   // let endPolls = (count) => {
@@ -71,48 +86,43 @@ contract('Vote', function(accounts) {
 
   context("owner shares deposit", function(){
 
-    it("allow add TIME Asset", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetProxy.address, SYMBOL, owner).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetProxy.address, SYMBOL, owner, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function(tx) {
-          return Setup.assetsManager.getAssets.call().then(function(r) {
-            assert.equal(r.length,1);
-          });
-        });
-      });
-    });
-
-    it("AssetsManager should be able to send 100 TIME to owner", function() {
-      return Setup.assetsManager.sendAsset.call(bytes32(SYMBOL),owner,100000000).then(function(r) {
-        return Setup.assetsManager.sendAsset(bytes32(SYMBOL),owner,100000000,{from: accounts[0], gas: 3000000}).then(function() {
-          assert.isOk(r);
-        });
-      });
+    it("should be able to send 100 TIME to owner", function() {
+        return proxyForSymbol(SYMBOL)
+        .then(_token => {
+            return _token.transfer.call(owner, totalTimeTokens, { from: admin })
+            .then(_isSuccess => {
+                return _token.transfer(owner, totalTimeTokens, { from: admin }).then(() => {
+                    assert.isOk(_isSuccess)
+                })
+            })
+        })
     });
 
     it("check Owner has 100 TIME", function() {
-      return Setup.chronoBankAssetProxy.balanceOf.call(owner).then(function(r) {
-        assert.equal(r,100000000);
+      return proxyForSymbol(SYMBOL)
+      .then(_proxy => _proxy.balanceOf.call(owner))
+      .then(_balance => {
+        assert.equal(_balance, totalTimeTokens);
       });
     });
 
     it("owner should be able to approve 50 TIME to Vote", function() {
         return Setup.timeHolder.wallet.call().then(_wallet => {
-            return Setup.chronoBankAssetProxy.approve.call(_wallet, 50, {from: accounts[0]}).then((r) => {
-                return Setup.chronoBankAssetProxy.approve(_wallet, 50, {from: accounts[0]}).then(() => {
-                    assert.isOk(r);
-                });
+            return proxyForSymbol(SYMBOL).then(_proxy => {
+                return _proxy.approve.call(_wallet, timeTokensBalance, {from: owner}).then(_isSuccess => {
+                    return _proxy.approve(_wallet, timeTokensBalance, {from: owner}).then(() => {
+                        assert.isOk(_isSuccess);
+                    })
+                })
             });
         })
     });
 
     it("should be able to deposit 50 TIME from owner", function() {
-      return Setup.timeHolder.deposit.call(50, {from: accounts[0]}).then((r) => {
+      return Setup.timeHolder.deposit.call(timeTokensBalance, {from: owner}).then((r) => {
         assert.isOk(r);
-        return Setup.timeHolder.deposit(50, {from: accounts[0]}).then(() => {
-          return Setup.timeHolder.depositBalance.call(owner, {from: accounts[0]}).then((r2) =>
+        return Setup.timeHolder.deposit(timeTokensBalance, {from: owner}).then(() => {
+          return Setup.timeHolder.depositBalance.call(owner, {from: owner}).then((r2) =>
           {
             assert.equal(r2, 50);
           });
@@ -121,11 +131,11 @@ contract('Vote', function(accounts) {
     });
 
     it("should be able to withdraw 25 TIME from owner", function() {
-      return Setup.timeHolder.withdrawShares.call(25, {from: accounts[0]}).then((r) => {
+      return Setup.timeHolder.withdrawShares.call(timeTokensToWithdraw25Balance, {from: owner}).then((r) => {
         assert.isOk(r);
-        return Setup.timeHolder.withdrawShares(25, {from: accounts[0]}).then(() => {
-          return Setup.timeHolder.depositBalance.call(owner, {from: accounts[0]}).then((r2) => {
-            assert.equal(r2, 25);
+        return Setup.timeHolder.withdrawShares(timeTokensToWithdraw25Balance, {from: owner}).then(() => {
+          return Setup.timeHolder.depositBalance.call(owner, {from: owner}).then((r2) => {
+            assert.equal(r2, timeTokensToWithdraw25Balance);
           });
         });
       });
@@ -148,6 +158,12 @@ contract('Vote', function(accounts) {
             assert.equal(r, 1);
           });
         })
+        .then(() => {
+            return Setup.vote.details.getPoll.call(1)
+        })
+        .then(_details => {
+            assert.equal(owner, _details[1])
+        })
       });
     });
 
@@ -161,16 +177,16 @@ contract('Vote', function(accounts) {
     })
 
     it("should be able to activate Poll 1", function() {
-      return Setup.vote.manager.activatePoll(1, {from: owner}).then(() => {
-        return Setup.vote.details.getActivePollsCount.call().then((r) => {
-          assert.equal(r, 1)
+        return Setup.vote.manager.activatePoll(1, { from: admin }).then((_tx) => {
+            return Setup.vote.details.getActivePollsCount.call().then((r) => {
+                assert.equal(r, 1)
+            })
         })
-      })
     })
 
     it("should show owner as Poll 1 owner", function() {
-      return Setup.vote.details.isPollOwner.call(1).then((r) => {
-        assert.equal(r,true);
+      return Setup.vote.details.isPollOwner.call(1, { from: owner }).then((r) => {
+        assert.isOk(r);
       });
     });
 
@@ -227,14 +243,18 @@ contract('Vote', function(accounts) {
       });
     });
 
-    it("should be able to get owner option for Poll 1", function() {
+    it("should be able to get owner1option for Poll 1", function() {
       return Setup.vote.details.getMemberVotesForPoll.call(1,{from: owner}).then((r) => {
         assert.equal(r,1);
       });
     });
 
     it("should be able to create another Poll 2", function() {
-      return Setup.vote.manager.NewPoll([bytes32('Test Option 1'),bytes32('Test Option 2')],[bytes32('1'), bytes32('2')],bytes32('New Poll2'),75, unix + 1000, {from: owner, gas:3000000}).then((r2) => {
+      return Setup.vote.manager.NewPoll([bytes32('Test Option 1'),bytes32('Test Option 2')],[bytes32('1'), bytes32('2')],bytes32('New Poll2'),75, unix + 1000, {
+          from: owner,
+          gas:3000000
+      })
+          .then((r2) => {
         return Setup.vote.details.pollsCount.call().then((r) => {
           assert.equal(r,2);
         });
@@ -242,7 +262,7 @@ contract('Vote', function(accounts) {
     });
 
     it("should be able to activate Poll 2", function() {
-      return Setup.vote.manager.activatePoll(2, {from: owner}).then(() => {
+      return Setup.vote.manager.activatePoll(2, {from: admin}).then(() => {
         return Setup.vote.details.getActivePollsCount.call().then((r) => {
           assert.equal(r,2);
         });
@@ -286,46 +306,56 @@ contract('Vote', function(accounts) {
   })
 
   context("owner1 shares deposit and voting", function() {
-
-    it("ChronoMint should be able to send 50 TIME to owner1", function() {
-      return Setup.assetsManager.sendAsset.call(bytes32(SYMBOL),owner1,50).then(function(r) {
-        return Setup.assetsManager.sendAsset(bytes32(SYMBOL),owner1,50,{from: accounts[0], gas: 3000000}).then(function() {
-          assert.isOk(r)
-        })
-      })
-    })
-
-    it("check Owner1 has 50 TIME", function() {
-      return Setup.chronoBankAssetProxy.balanceOf.call(owner1).then(function(r) {
-        assert.equal(r,50)
-      })
-    })
-
-    it("owner1 should be able to approve 50 TIME to TimeHolder", function() {
-        return Setup.timeHolder.wallet.call().then(_wallet => {
-            return Setup.chronoBankAssetProxy.approve.call(_wallet, 50, {from: owner1}).then((r) => {
-                return Setup.chronoBankAssetProxy.approve(_wallet, 50, {from: owner1}).then(() => {
-                    assert.isOk(r)
+    it("should be able to send 50 TIME to owner", function() {
+        return proxyForSymbol(SYMBOL)
+        .then(_token => {
+            return _token.transfer.call(owner1, timeTokensBalance, { from: admin })
+            .then(_isSuccess => {
+                return _token.transfer(owner1, timeTokensBalance, { from: admin })
+                .then(() => {
+                    assert.isOk(_isSuccess)
                 })
             })
         })
     })
 
-    it("should be able to deposit 50 TIME from owner", function() {
-      return Setup.timeHolder.deposit.call(50, {from: owner1}).then((r) => {
-        return Setup.timeHolder.deposit(50, {from: owner1}).then(() => {
+    it("check Owner1 has 50 TIME", function() {
+      return proxyForSymbol(SYMBOL)
+      .then(_proxy => _proxy.balanceOf.call(owner1))
+      .then(_balance => {
+        assert.equal(_balance, timeTokensBalance)
+      })
+    })
+
+    it("owner should be able to approve 50 TIME to TimeHolder", function() {
+        return Setup.timeHolder.wallet.call().then(_wallet => {
+            return proxyForSymbol(SYMBOL)
+            .then(_proxy => {
+                return _proxy.approve.call(_wallet, timeTokensBalance, {from: owner1}).then((r) => {
+                    return _proxy.approve(_wallet, timeTokensBalance, {from: owner1}).then(() => {
+                        assert.isOk(r)
+                    })
+                })
+
+            })
+        })
+    })
+
+    it("should be able to deposit 50 TIME from owner1", function() {
+      return Setup.timeHolder.deposit.call(timeTokensBalance, {from: owner1}).then((r) => {
+        return Setup.timeHolder.deposit(timeTokensBalance, {from: owner1}).then(() => {
           assert.isOk(r)
         })
       })
     })
 
-    it("should show 50 TIME owner1 balance", function() {
+    it("should show 50 TIME owner balance", function() {
       return Setup.timeHolder.depositBalance.call(owner1, {from: owner1}).then((r) => {
-        assert.equal(r,50)
+        assert.equal(r,timeTokensBalance)
       })
     })
 
-    it("owner1 should be able to vote Poll 1, Option 2", function() {
+    it("owner should be able to vote Poll 1, Option 2", function() {
       return Setup.vote.actor.vote.call(1,2, {from: owner1}).then((r) => {
         return Setup.vote.actor.vote(1,2, {from: owner1}).then((r2) => {
           assert.isOk(r)
@@ -365,14 +395,14 @@ contract('Vote', function(accounts) {
 
     it("should be able to show number of Votes for each Option for Poll 1", function() {
       return Setup.vote.details.getOptionsVotesForPoll.call(1).then((r) => {
-        assert.equal(r[0],25)
-        assert.equal(r[1],50)
+        assert.equal(r[0],timeTokensToWithdraw25Balance)
+        assert.equal(r[1],timeTokensBalance)
       })
     })
 
     it("should be able to show number of Votes for each Option for Poll 2", function() {
       return Setup.vote.details.getOptionsVotesForPoll.call(2).then((r) => {
-        assert.equal(r[0],75)
+        assert.equal(r[0],timeTokensToWithdraw75Balance)
       })
     })
 
@@ -418,7 +448,7 @@ contract('Vote', function(accounts) {
 
     it("shouldn't allow to delete acvite Polls for non CBE admins", function() {
       return Setup.vote.details.checkPollIsActive.call(1).then((r) => {
-        return Setup.vote.manager.removePoll(1).then(() => {
+        return Setup.vote.manager.removePoll(1, {from: owner1}).then(() => {
           return Setup.vote.details.getActivePollsCount.call().then((r2) => {
             return Setup.vote.details.getInactivePollsCount.call().then((r3) => {
               assert.isOk(r)
@@ -432,8 +462,8 @@ contract('Vote', function(accounts) {
 
     it("should be able to show number of Votes for each Option for Poll 1", function() {
       return Setup.vote.details.getOptionsVotesForPoll.call(1).then((r) => {
-        assert.equal(r[0],25)
-        assert.equal(r[1],50)
+        assert.equal(r[0],timeTokensToWithdraw25Balance)
+        assert.equal(r[1],timeTokensBalance)
       })
     })
 
@@ -447,8 +477,8 @@ contract('Vote', function(accounts) {
 
     it("should be able to show number of Votes for each Option for Poll 1", function() {
       return Setup.vote.details.getOptionsVotesForPoll.call(1).then((r) => {
-        assert.equal(r[0],25)
-        assert.equal(r[1],45)
+        assert.equal(r[0],timeTokensToWithdraw25Balance)
+        assert.equal(r[1],timeTokensToWithdraw45Balance)
       })
     })
 
@@ -484,58 +514,69 @@ contract('Vote', function(accounts) {
       })
     })
 
+    let remainderTimeTokenBalance = totalTimeTokens - timeTokensToWithdraw25Balance
+
     it("owner should be able to approve 9999975 TIME to Vote", function() {
         return Setup.timeHolder.wallet.call().then(_wallet => {
-            return Setup.chronoBankAssetProxy.approve.call(_wallet, 99999975, {from: accounts[0]}).then((r) => {
-                return Setup.chronoBankAssetProxy.approve(_wallet, 99999975, {from: accounts[0]}).then(() => {
-                    assert.isOk(r)
+            return proxyForSymbol(SYMBOL)
+            .then(_proxy => {
+                return _proxy.approve.call(_wallet, remainderTimeTokenBalance, { from: owner }).then((r) => {
+                    return _proxy.approve(_wallet, remainderTimeTokenBalance, { from: owner }).then(() => {
+                        assert.isOk(r)
+                    })
                 })
+
             })
         })
     })
 
     it("should be able to deposit 9999975 TIME from owner", function() {
-      return Setup.timeHolder.deposit.call(99999975, {from: accounts[0]}).then((r) => {
-        return Setup.timeHolder.deposit(99999975, {from: accounts[0]}).then(() => {
+      return Setup.timeHolder.deposit.call(remainderTimeTokenBalance, {from: owner}).then((r) => {
+        return Setup.timeHolder.deposit(remainderTimeTokenBalance, {from: owner}).then(() => {
           assert.isOk(r)
         })
       })
     })
 
-    it("should show 50 TIME owner balance", function() {
-      return Setup.timeHolder.depositBalance.call(owner, {from: accounts[0]}).then((r) => {
-        assert.equal(r,100000000)
+    it("should show 0 TIME owner balance", function() {
+      return Setup.timeHolder.depositBalance.call(owner1).then((r) => {
+        assert.equal(r,0)
+        return proxyForSymbol(SYMBOL)
+        .then(_token => _token.balanceOf.call(owner1))
+        .then(_balance => {
+            assert.equal(_balance, timeTokensBalance)
+        })
       })
     })
 
-    it("should show Poll 1 as finished", function() {
+    it("shouldn't show Poll 1 as finished", function() {
       return Setup.vote.details.getPoll.call(1).then((r) => {
-        assert.equal(r[6],false)
+        assert.equal(r[6],true)
       })
     })
 
     it("should decrese active Polls count", function() {
       return Setup.vote.details.getActivePollsCount.call().then((r) => {
-        assert.equal(r, 19)
+        assert.equal(r, 20)
       })
     })
 
     it("should be able to show number of Votes for each Option for Poll 1", function() {
       return Setup.vote.details.getOptionsVotesForPoll.call(1).then((r) => {
-        assert.equal(r[0],100000000)
+        assert.equal(r[0],totalTimeTokens)
         assert.equal(r[1],0)
       })
     })
 
     it("should be able to show number of Votes for each Option for Poll 2", function() {
       return Setup.vote.details.getOptionsVotesForPoll.call(2).then((r) => {
-        assert.equal(r[0],75)
+        assert.equal(r[0],timeTokensToWithdraw75Balance)
         assert.equal(r[1],0)
       })
     })
 
     it("should allow admin to end poll", function() {
-      return Setup.vote.manager.adminEndPoll(3).then(() => {
+      return Setup.vote.manager.adminEndPoll(3, { from: admin }).then(() => {
         return Setup.vote.details.getPoll.call(3).then((r) => {
           assert.equal(r[6], false)
         })
@@ -544,7 +585,7 @@ contract('Vote', function(accounts) {
 
     it("should decrese active Polls count", function() {
       return Setup.vote.details.getActivePollsCount.call().then((r) => {
-        assert.equal(r, 18)
+        assert.equal(r, 19)
       })
     })
 
@@ -655,14 +696,14 @@ contract('Vote', function(accounts) {
                   let event = eventsHelper.extractEvents(tx, "PollCreated")[0];
                   poll13Id = event.args.pollId
               })
-          }).then(() => Setup.vote.manager.activatePoll.call(poll12Id)).then(r => {
-              return Setup.vote.manager.activatePoll(poll12Id, {from: owner})
+          }).then(() => Setup.vote.manager.activatePoll.call(poll12Id, { from: admin })).then(r => {
+              return Setup.vote.manager.activatePoll(poll12Id, { from: admin })
                 .then(() => {
                     assert.equal(web3.toHex(r), web3.toHex(ErrorsEnum.MULTISIG_ADDED))
 
-                    return Setup.vote.actor.vote.call(poll12Id, 1)
+                    return Setup.vote.actor.vote.call(poll12Id, 1, { from: owner })
                 }).then(voteResult => {
-                    return Setup.vote.actor.vote(poll12Id, 1).then((voteTx) => {
+                    return Setup.vote.actor.vote(poll12Id, 1, { from: owner }).then((voteTx) => {
                         let voteEvent = eventsHelper.extractEvents(voteTx, "VoteCreated")[0]
 
                         assert.equal(web3.toHex(voteResult), web3.toHex(ErrorsEnum.OK))
@@ -671,7 +712,7 @@ contract('Vote', function(accounts) {
                     })
                 })
           }).then(() => {
-              return Setup.vote.actor.vote.call(poll13Id, 1).then(voteResult => {
+              return Setup.vote.actor.vote.call(poll13Id, 1, { from: owner }).then(voteResult => {
                   assert.equal(web3.toHex(voteResult), web3.toHex(ErrorsEnum.VOTE_POLL_INACTIVE))
               })
           })
@@ -688,9 +729,9 @@ contract('Vote', function(accounts) {
 
       it("should be able to update details for a not activated poll", function () {
           let updDetailsIpfsHash = bytes32fromBase58("MmTfCejgo2wTwqnDJs8Lu1pCNeCrCDuE4GAwkna93zd333")
-          return Setup.vote.manager.updatePollDetailsIpfsHash.call(poll13Id, updDetailsIpfsHash)
+          return Setup.vote.manager.updatePollDetailsIpfsHash.call(poll13Id, updDetailsIpfsHash, { from: owner })
           .then(code => {
-              return Setup.vote.manager.updatePollDetailsIpfsHash(poll13Id, updDetailsIpfsHash)
+              return Setup.vote.manager.updatePollDetailsIpfsHash(poll13Id, updDetailsIpfsHash, { from: owner })
               .then(() => {
                   assert.equal(code, ErrorsEnum.OK)
               })
@@ -703,7 +744,7 @@ contract('Vote', function(accounts) {
 
       it("should not be able to update details for an activated poll", function () {
           let updDetailsIpfsHash = web3.fromAscii("Other poll12")
-          return Setup.vote.manager.updatePollDetailsIpfsHash.call(poll12Id, updDetailsIpfsHash)
+          return Setup.vote.manager.updatePollDetailsIpfsHash.call(poll12Id, updDetailsIpfsHash, { from: owner })
           .then(code => {
               assert.equal(code, ErrorsEnum.VOTE_POLL_SHOULD_BE_INACTIVE)
           })
@@ -715,9 +756,9 @@ contract('Vote', function(accounts) {
 
       it("should be able to add more options to a not activated poll", function() {
           let newOption = web3.fromAscii("3")
-          return Setup.vote.manager.addPollOption.call(poll13Id, newOption)
+          return Setup.vote.manager.addPollOption.call(poll13Id, newOption, { from: owner })
           .then(code => {
-              return Setup.vote.manager.addPollOption(poll13Id, newOption)
+              return Setup.vote.manager.addPollOption(poll13Id, newOption, { from: owner })
               .then(() => assert.equal(code, ErrorsEnum.OK))
           })
           .then(() => Setup.vote.details.getOptionsForPoll(poll13Id))
@@ -740,7 +781,7 @@ contract('Vote', function(accounts) {
                   pollId = event.args.pollId
               })
           })
-          .then(() => Setup.vote.manager.addPollOption.call(pollId, newOption))
+          .then(() => Setup.vote.manager.addPollOption.call(pollId, newOption, { from: owner }))
           .then(code => {
               assert.equal(code, ErrorsEnum.VOTE_OPTIONS_LIMIT_REACHED)
           })
@@ -748,7 +789,7 @@ contract('Vote', function(accounts) {
 
       it("should not be able to add more options to an activated poll", function () {
           let newOption = web3.fromAscii("3")
-          return Setup.vote.manager.addPollOption.call(poll12Id, newOption)
+          return Setup.vote.manager.addPollOption.call(poll12Id, newOption, { from: owner })
           .then(code => {
               assert.equal(code, ErrorsEnum.VOTE_POLL_SHOULD_BE_INACTIVE)
           })
@@ -758,9 +799,9 @@ contract('Vote', function(accounts) {
 
       it("should be able to remove option from a not activated poll", function () {
           let oldOption = web3.fromAscii("3")
-          return Setup.vote.manager.removePollOption.call(poll13Id, oldOption)
+          return Setup.vote.manager.removePollOption.call(poll13Id, oldOption, { from: owner })
           .then(code => {
-              return Setup.vote.manager.removePollOption(poll13Id, oldOption)
+              return Setup.vote.manager.removePollOption(poll13Id, oldOption, { from: owner })
               .then(() => assert.equal(code, ErrorsEnum.OK))
           })
           .then(() => Setup.vote.details.getOptionsForPoll(poll13Id))
@@ -772,7 +813,7 @@ contract('Vote', function(accounts) {
 
       it("should not be able to remove option from an activated poll", function () {
           let oldOption = web3.fromAscii("2")
-          return Setup.vote.manager.removePollOption.call(poll12Id, oldOption)
+          return Setup.vote.manager.removePollOption.call(poll12Id, oldOption, { from: owner })
           .then(code => {
               assert.equal(code, ErrorsEnum.VOTE_POLL_SHOULD_BE_INACTIVE)
           })
@@ -786,9 +827,9 @@ contract('Vote', function(accounts) {
 
       it("cannot update details of a poll by non-owner", function () {
           let updDetailsIpfsHash = web3.fromAscii("Non owner 13")
-          return Setup.vote.manager.updatePollDetailsIpfsHash.call(poll13Id, updDetailsIpfsHash, { from: accounts[1] })
+          return Setup.vote.manager.updatePollDetailsIpfsHash.call(poll13Id, updDetailsIpfsHash, { from: nonOwner })
           .then(code => {
-              return Setup.vote.manager.updatePollDetailsIpfsHash(poll13Id, updDetailsIpfsHash, { from: accounts[1] })
+              return Setup.vote.manager.updatePollDetailsIpfsHash(poll13Id, updDetailsIpfsHash, { from: nonOwner })
               .then(() => assert.equal(code, ErrorsEnum.UNAUTHORIZED))
           })
           .then(() => Setup.vote.details.getPoll(poll13Id))

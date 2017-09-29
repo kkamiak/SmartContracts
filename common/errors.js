@@ -9,11 +9,13 @@ const errorScope = {
     vote: 8000,
     reward: 9000,
     contract: 10000,
-    assets: 11000,
+    assets: 30000,
     timeholder: 12000,
     ercmanager: 13000,
     walletsmanager: 14000,
-    chronobankplatform: 15000
+    chronobankplatform: 15000,
+    platforms: 21000,
+    tokenextension: 23000
 }
 
 const errorsLibrary = {
@@ -130,15 +132,9 @@ const errorsLibrary = {
     ERCMANAGER_TOKEN_ALREADY_EXISTS: errorScope.ercmanager + 5,
     ERCMANAGER_TOKEN_UNCHANGED: errorScope.ercmanager + 6,
 
-    ASSETS_INVALID_INVOCATION: errorScope.assets + 0,
-    ASSETS_EXISTS: errorScope.assets + 1,
-    ASSETS_TOKEN_EXISTS: errorScope.assets + 2,
-    ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP: errorScope.assets + 3,
-    ASSETS_WRONG_PLATFORM: errorScope.assets + 4,
-    ASSETS_NOT_A_PROXY: errorScope.assets + 5,
-    ASSETS_OWNER_ONLY: errorScope.assets + 6,
-    ASSETS_CANNOT_ADD_TO_REGISTRY: errorScope.assets + 7,
-    ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP: errorScope.assets + 8,
+    ASSETS_MANAGER_SYMBOL_ALREADY_EXISTS: errorScope.assets + 1,
+    ASSETS_MANAGER_INVALID_INVOCATION: errorScope.assets + 2,
+    ASSETS_MANAGER_EXTENSION_ALREADY_EXISTS: errorScope.assets + 3,
 
     ERROR_WALLET_INVALID_INVOCATION: errorScope.walletsmanager + 0,
     ERROR_WALLET_EXISTS: errorScope.walletsmanager + 1,
@@ -163,7 +159,23 @@ const errorsLibrary = {
     CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_OWNER: errorScope.chronobankplatform + 14,
     CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_PROXY: errorScope.chronobankplatform + 15,
     CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED: errorScope.chronobankplatform + 16,
-    CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17
+    CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17,
+
+    PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS: errorScope.platforms + 1,
+    PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM: errorScope.platforms + 2,
+    PLATFORMS_PLATFORM_DOES_NOT_EXIST: errorScope.platforms + 3,
+    PLATFORMS_INCONSISTENT_INTERNAL_STATE: errorScope.platforms + 4,
+    PLATFORMS_DIFFERENT_PLATFORM_OWNERS: errorScope.platforms + 5,
+
+    TOKEN_EXTENSION_ASSET_TOKEN_EXISTS: errorScope.tokenextension + 1,
+    TOKEN_EXTENSION_ASSET_COULD_NOT_BE_REISSUED: errorScope.tokenextension + 2,
+    TOKEN_EXTENSION_ASSET_COULD_NOT_BE_REVOKED: errorScope.tokenextension + 3,
+    TOKEN_EXTENSION_ASSET_OWNER_ONLY: errorScope.tokenextension + 4,
+    TOKEN_EXTENSION_CANNOT_PASS_PLATFORM_OWNERSHIP: errorScope.tokenextension + 51,
+    TOKEN_EXTENSION_CANNOT_CLAIM_PLATFORM_OWNERSHIP: errorScope.tokenextension + 52,
+    TOKEN_EXTENSION_SENDER_DOES_NOT_SUPPORT_ASSET_FALLBACK: errorScope.tokenextension + 53,
+    TOKEN_EXTENSION_CANNOT_PASS_ASSET_OWNERSHIP: errorScope.tokenextension + 54,
+    TOKEN_EXTENSION_CANNOT_CLAIM_ASSET_OWNERSHIP: errorScope.tokenextension + 55,
 }
 
 module.exports = errorsLibrary

@@ -10,11 +10,13 @@ const Exchange = artifacts.require('./Exchange.sol')
 const ERC20Manager = artifacts.require("./ERC20Manager.sol")
 const ExchangeManager = artifacts.require("./ExchangeManager.sol")
 const AssetsManager = artifacts.require("./AssetsManager.sol")
+const PlatformsManager = artifacts.require('./PlatformsManager.sol')
 const WalletsManager = artifacts.require("./WalletsManager.sol")
 const PendingManager = artifacts.require("./PendingManager.sol")
 const TimeHolder = artifacts.require('./TimeHolder.sol')
 const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
 const Rewards = artifacts.require('./Rewards.sol')
+const RewardsWallet = artifacts.require('./RewardsWallet.sol')
 const Storage = artifacts.require('./Storage.sol')
 const UserManager = artifacts.require("./UserManager.sol")
 const MultiEventsHistory = artifacts.require('./MultiEventsHistory.sol')
@@ -44,6 +46,7 @@ const contractTypes = {
 
 let storage
 let assetsManager
+let platformsManager
 let walletsManager
 let chronoBankPlatform
 let chronoMint
@@ -54,6 +57,7 @@ let timeHolderWallet
 let shareable
 let erc20Manager
 let rewards
+let rewardsWallet
 let voteActor
 let pollManager
 let pollDetails
@@ -106,10 +110,12 @@ var setup = function (callback) {
       ChronoBankAssetProxy.deployed(),
       ChronoBankAssetWithFeeProxy.deployed(),
       AssetsManager.deployed(),
+      PlatformsManager.deployed(),
       WalletsManager.deployed(),
       ERC20Manager.deployed(),
       ExchangeManager.deployed(),
       Rewards.deployed(),
+      RewardsWallet.deployed(),
       VoteActor.deployed(),
       PollManager.deployed(),
       PollDetails.deployed(),
@@ -133,10 +139,12 @@ var setup = function (callback) {
       chronoBankAssetProxy,
       chronoBankAssetWithFeeProxy,
       assetsManager,
+      platformsManager,
       walletsManager,
       erc20Manager,
       exchangeManager,
       rewards,
+      rewardsWallet,
       voteActor,
       pollManager,
       pollDetails,
@@ -150,6 +158,7 @@ var setup = function (callback) {
     module.exports.storage = storage
     module.exports.accounts = accounts
     module.exports.assetsManager = assetsManager
+    module.exports.platformsManager = platformsManager
     module.exports.walletsManager = walletsManager
     module.exports.chronoBankPlatform = chronoBankPlatform
     module.exports.chronoMint = chronoMint
@@ -160,6 +169,7 @@ var setup = function (callback) {
     module.exports.shareable = shareable
     module.exports.erc20Manager = erc20Manager
     module.exports.rewards = rewards
+    module.exports.rewardsWallet = rewardsWallet
     module.exports.userManager = userManager
     module.exports.exchangeManager = exchangeManager
     module.exports.chronoBankAsset = chronoBankAsset
@@ -173,7 +183,7 @@ var setup = function (callback) {
   }).then(() => {
     callback()
   }).catch(function (e) {
-    console.log(e)
+    console.log("Error:", e)
     callback(e);
   })
 }

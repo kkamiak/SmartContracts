@@ -6,6 +6,7 @@ contract ChronoBankPlatformInterface {
     function setProxy(address _address, bytes32 _symbol) returns(uint errorCode);
     function isCreated(bytes32 _symbol) constant returns(bool);
     function isOwner(address _owner, bytes32 _symbol) returns(bool);
+    function owner(bytes32 _symbol) constant returns(address);
     function totalSupply(bytes32 _symbol) returns(uint);
     function balanceOf(address _holder, bytes32 _symbol) returns(uint);
     function allowance(address _from, address _spender, bytes32 _symbol) returns(uint);

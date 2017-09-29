@@ -1,373 +1,287 @@
 pragma solidity ^0.4.11;
 
 import "../core/common/BaseManager.sol";
-import {ERC20ManagerInterface as ERC20Manager} from "../core/erc20/ERC20ManagerInterface.sol";
-import "../core/platform/ChronoBankPlatformInterface.sol";
-import "../core/platform/ChronoBankAssetInterface.sol";
+import "../core/common/Once.sol";
+import "../core/erc20/ERC20ManagerInterface.sol";
 import "../core/platform/ChronoBankAssetProxyInterface.sol";
-import "../core/erc20/ERC20Interface.sol";
-import "../core/common/OwnedInterface.sol";
+import "../core/platform/ChronoBankAssetOwnershipManager.sol";
+import "./TokenManagementInterface.sol";
+import "./AssetsManagerInterface.sol";
 import "./AssetsManagerEmitter.sol";
-import "../crowdsale/CrowdsaleManager.sol";
-import "../crowdsale/base/BaseCrowdsale.sol";
 
-contract ChronoBankAsset {
-    function init(ChronoBankAssetProxyInterface _proxy) returns (bool);
+contract OwnedContract {
+    address public contractOwner;
 }
 
-contract ProxyFactory {
-    function createProxy() returns (address);
-    function createAsset() returns (address);
-    function createAssetWithFee() returns (address);
+
+contract TokenExtensionsFactory {
+    function createTokenExtension(address _platform) returns (address);
 }
 
-contract AssetsManager is AssetsManagerEmitter, BaseManager {
 
-    uint constant ERROR_ASSETS_INVALID_INVOCATION = 11000;
-    uint constant ERROR_ASSETS_EXISTS = 11001;
-    uint constant ERROR_ASSETS_TOKEN_EXISTS = 11002;
-    uint constant ERROR_ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP = 11003;
-    uint constant ERROR_ASSETS_WRONG_PLATFORM = 11004;
-    uint constant ERROR_ASSETS_NOT_A_PROXY = 11005;
-    uint constant ERROR_ASSETS_CANNOT_ADD_TO_REGISTRY = 11007;
-    uint constant ERROR_ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP = 11008;
+/**
+* TODO
+*/
+contract AssetsManager is AssetsManagerInterface, AssetsRegistry, TokenExtensionRegistry, BaseManager, AssetsManagerEmitter {
 
-    StorageInterface.Address platform;
-    StorageInterface.Address proxyFactory;
-    StorageInterface.Set assetsSymbols;
-    StorageInterface.Bytes32AddressMapping assets;
-    StorageInterface.AddressAddressUIntMapping owners;
-    StorageInterface.AddressesSet allOwners;
+    /** Error codes */
 
-    modifier onlyAssetOwner(bytes32 _symbol) {
-        if (isAssetOwner(_symbol, msg.sender)) {
+    uint constant ERROR_ASSETS_MANAGER_SYMBOL_ALREADY_EXISTS = 30001;
+    uint constant ERROR_ASSETS_MANAGER_INVALID_INVOCATION = 30002;
+    uint constant ERROR_ASSETS_MANAGER_EXTENSION_ALREADY_EXISTS = 30003;
+
+    /** Storage keys */
+
+    /** TODO */
+    StorageInterface.Address tokenExtensionFactory;
+
+    /** TODO */
+    StorageInterface.Address tokenFactory;
+
+    /** TODO */
+    StorageInterface.AddressAddressMapping platformToExtension;
+
+    /** TODO */
+    StorageInterface.OrderedAddressesSet tokenExtensions;
+
+    /** TODO */
+    StorageInterface.Bytes32SetMapping assetOwnerToAssets;
+
+    /**
+    * @dev TODO
+    */
+    modifier onlyTokenExtension() {
+        if (!store.includes(tokenExtensions, msg.sender)) {
+            revert();
+        }
+        _;
+    }
+
+    /**
+    * @dev TODO
+    */
+    modifier onlyPlatformOwner(address _platform) {
+        if (OwnedContract(_platform).contractOwner() == msg.sender) {
             _;
         }
     }
 
-    function isAssetSymbolExists(bytes32 _symbol) constant returns (bool) {
-        return store.get(assets, _symbol) != 0x0;
-    }
-
-    function isAssetOwner(bytes32 _symbol, address _owner) constant returns (bool) {
-        return store.get(owners, store.get(assets, _symbol), _owner) == 1;
-    }
-
     function AssetsManager(Storage _store, bytes32 _crate) BaseManager(_store, _crate) {
-        platform.init('platform');
-        proxyFactory.init('proxyFactory');
-        assetsSymbols.init('assetsSymbols');
-        assets.init('assets');
-        owners.init('owners');
-        allOwners.init('allOwners');
-    }
-
-    function init(address _platform, address _contractsManager, address _proxyFactory) onlyContractOwner returns (uint) {
-        BaseManager.init(_contractsManager, "AssetsManager");
-
-        store.set(platform, _platform);
-        store.set(proxyFactory, _proxyFactory);
-        return OK;
-    }
-
-    function destroy(bytes32[] _symbols) onlyContractOwner {
-        address chronobankPlatform = store.get(platform);
-        bytes32 assetSymbol;
-        for (uint assetIdx = 0; assetIdx < _symbols.length; ++assetIdx) {
-            assetSymbol = _symbols[assetIdx];
-            if (ChronoBankPlatformInterface(chronobankPlatform).isOwner(this, assetSymbol)) {
-                ChronoBankPlatformInterface(chronobankPlatform).changeOwnership(assetSymbol, msg.sender);
-            }
-        }
-
-        Owned(chronobankPlatform).changeContractOwnership(msg.sender);
-
-        BaseManager.destroy();
+        tokenExtensionFactory.init("tokenExtensionFactory");
+        tokenFactory.init("tokenFactory");
+        platformToExtension.init("platformToExtension");
+        tokenExtensions.init("tokenExtensions");
+        assetOwnerToAssets.init("assetOwnerToAssets");
     }
 
     /**
-    *   @dev Use other `destroy` implementation
+    * @dev TODO
     */
-    function destroy() {
-        throw;
-    }
-
-    function claimPlatformOwnership() returns (uint errorCode) {
-        if (!OwnedInterface(store.get(platform)).claimContractOwnership()) {
-            return _emitError(ERROR_ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP);
-        }
-        //platform = address(0);
-        return OK;
-    }
-
-    function passPlatformOwnership(address _to) onlyContractOwner() returns (uint errorCode) {
-        if (!OwnedInterface(store.get(platform)).changeContractOwnership(_to)) {
-            return _emitError(ERROR_ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP);
-        }
+    function init(address _contractsManager, address _tokenExtensionFactory, address _tokenFactory) onlyContractOwner public returns (uint) {
+        BaseManager.init(_contractsManager, "AssetsManager");
+        setTokenExtensionFactory(_tokenExtensionFactory);
+        setTokenFactory(_tokenFactory);
 
         return OK;
     }
 
-    function getAssetBalance(bytes32 symbol) constant returns (uint) {
-        return ERC20Interface(store.get(assets, symbol)).balanceOf(this);
+    /**
+    * @dev TODO
+    */
+    function getTokenExtensionFactory() public constant returns (address) {
+        return store.get(tokenExtensionFactory);
     }
 
-    function getAssetBySymbol(bytes32 symbol) constant returns (address) {
-        return store.get(assets, symbol);
-    }
+    /**
+    * @dev TODO
+    */
+    function setTokenExtensionFactory(address _tokenExtensionFactory) onlyContractOwner public returns (uint) {
+        require(_tokenExtensionFactory != 0x0);
 
-    function getSymbolById(uint _id) constant returns (bytes32) {
-        return store.get(assetsSymbols, _id);
-    }
-
-    function getAssets() constant returns (bytes32[]) {
-        return store.get(assetsSymbols);
-    }
-
-    function getAssetsCount() constant returns (uint) {
-        return store.count(assetsSymbols);
-    }
-
-    function sendAsset(bytes32 _symbol, address _to, uint _value) onlyAssetOwner(_symbol) returns (bool) {
-        return ERC20Interface(store.get(assets, _symbol)).transfer(_to, _value);
-    }
-
-    function reissueAsset(bytes32 _symbol, uint _value) onlyAssetOwner(_symbol) returns (bool) {
-        return ChronoBankPlatformInterface(store.get(platform)).reissueAsset(_symbol, _value) == OK;
-    }
-
-    function revokeAsset(bytes32 _symbol, uint _value) onlyAssetOwner(_symbol) returns (bool) {
-        return ChronoBankPlatformInterface(store.get(platform)).revokeAsset(_symbol, _value) == OK;
-    }
-
-    function addAsset(address asset, bytes32 _symbol, address owner) returns (uint errorCode) {
-        if (isAssetSymbolExists(_symbol)) {
-            return _emitError(ERROR_ASSETS_EXISTS);
-        }
-
-        address _platform = store.get(platform);
-        if (ChronoBankAssetProxyInterface(asset).chronoBankPlatform() != _platform) {
-            return _emitError(ERROR_ASSETS_WRONG_PLATFORM);
-        }
-
-        if (ChronoBankPlatformInterface(_platform).proxies(_symbol) != asset) {
-            return _emitError(ERROR_ASSETS_NOT_A_PROXY);
-        }
-
-        if (!ChronoBankPlatformInterface(_platform).isOwner(this, _symbol)) {
-            return _emitError(UNAUTHORIZED);
-        }
-
-        uint8 decimals = ChronoBankPlatformInterface(_platform).baseUnit(_symbol);
-        address erc20Manager = lookupManager("ERC20Manager");
-
-        errorCode = ERC20Manager(erc20Manager)
-                        .addToken(asset, _symbol, _symbol, bytes32(0), decimals, bytes32(0), bytes32(0));
-        if (OK != errorCode) {
-            return _emitError(errorCode);
-        }
-
-        store.set(assets, _symbol, asset);
-        store.add(assetsSymbols, _symbol);
-        store.set(owners, asset, owner, 1);
-        store.add(allOwners, owner);
-
-        _emitAssetAdded(asset, _symbol, owner);
-
+        store.set(tokenExtensionFactory, _tokenExtensionFactory);
         return OK;
     }
 
-    function createAsset(bytes32 symbol, string name, string description, uint value, uint8 decimals, bool isMint, bool withFee) returns (uint errorCode) {
-        if (isAssetSymbolExists(symbol)) {
-            return _emitError(ERROR_ASSETS_EXISTS);
-        }
+    /**
+    * @dev TODO
+    */
+    function getTokenFactory() public constant returns (address) {
+        return store.get(tokenFactory);
+    }
 
-        address erc20Manager = lookupManager("ERC20Manager");
-        address token = ERC20Manager(erc20Manager).getTokenAddressBySymbol(symbol);
-        if (token != address(0)) {
-            return _emitError(ERROR_ASSETS_TOKEN_EXISTS);
-        }
+    /**
+    * @dev TODO
+    */
+    function setTokenFactory(address _tokenFactory) onlyContractOwner public returns (uint) {
+        require(_tokenFactory != 0x0);
 
-        token = ProxyFactory(store.get(proxyFactory)).createProxy();
-        address asset;
-        errorCode = ChronoBankPlatformInterface(store.get(platform)).issueAsset(symbol, value, name, description, decimals, isMint);
-        if (errorCode != OK) {
-            return errorCode;
-        }
-        if (withFee) {
-            asset = ProxyFactory(store.get(proxyFactory)).createAssetWithFee();
-        }
-        else {
-            asset = ProxyFactory(store.get(proxyFactory)).createAsset();
-        }
-        errorCode = ChronoBankPlatformInterface(store.get(platform)).setProxy(token, symbol);
-        if (errorCode != OK) {
-            return errorCode;
-        }
-        ChronoBankAssetProxyInterface(token).init(store.get(platform), bytes32ToString(symbol), name);
-        ChronoBankAssetProxyInterface(token).proposeUpgrade(asset);
-        ChronoBankAsset(asset).init(ChronoBankAssetProxyInterface(token));
-
-        errorCode = ERC20Manager(erc20Manager)
-                        .addToken(token, bytes32(0), symbol, bytes32(0), decimals, bytes32(0), bytes32(0));
-        if (OK != errorCode) {
-            return _emitError(errorCode);
-        }
-
-        store.set(assets, symbol, token);
-        store.add(assetsSymbols, symbol);
-        store.set(owners, token, msg.sender, 1);
-        store.add(allOwners, msg.sender);
-        _emitAssetCreated(symbol, token);
+        store.set(tokenFactory, _tokenFactory);
         return OK;
     }
 
-    function createCrowdsaleCampaign(bytes32 _symbol) returns (uint) {
-        if (!isAssetOwner(_symbol, msg.sender)) {
-            return _emitError(UNAUTHORIZED);
+    /**
+    * @dev TODO
+    */
+    function containsTokenExtension(address _tokenExtension) public constant returns (bool) {
+        return store.includes(tokenExtensions, _tokenExtension);
+    }
+
+    /**
+    * @dev TODO
+    */
+    function registerTokenExtension(address _tokenExtension) onlyContractOwner public returns (uint) {
+        if (store.includes(tokenExtensions, _tokenExtension)) {
+            return _emitError(ERROR_ASSETS_MANAGER_EXTENSION_ALREADY_EXISTS);
         }
 
-        CrowdsaleManager crowdsaleManager = CrowdsaleManager(lookupManager("CrowdsaleManager"));
+        address _platform = TokenManagementInterface(_tokenExtension).platform();
+        if (store.get(platformToExtension, _platform) != 0x0) {
+            return _emitError(ERROR_ASSETS_MANAGER_EXTENSION_ALREADY_EXISTS);
+        }
 
-        var (crowdsale, result) = crowdsaleManager.createCrowdsale(msg.sender, _symbol, "TimeLimitedCrowdsaleFactory");
-        if (OK != result) return _emitError(result);
-
-        result = addAssetOwner(_symbol, crowdsale);
-        if (OK != result) return _emitError(result);
-
-        _emitCrowdsaleCampaignCreated(_symbol, crowdsale);
-
+        store.add(tokenExtensions, _tokenExtension);
+        store.set(platformToExtension, _platform, _tokenExtension);
+        _emitTokenExtensionRegistered(_platform, _tokenExtension);
         return OK;
     }
 
-    function deleteCrowdsaleCampaign(address _crowdsale) returns (uint result) {
-        bytes32 symbol = BaseCrowdsale(_crowdsale).getSymbol();
-
-        if (!isAssetOwner(symbol, msg.sender)) {
-            return _emitError(UNAUTHORIZED);
+    /**
+    * @dev TODO
+    */
+    function unregisterTokenExtension(address _tokenExtension) onlyPlatformOwner(TokenManagementInterface(_tokenExtension).platform()) public returns (uint) {
+        if (!store.includes(tokenExtensions, _tokenExtension)) {
+            return _emitError(ERROR_ASSETS_MANAGER_INVALID_INVOCATION);
         }
 
-        CrowdsaleManager crowdsaleManager = CrowdsaleManager(lookupManager("CrowdsaleManager"));
-
-        result = crowdsaleManager.deleteCrowdsale(_crowdsale);
-        if (OK != result) return _emitError(result);
-
-        result = deleteAssetOwner(symbol, _crowdsale);
-        if (OK != result) return _emitError(result);
-
-        _emitCrowdsaleCampaignRemoved(symbol, _crowdsale);
-
+        store.remove(tokenExtensions, _tokenExtension);
+        store.set(platformToExtension, TokenManagementInterface(_tokenExtension).platform(), _tokenExtension);
+        _emitTokenExtensionUnregistered(_tokenExtension);
         return OK;
     }
 
-    function addAssetOwner(bytes32 _symbol, address _owner) returns (uint errorCode) {
-        if (!isAssetOwner(_symbol, msg.sender)) {
-            return _emitError(UNAUTHORIZED);
-        }
+    /**
+    * @dev TODO
+    */
+    function isAssetOwner(bytes32 _symbol, address _user) public constant returns (bool) {
+        address _token = getAssetBySymbol(_symbol);
+        address _platform = ChronoBankAssetProxyInterface(_token).chronoBankPlatform();
+        address _tokenExtension = getTokenExtension(_platform);
+        address _assetOwnershipManager = TokenManagementInterface(_tokenExtension).getAssetOwnershipManager();
+        return ChronoBankAssetOwnershipManager(_assetOwnershipManager).hasAssetRights(_user, _symbol);
+    }
 
-        store.set(owners, store.get(assets, _symbol), _owner, 1);
-        store.add(allOwners, _owner);
-        _emitAssetOwnerAdded(_symbol, _owner);
+    /**
+    * @dev TODO
+    */
+    function isAssetSymbolExists(bytes32 _symbol) public constant returns (bool) {
+        return getAssetBySymbol(_symbol) != 0x0;
+    }
+
+    /**
+    * @dev TODO
+    */
+    function getAssetBySymbol(bytes32 _symbol) public constant returns (address) {
+        return ERC20ManagerInterface(lookupManager("ERC20Manager")).getTokenAddressBySymbol(_symbol);
+    }
+
+    /**
+    * @dev TODO
+    */
+    function addRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) onlyTokenExtension public returns (uint) {
+        store.add(assetOwnerToAssets, _getOwnerKey(_platform, _owner), _symbol);
+        _emitAssetOwnerAdded(_platform, _symbol, _owner);
         return OK;
     }
 
-    function deleteAssetOwner(bytes32 _symbol, address _owner) returns (uint errorCode) {
-        if (!isAssetOwner(_symbol, msg.sender)) {
-            return _emitError(UNAUTHORIZED);
-        }
-
-        store.set(owners, store.get(assets, _symbol), _owner, 0);
-        store.remove(allOwners, _owner);
-        _emitAssetOwnerRemoved(_symbol, _owner);
+    /**
+    * @dev TODO
+    */
+    function removeRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) onlyTokenExtension public returns (uint) {
+        store.remove(assetOwnerToAssets, _getOwnerKey(_platform, _owner), _symbol);
+        _emitAssetOwnerRemoved(_platform, _symbol, _owner);
         return OK;
     }
 
-    function getAssetOwners(bytes32 _symbol) constant returns (address[]) {
-        uint counter;
-        uint i;
-        for (i = 0; i < store.count(allOwners); i++) {
-            if (isAssetOwner(_symbol, store.get(allOwners, i))) {
-                counter++;
-            }
+    /**
+    * @dev TODO
+    */
+    function getAssetsForOwnerCount(address _platform, address _owner) public constant returns (uint) {
+        return store.count(assetOwnerToAssets, _getOwnerKey(_platform, _owner));
+    }
+
+    /**
+    * @dev TODO
+    */
+    function getAssetForOwnerAtIndex(address _platform, address _owner, uint idx) public constant returns (bytes32) {
+        return store.get(assetOwnerToAssets, _getOwnerKey(_platform, _owner), idx);
+    }
+
+    /**
+    * @dev TODO
+    */
+    function getAssetsForOwner(address _platform, address _owner) public constant returns (bytes32[]) {
+        return store.get(assetOwnerToAssets, _getOwnerKey(_platform, _owner));
+    }
+
+    /**
+    * @dev TODO
+    */
+    function requestTokenExtension(address _platform) public returns (uint) {
+        address _tokenExtension = getTokenExtension(_platform);
+        if (_tokenExtension != 0x0) {
+            _emitTokenExtensionRequested(_platform, _tokenExtension);
+            return OK;
         }
-        address[] memory result = new address[](counter);
-        counter = 0;
-        for (i = 0; i < store.count(allOwners); i++) {
-            if (isAssetOwner(_symbol, store.get(allOwners, i))) {
-                result[i] = store.get(allOwners, i);
-                counter++;
-            }
-        }
-        return result;
+
+        TokenExtensionsFactory _extensionsFactory = TokenExtensionsFactory(store.get(tokenExtensionFactory));
+        _tokenExtension = _extensionsFactory.createTokenExtension(_platform);
+        store.set(platformToExtension, _platform, _tokenExtension);
+        store.add(tokenExtensions, _tokenExtension);
+
+        _emitTokenExtensionRequested(_platform, _tokenExtension);
+        return OK;
     }
 
-    function getAssetsForOwner(address owner) constant returns (bytes32[] result) {
-        uint counter;
-        uint i;
-        for (i = 0; i < store.count(assetsSymbols); i++) {
-            if (isAssetOwner(store.get(assetsSymbols, i), owner))
-            counter++;
-        }
-        result = new bytes32[](counter);
-        counter = 0;
-        for (i = 0; i < store.count(assetsSymbols); i++) {
-            if (isAssetOwner(store.get(assetsSymbols, i), owner)) {
-                result[counter] = store.get(assetsSymbols, i);
-                counter++;
-            }
-        }
-        return result;
+    /**
+    * @dev TODO
+    */
+    function getTokenExtension(address _platform) public constant returns (address) {
+        return store.get(platformToExtension, _platform);
     }
 
-    // TODO: ahiatsevich - move to library
-    function bytes32ToString(bytes32 x) constant returns (string) {
-        bytes memory bytesString = new bytes(32);
-        uint charCount = 0;
-        for (uint j = 0; j < 32; j++) {
-            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
-            if (char != 0) {
-                bytesString[charCount] = char;
-                charCount++;
-            }
-        }
-        bytes memory bytesStringTrimmed = new bytes(charCount);
-        for (j = 0; j < charCount; j++) {
-            bytesStringTrimmed[j] = bytesString[j];
-        }
-        return string(bytesStringTrimmed);
+    /** Helper functions */
+
+    /**
+    * @dev TODO
+    */
+    function _getOwnerKey(address _platform, address _owner) private constant returns (bytes32) {
+        return keccak256(bytes32(_platform), bytes32(_owner));
     }
 
-    function _emitError(uint error) internal returns (uint) {
-        AssetsManager(getEventsHistory()).emitError(error );
-        return error;
+    /** Events emitting */
+
+    function _emitError(uint _errorCode) private returns (uint) {
+        AssetsManagerEmitter(getEventsHistory()).emitError(_errorCode);
+        return _errorCode;
     }
 
-    function _emitAssetAdded(address asset, bytes32 symbol, address owner) internal {
-        AssetsManager(getEventsHistory()).emitAssetAdded(asset, symbol, owner);
+    function _emitAssetOwnerAdded(address _platform, bytes32 _symbol, address _owner) private {
+        AssetsManagerEmitter(getEventsHistory()).emitAssetOwnerAdded(_platform, _symbol, _owner);
     }
 
-    function _emitAssetCreated(bytes32 symbol, address token) internal {
-        AssetsManager(getEventsHistory()).emitAssetCreated(symbol, token);
+    function _emitAssetOwnerRemoved(address _platform, bytes32 _symbol, address _owner) private {
+        AssetsManagerEmitter(getEventsHistory()).emitAssetOwnerRemoved(_platform, _symbol, _owner);
     }
 
-    function _emitAssetOwnerAdded(bytes32 symbol, address owner) internal {
-        AssetsManager(getEventsHistory()).emitAssetOwnerAdded(symbol, owner);
+    function _emitTokenExtensionRequested(address _platform, address _tokenExtension) private {
+        AssetsManagerEmitter(getEventsHistory()).emitTokenExtensionRequested(_platform, _tokenExtension);
     }
 
-    function _emitAssetOwnerRemoved(bytes32 symbol, address owner) internal {
-        AssetsManager(getEventsHistory()).emitAssetOwnerRemoved(symbol, owner);
+    function _emitTokenExtensionRegistered(address _platform, address _tokenExtension) private {
+        AssetsManagerEmitter(getEventsHistory()).emitTokenExtensionRegistered(_platform, _tokenExtension);
     }
 
-    function _emitCrowdsaleCampaignCreated(bytes32 symbol, address campaign) internal {
-        AssetsManager(getEventsHistory()).emitCrowdsaleCampaignCreated(symbol, campaign);
-    }
-
-    function _emitCrowdsaleCampaignRemoved(bytes32 symbol, address campaign) internal {
-        AssetsManager(getEventsHistory()).emitCrowdsaleCampaignRemoved(symbol, campaign);
-    }
-
-    function()
-    {
-        throw;
+    function _emitTokenExtensionUnregistered(address _tokenExtension) private {
+        AssetsManagerEmitter(getEventsHistory()).emitTokenExtensionUnregistered(_tokenExtension);
     }
 }

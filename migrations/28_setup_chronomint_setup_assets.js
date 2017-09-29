@@ -1,73 +1,65 @@
-const ChronoBankPlatform = artifacts.require("./ChronoBankPlatform.sol");
-const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
-const ChronoBankAssetWithFeeProxy = artifacts.require("./ChronoBankAssetWithFeeProxy.sol");
 const ChronoBankAssetWithFee = artifacts.require("./ChronoBankAssetWithFee.sol");
 const ChronoBankAsset = artifacts.require("./ChronoBankAsset.sol");
+const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
+const ChronoBankAssetWithFeeProxy = artifacts.require("./ChronoBankAssetWithFeeProxy.sol");
 const AssetsManager = artifacts.require("./AssetsManager.sol");
+const TokenManagementExtension = artifacts.require('./TokenManagementExtension.sol')
+const PlatformsManager = artifacts.require('./PlatformsManager.sol')
+const OwnedInterface = artifacts.require('./OwnedInterface')
 const Rewards = artifacts.require("./Rewards.sol");
+const RewardsWallet = artifacts.require("./RewardsWallet.sol");
 const ERC20Manager = artifacts.require("./ERC20Manager.sol");
 const LOCManager = artifacts.require('./LOCManager.sol');
 const LOCWallet = artifacts.require('./LOCWallet.sol');
+const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
 
 const bs58 = require("bs58");
+const BigNumber = require("bignumber.js");
 const Buffer = require("buffer").Buffer;
+const bytes32fromBase58 = require('../test/helpers/bytes32fromBase58')
+
 
 module.exports = function(deployer, network, accounts) {
     const TIME_SYMBOL = 'TIME';
+    const TIME_NAME = 'Time Token';
+    const TIME_DESCRIPTION = 'ChronoBank Time Shares';
+    const TIME_BASE_UNIT = 8;
+
+    //----------
     const LHT_SYMBOL = 'LHT';
-if (network !== "main") {
+    const LHT_NAME = 'Labour-hour Token';
+    const LHT_DESCRIPTION = 'ChronoBank Lht Assets';
+    const LHT_BASE_UNIT = 8;
+
+    const systemOwner = accounts[0]
+
     deployer
-      .then(() => AssetsManager.deployed())
-      .then(_assetsManager => assetsManager = _assetsManager)
-      .then(() => ERC20Manager.deployed())
-      .then(_erc20Manager => erc20Manager = _erc20Manager)
-      .then(() => ChronoBankPlatform.deployed())
-      .then(_chronoBankPlatform => chronoBankPlatform = _chronoBankPlatform)
-      .then(() => {
-              return ChronoBankAssetProxy.deployed()
-                .then(_chronoBankAssetProxy => chronoBankAssetProxy = _chronoBankAssetProxy)
-                .then(() => chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, TIME_SYMBOL))
-                .then(() => chronoBankAssetProxy.proposeUpgrade(ChronoBankAsset.address))
-                .then(() => chronoBankAssetProxy.transfer(assetsManager.address, 1000000000000))
-                .then(() => chronoBankPlatform.changeOwnership(TIME_SYMBOL, assetsManager.address))
-                .then(() => {
-                  if (network !== "test") {
-                      return assetsManager.addAsset(ChronoBankAssetProxy.address, TIME_SYMBOL, accounts[0])
-                  }
-                })
-      })
-      .then(() => {
-          return ChronoBankAssetWithFeeProxy.deployed()
-              .then(_chronoBankAssetWithFeeProxy => chronoBankAssetWithFeeProxy = _chronoBankAssetWithFeeProxy)
-              .then(() => ChronoBankAssetWithFee.deployed())
-              .then(_chronoBankAssetWithFee => chronoBankAssetWithFee = _chronoBankAssetWithFee)
-              .then(() => chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, LHT_SYMBOL))
-              .then(() => chronoBankAssetWithFeeProxy.proposeUpgrade(ChronoBankAssetWithFee.address))
-              .then(() => chronoBankAssetWithFee.setupFee(Rewards.address, 100))
-              .then(() => chronoBankPlatform.addAssetPartOwner(LHT_SYMBOL, LOCWallet.address))
-              .then(() => chronoBankPlatform.changeOwnership(LHT_SYMBOL, assetsManager.address))
-              .then(() => {
-                if (network !== "test") {
-                    //https://ipfs.infura.io:5001
-                    const lhtIconIpfsHash = "Qmdhbz5DTrd3fLHWJ8DY2wyAwhffEZG9MoWMvbm3MRwh8V";
-                    return assetsManager.addAsset(chronoBankAssetWithFeeProxy.address, LHT_SYMBOL, LOCManager.address)
-                        .then(() => erc20Manager.getTokenBySymbol.call(LHT_SYMBOL))
-                        .then((asset) => {
-                            return erc20Manager.setToken(asset[0], asset[0], asset[1], asset[2], asset[3], asset[4], ipfsHashToBytes32(lhtIconIpfsHash), asset[6])
-                        })
-                }
-              })
-      })
-      .then(() => chronoBankPlatform.changeContractOwnership(assetsManager.address))
-      .then(() => assetsManager.claimPlatformOwnership())
-      .then(() => console.log("[MIGRATION] [28] Setup Assets: #done"))
-}
-}
+    .then(() => AssetsManager.deployed())
+    .then(_assetsManager => assetsManager = _assetsManager)
+    .then(() => ERC20Manager.deployed())
+    .then(_erc20Manager => erc20Manager = _erc20Manager)
+    .then(() => ChronoBankPlatform.deployed())
+    .then(_chronoBankPlatform => chronoBankPlatform = _chronoBankPlatform)
 
-// Util function
-// TODO: @ahiatsevich: copy-paste from
-// ChronoBank/ChronoMint/src/utils/Web3Converter.js
+    .then(() => {
+        if (network !== 'main') {
+            return ChronoBankAssetProxy.deployed()
+            .then(_chronoBankAssetProxy => chronoBankAssetProxy = _chronoBankAssetProxy)
+            .then(() => chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, TIME_SYMBOL))
+            .then(() => chronoBankAssetProxy.proposeUpgrade(ChronoBankAsset.address))
+            .then(() => erc20Manager.addToken(ChronoBankAssetProxy.address, TIME_NAME, TIME_SYMBOL, "", LHT_BASE_UNIT, "", ""))
+        }
+    })
+    .then(() => {
+        return ChronoBankAssetWithFeeProxy.deployed()
+            .then(_chronoBankAssetWithFeeProxy => chronoBankAssetWithFeeProxy = _chronoBankAssetWithFeeProxy)
+            .then(() => ChronoBankAssetWithFee.deployed())
+            .then(_chronoBankAssetWithFee => chronoBankAssetWithFee = _chronoBankAssetWithFee)
+            .then(() => chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, LHT_SYMBOL))
+            .then(() => chronoBankAssetWithFeeProxy.proposeUpgrade(ChronoBankAssetWithFee.address))
+            .then(() => chronoBankAssetWithFee.setupFee(RewardsWallet.address, 100))
+            .then(() => erc20Manager.addToken(ChronoBankAssetWithFeeProxy.address, LHT_NAME, LHT_SYMBOL, "", LHT_BASE_UNIT, "", ""))
+    })
 
-let ipfsHashToBytes32 = (value) => {
-  return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
+    .then(() => console.log("[MIGRATION] [28] Setup Assets: #done"))
 }

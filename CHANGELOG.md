@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 
+<a name="1.1.37"></a>
+## [1.1.37](https://github.com/ChronoBank/SmartContracts/compare/v1.1.38...v1.1.37) (2017-10-01)
+
+
+
 <a name="1.1.38"></a>
 ## [1.1.38](https://github.com/ChronoBank/SmartContracts/compare/v1.1.37...v1.1.38) (2017-10-01)
 

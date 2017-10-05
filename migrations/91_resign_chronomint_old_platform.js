@@ -40,7 +40,7 @@ module.exports = function(deployer, network, accounts) {
     })
 
     .then(() => {
-    if (network !== 'main' || network !== 'ropsten') {
+    if (!(network === 'main' || network === 'ropsten')) {
         return Promise.resolve()
         .then(() => platformsManager.createPlatform.call())
         .then(_code => {

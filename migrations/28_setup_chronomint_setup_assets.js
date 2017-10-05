@@ -16,7 +16,6 @@ const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
 const bs58 = require("bs58");
 const BigNumber = require("bignumber.js");
 const Buffer = require("buffer").Buffer;
-const bytes32fromBase58 = require('../test/helpers/bytes32fromBase58')
 
 
 module.exports = function(deployer, network, accounts) {

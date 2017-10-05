@@ -6,6 +6,8 @@ const ChronoBankTokenManagementExtension = artifacts.require("./ChronoBankTokenM
 const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
 const ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
 
+
+// NOTE: should not support this test cases
 contract("ChronoBank TokenManagementExtension", function(accounts) {
     const contractOwner = accounts[0]
     const systemOwner = accounts[0]
@@ -31,7 +33,7 @@ contract("ChronoBank TokenManagementExtension", function(accounts) {
         })
     })
 
-    context("asset creation", function () {
+    context.skip("asset creation", function () {
         const TOKEN_SYMBOL = "MTT"
         const TOKEN_NAME = "My test tokens"
         const TOKEN_DESCRIPTION = "description of MTT"
@@ -46,7 +48,11 @@ contract("ChronoBank TokenManagementExtension", function(accounts) {
         let tokenExtension
 
         it("prepare", async () => {
-            let platformAddress = await Setup.platformsManager.getPlatformForUser.call(owner)
+            let platformAddresses = await Setup.platformsManager.getPlatformsForUser.call(owner)
+            assert.isAtLeast(platformAddresses.length, 1)
+            assert.include(platformAddresses, Setup.chronoBankPlatform.address)
+
+            let platformAddress = Setup.chronoBankPlatform.address
             assert.notEqual(platformAddress, zeroAddress)
             assert.equal(platformAddress, Setup.chronoBankPlatform.address)
 
@@ -115,7 +121,7 @@ contract("ChronoBank TokenManagementExtension", function(accounts) {
         it('revert', reverter.revert)
     })
 
-    context("crowdsale", function () {
+    context.skip("crowdsale", function () {
         it("should not be possible to create a crowdsale campaign by non-asset owner")
         it("should be able to create a crowdsale campaign by asset owner")
         it("should not be able to delete a crowdsale campaign by non-asset owner")

@@ -11,6 +11,7 @@ const ERC20Interface = artifacts.require('./ERC20Interface.sol')
 const ChronoBankAssetProxy = artifacts.require('./ChronoBankAssetProxy.sol')
 const ChronoBankAssetWithFeeProxy = artifacts.require('./ChronoBankAssetWithFeeProxy.sol')
 const ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
+const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
 
 function tokenContractBySymbol(symbol, contract) {
     return Setup.erc20Manager.getTokenAddressBySymbol.call(symbol)
@@ -62,7 +63,13 @@ contract('LOC Manager', function(accounts) {
         })
 
         it("Platform has correct LHT proxy address.", function() {
-            return Setup.chronoBankPlatform.proxies.call(SYMBOL2).then(_proxy => {
+            return Setup.platformsManager.getPlatformForUser.call(owner)
+            .then(_platformAddress => {
+                return Promise.resolve()
+                .then(() => ChronoBankPlatform.at(_platformAddress))
+                .then(_platform => _platform.proxies.call(SYMBOL2))
+            })
+            .then(_proxy => {
                 return Setup.erc20Manager.getTokenAddressBySymbol.call(SYMBOL2).then(_token => {
                     assert.equal(_proxy, _token);
                 })
@@ -685,7 +692,7 @@ contract('LOC Manager', function(accounts) {
                             return Setup.shareable.confirm(conf_sign, {from: owner3}).then(function () {
                                 return Setup.shareable.confirm(conf_sign, {from: owner5}).then(function () {
                                     return tokenContractBySymbol(SYMBOL2, ChronoBankAssetWithFeeProxy).then(_assetWithFeeProxy => {
-                                        return _assetWithFeeProxy.balanceOf.call(Setup.assetsManager.address).then(function (r2) {
+                                        return _assetWithFeeProxy.balanceOf.call(Setup.chronoMintWallet.address).then(function (r2) {
                                             assert.equal(r2, 0);
                                         });
                                     })

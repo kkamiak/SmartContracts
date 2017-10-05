@@ -2981,4 +2981,15 @@ context("with one CBE key", function(){
   });
 });
 
+context("MINT-390 symbols", function(){
+    it("should contain symbols in list right after asset issuance", async () => {
+        let issueTx = await chronoBankPlatform.issueAsset(SYMBOL, 100, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE)
+
+        var symbolsCount = await chronoBankPlatform.symbolsCount.call()
+        assert.equal(symbolsCount, 1)
+        var symbol = await chronoBankPlatform.symbols.call(0)
+        assert.equal(symbol, SYMBOL)
+    })
+})
+
 })

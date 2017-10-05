@@ -40,21 +40,22 @@ module.exports = function(deployer, network, accounts) {
     })
 
     .then(() => {
+    if (network !== 'main' || network !== 'ropsten') {
         return Promise.resolve()
-        .then(() => platformsManager.requestPlatform.call())
+        .then(() => platformsManager.createPlatform.call())
         .then(_code => {
             if (_code != ErrorsEnum.OK) {
                 throw "Bad. Cannot request new platform. Code: " + _code
             }
 
             return Promise.resolve()
-            .then(() => platformsManager.requestPlatform())
+            .then(() => platformsManager.createPlatform())
         })
-        .then(() => platformsManager.getPlatformForUser.call(systemOwner))
+        .then(() => platformsManager.getPlatformForUserAtIndex.call(systemOwner, 0))
         .then(_platformAddr => ChronoBankPlatform.at(_platformAddr))
         .then(_platform => _platform.claimContractOwnership())
+    }
     })
     .then(() => ERC20Manager.deployed())
-    .then(_manager => erc20Manager = _manager)
-    .then(() => erc20Manager.removeTokenBySymbol(LHT_SYMBOL))
+    .then(_manager => _manager.removeTokenBySymbol(LHT_SYMBOL))
 }

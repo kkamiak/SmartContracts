@@ -78,18 +78,4 @@ contract AssetsManagerMock is AssetsManagerInterface {
     function requestTokenExtension(address _platform) returns (uint) {
         throw;
     }
-
-    /**
-    * @dev TODO
-    */
-    function addRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) public returns (uint) {
-        return OK;
-    }
-
-    /**
-    * @dev TODO
-    */
-    function removeRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) public returns (uint) {
-        return OK;
-    }
 }

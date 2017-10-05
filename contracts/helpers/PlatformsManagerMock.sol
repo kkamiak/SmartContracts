@@ -97,7 +97,7 @@ contract PlatformsManagerMock {
     /**
     * @dev TODO
     */
-    function requestPlatform() public returns (uint resultCode) {
+    function createPlatform() public returns (uint resultCode) {
         revert();
     }
 

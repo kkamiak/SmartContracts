@@ -5,6 +5,7 @@ import "../core/common/Once.sol";
 import "../core/erc20/ERC20ManagerInterface.sol";
 import "../core/platform/ChronoBankAssetProxyInterface.sol";
 import "../core/platform/ChronoBankAssetOwnershipManager.sol";
+import "../core/platform/ChronoBankPlatformInterface.sol";
 import "./TokenManagementInterface.sol";
 import "./AssetsManagerInterface.sol";
 import "./AssetsManagerEmitter.sol";
@@ -22,7 +23,7 @@ contract TokenExtensionsFactory {
 /**
 * TODO
 */
-contract AssetsManager is AssetsManagerInterface, AssetsRegistry, TokenExtensionRegistry, BaseManager, AssetsManagerEmitter {
+contract AssetsManager is AssetsManagerInterface, TokenExtensionRegistry, BaseManager, AssetsManagerEmitter {
 
     /** Error codes */
 
@@ -43,9 +44,6 @@ contract AssetsManager is AssetsManagerInterface, AssetsRegistry, TokenExtension
 
     /** TODO */
     StorageInterface.OrderedAddressesSet tokenExtensions;
-
-    /** TODO */
-    StorageInterface.Bytes32SetMapping assetOwnerToAssets;
 
     /**
     * @dev TODO
@@ -71,7 +69,6 @@ contract AssetsManager is AssetsManagerInterface, AssetsRegistry, TokenExtension
         tokenFactory.init("tokenFactory");
         platformToExtension.init("platformToExtension");
         tokenExtensions.init("tokenExtensions");
-        assetOwnerToAssets.init("assetOwnerToAssets");
     }
 
     /**
@@ -187,40 +184,38 @@ contract AssetsManager is AssetsManagerInterface, AssetsRegistry, TokenExtension
     /**
     * @dev TODO
     */
-    function addRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) onlyTokenExtension public returns (uint) {
-        store.add(assetOwnerToAssets, _getOwnerKey(_platform, _owner), _symbol);
-        _emitAssetOwnerAdded(_platform, _symbol, _owner);
-        return OK;
+    function getAssetsForOwnerCount(address _platform, address _owner) public constant returns (uint count) {
+        TokenManagementInterface _tokenExtension = TokenManagementInterface(getTokenExtension(_platform));
+        ChronoBankAssetOwnershipManager _assetsOwnershipManager = ChronoBankAssetOwnershipManager(_tokenExtension.getAssetOwnershipManager());
+
+        uint symbolsCount = _assetsOwnershipManager.symbolsCount();
+        uint symbolsIdx;
+        bytes32 _symbol;
+        for (symbolsIdx = 0; symbolsIdx < symbolsCount; ++symbolsIdx) {
+            _symbol = _assetsOwnershipManager.symbols(symbolsIdx);
+            if (_assetsOwnershipManager.hasAssetRights(_owner, _symbol)) {
+                count++;
+            }
+        }
     }
 
     /**
     * @dev TODO
     */
-    function removeRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) onlyTokenExtension public returns (uint) {
-        store.remove(assetOwnerToAssets, _getOwnerKey(_platform, _owner), _symbol);
-        _emitAssetOwnerRemoved(_platform, _symbol, _owner);
-        return OK;
-    }
+    function getAssetForOwnerAtIndex(address _platform, address _owner, uint _idx) public constant returns (bytes32) {
+        TokenManagementInterface _tokenExtension = TokenManagementInterface(getTokenExtension(_platform));
+        ChronoBankAssetOwnershipManager _assetsOwnershipManager = ChronoBankAssetOwnershipManager(_tokenExtension.getAssetOwnershipManager());
 
-    /**
-    * @dev TODO
-    */
-    function getAssetsForOwnerCount(address _platform, address _owner) public constant returns (uint) {
-        return store.count(assetOwnerToAssets, _getOwnerKey(_platform, _owner));
-    }
-
-    /**
-    * @dev TODO
-    */
-    function getAssetForOwnerAtIndex(address _platform, address _owner, uint idx) public constant returns (bytes32) {
-        return store.get(assetOwnerToAssets, _getOwnerKey(_platform, _owner), idx);
-    }
-
-    /**
-    * @dev TODO
-    */
-    function getAssetsForOwner(address _platform, address _owner) public constant returns (bytes32[]) {
-        return store.get(assetOwnerToAssets, _getOwnerKey(_platform, _owner));
+        uint currentIdx = _idx - 1;
+        uint symbolsCount = _assetsOwnershipManager.symbolsCount();
+        uint symbolsIdx;
+        bytes32 _symbol;
+        for (symbolsIdx = _idx; symbolsIdx < symbolsCount; ++symbolsIdx) {
+            _symbol = _assetsOwnershipManager.symbols(symbolsIdx);
+            if (_assetsOwnershipManager.hasAssetRights(_owner, _symbol) && ++currentIdx == _idx) {
+                return _symbol;
+            }
+        }
     }
 
     /**
@@ -249,28 +244,11 @@ contract AssetsManager is AssetsManagerInterface, AssetsRegistry, TokenExtension
         return store.get(platformToExtension, _platform);
     }
 
-    /** Helper functions */
-
-    /**
-    * @dev TODO
-    */
-    function _getOwnerKey(address _platform, address _owner) private constant returns (bytes32) {
-        return keccak256(bytes32(_platform), bytes32(_owner));
-    }
-
     /** Events emitting */
 
     function _emitError(uint _errorCode) private returns (uint) {
         AssetsManagerEmitter(getEventsHistory()).emitError(_errorCode);
         return _errorCode;
-    }
-
-    function _emitAssetOwnerAdded(address _platform, bytes32 _symbol, address _owner) private {
-        AssetsManagerEmitter(getEventsHistory()).emitAssetOwnerAdded(_platform, _symbol, _owner);
-    }
-
-    function _emitAssetOwnerRemoved(address _platform, bytes32 _symbol, address _owner) private {
-        AssetsManagerEmitter(getEventsHistory()).emitAssetOwnerRemoved(_platform, _symbol, _owner);
     }
 
     function _emitTokenExtensionRequested(address _platform, address _tokenExtension) private {

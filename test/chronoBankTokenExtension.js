@@ -102,8 +102,14 @@ contract("ChronoBank TokenManagementExtension", function(accounts) {
         })
 
         it("should be able to identify an owner as owner of two assets", async () => {
-            let assets = await Setup.assetsManager.getAssetsForOwner.call(platform.address, owner)
-            assert.isAtLeast(assets.length, 2)
+            let assets = []
+            let assetsCount = await Setup.assetsManager.getAssetsForOwnerCount.call(platform.address, owner)
+            for (var assetsIdx = 0; assetsIdx < assetsCount; ++assetsIdx) {
+                let asset = await Setup.assetsManager.getAssetForOwnerAtIndex.call(platform.address, owner, assetsIdx)
+                assets.push(asset)
+            }
+
+            assert.isAtLeast(assetsCount, 2)
             assert.include(assets, toBytes32(TOKEN_SYMBOL))
             assert.include(assets, toBytes32(TOKEN_WITH_FEE_SYMBOL))
         })

@@ -9,10 +9,6 @@ const LOCWallet = artifacts.require('./LOCWallet.sol')
 const RewardsWallet = artifacts.require('./RewardsWallet.sol')
 
 module.exports = function(deployer, network, accounts) {
-    if (network === 'main' || network === 'ropsten') {
-        return
-    }
-
     //----------
     const LHT_SYMBOL = 'LHT'
     const LHT_NAME = 'Labour-hour Token'
@@ -45,7 +41,11 @@ module.exports = function(deployer, network, accounts) {
             .then(_tokenAddr => ChronoBankAssetWithFeeProxy.at(_tokenAddr))
             .then(_token => _token.getLatestVersion.call())
             .then(_assetAddr => ChronoBankAssetWithFee.at(_assetAddr))
-            .then(_asset => _asset.setupFee(RewardsWallet.address, FEE_VALUE))
+            .then(_asset => {
+                return Promise.resolve()
+                .then(() => _asset.claimContractOwnership())
+                .then(() => _asset.setupFee(RewardsWallet.address, FEE_VALUE))
+            })
         })
         .then(() => tokenExtension.getAssetOwnershipManager.call())
         .then(_assetOwnershipManagerAddr => ChronoBankAssetOwnershipManager.at(_assetOwnershipManagerAddr))

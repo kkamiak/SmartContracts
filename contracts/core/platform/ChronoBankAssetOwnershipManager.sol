@@ -1,7 +1,8 @@
 pragma solidity ^0.4.11;
 
 contract ChronoBankAssetOwnershipManager {
-    function setAssetOwnershipListener(address _listener) returns (uint errorCode);
+    function symbols(uint _idx) public constant returns (bytes32);
+    function symbolsCount() public constant returns (uint);
 
     function removeAssetPartOwner(bytes32 _symbol, address _partowner) returns (uint errorCode);
     function addAssetPartOwner(bytes32 _symbol, address _partowner) returns (uint errorCode);

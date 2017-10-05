@@ -6,7 +6,6 @@ contract AssetsManagerInterface {
     function isAssetOwner(bytes32 _symbol, address _user) constant returns (bool);
     function getAssetBySymbol(bytes32 _symbol) constant returns (address);
 
-    function getAssetsForOwner(address _platform, address _owner) constant returns (bytes32[]);
     function getAssetsForOwnerCount(address _platform, address _owner) constant returns (uint);
     function getAssetForOwnerAtIndex(address _platform, address _owner, uint idx) constant returns (bytes32);
 
@@ -17,10 +16,4 @@ contract AssetsManagerInterface {
 
 contract TokenExtensionRegistry {
     function containsTokenExtension(address _tokenExtension) public constant returns (bool);
-}
-
-
-contract AssetsRegistry {
-    function addRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) returns (uint);
-    function removeRecordForAssetOwner(bytes32 _symbol, address _platform, address _owner) returns (uint);
 }

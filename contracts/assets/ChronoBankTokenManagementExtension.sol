@@ -31,6 +31,7 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
     * @dev TODO
     */
     mapping (bytes32 => Asset) assets;
+    bytes32[] public symbols;
 
     /**
     * @dev TODO
@@ -86,8 +87,11 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
         }
 
         address _owner = _platform.owner(_symbol);
+        if (assets[_symbol].owner == 0x0) {
+            symbols.push(_symbol);
+        }
         assets[_symbol].owner = _owner;
-        this.assetOwnershipChanged(address(_platform), _symbol, 0x0, _owner);
+
 
         return OK;
     }
@@ -115,6 +119,15 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
     }
 
     /**
+    * Provides a cheap way to get number of symbols registered in a platform
+    *
+    * @return number of symbols
+    */
+    function symbolsCount() public constant returns (uint) {
+        return symbols.length;
+    }
+
+    /**
     * @dev TODO
     */
     function getAssetOwnershipManager() public constant returns (address) {
@@ -138,20 +151,6 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
     /**
     * @dev TODO
     */
-    function assetOwnershipListener() public constant returns (address) {
-        return this;
-    }
-
-    /**
-    * @dev TODO
-    */
-    function setAssetOwnershipListener(address _listener) public returns (uint errorCode) {
-        revert();
-    }
-
-    /**
-    * @dev TODO
-    */
     function removeAssetPartOwner(bytes32 _symbol, address _partowner) public returns (uint errorCode) {
         require(_symbol != bytes32(0));
         require(_partowner != 0x0);
@@ -162,7 +161,7 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
         }
 
         delete assets[_symbol].partowners[_partowner];
-        this.assetOwnershipChanged(platform, _symbol, _partowner, 0x0);
+
     }
 
     /**
@@ -178,7 +177,6 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
         }
 
         assets[_symbol].partowners[_partowner] = true;
-        this.assetOwnershipChanged(platform, _symbol, 0x0, _partowner);
     }
 
     /**
@@ -190,7 +188,6 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
 
         address oldOwner = assets[_symbol].owner;
         assets[_symbol].owner = _newOwner;
-        this.assetOwnershipChanged(platform, _symbol, oldOwner, _newOwner);
         return OK;
     }
 
@@ -266,6 +263,7 @@ contract ChronoBankTokenManagementExtension is BaseTokenManagementExtension, Own
     * @dev TODO
     */
     function _assetCreationSetupFinished(bytes32 _symbol, address _platform, address _token, address _sender) internal {
+        symbols.push(_symbol);
         assets[_symbol].owner = address(this);
         assets[_symbol].partowners[address(this)] = true;
     }

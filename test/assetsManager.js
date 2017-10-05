@@ -51,10 +51,10 @@ contract('Assets Manager', function(accounts) {
             let platform
 
             it("prepare", async () => {
-                let successRequestPlatformResultCode = await Setup.platformsManager.requestPlatform.call({ from: owner })
+                let successRequestPlatformResultCode = await Setup.platformsManager.createPlatform.call({ from: owner })
                 assert.equal(successRequestPlatformResultCode, ErrorsEnum.OK)
 
-                let successRequestPlatfortTx = await Setup.platformsManager.requestPlatform({ from: owner })
+                let successRequestPlatfortTx = await Setup.platformsManager.createPlatform({ from: owner })
                 let event = eventsHelper.extractEvents(successRequestPlatfortTx, "PlatformRequested")[0]
                 assert.isDefined(event)
                 platform = await ChronoBankPlatform.at(event.args.platform)
@@ -80,8 +80,8 @@ contract('Assets Manager', function(accounts) {
             })
 
             it("should return no assets for a newly created platform without any assets", async () => {
-                let assets = await Setup.assetsManager.getAssetsForOwner.call(platform.address, owner)
-                assert.lengthOf(assets, 0)
+                let assetsCount = await Setup.assetsManager.getAssetsForOwnerCount.call(platform.address, owner)
+                assert.equal(assetsCount, 0)
             })
 
             it("should return one asset after creating an asset on a platform", async () => {
@@ -97,8 +97,8 @@ contract('Assets Manager', function(accounts) {
                 let event = eventsHelper.extractEvents(assetTx, "AssetCreated")[0]
                 assert.isDefined(event)
 
-                let assets = await Setup.assetsManager.getAssetsForOwner.call(platform.address, owner)
-                assert.lengthOf(assets, 1)
+                let assetsCount = await Setup.assetsManager.getAssetsForOwnerCount.call(platform.address, owner)
+                assert.equal(assetsCount, 1)
 
                 let isAssetOwner = await Setup.assetsManager.isAssetOwner.call(symbol, owner)
                 assert.isOk(isAssetOwner)

@@ -5,10 +5,6 @@ const Rewards = artifacts.require('./Rewards.sol')
 const RewardsWallet = artifacts.require('./RewardsWallet.sol')
 
 module.exports = function(deployer, network, accounts) {
-    if (network === 'main' || network === 'ropsten') {
-        return
-    }
-
     const systemOwner = accounts[0]
 
     deployer

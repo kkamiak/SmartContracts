@@ -63,7 +63,7 @@ contract('LOC Manager', function(accounts) {
         })
 
         it("Platform has correct LHT proxy address.", function() {
-            return Setup.platformsManager.getPlatformForUser.call(owner)
+            return Setup.platformsManager.getPlatformForUserAtIndex.call(owner, 0)
             .then(_platformAddress => {
                 return Promise.resolve()
                 .then(() => ChronoBankPlatform.at(_platformAddress))

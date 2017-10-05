@@ -9,11 +9,6 @@ contract ProxyEventsEmitter {
     function emitApprove(address _from, address _spender, uint _value);
 }
 
-contract AssetOwnershipListener {
-    function assetOwnershipChanged(address _platform, bytes32 _symbol, address _from, address _to);
-}
-
-
 /**
  * @title ChronoBank Platform.
  *
@@ -84,6 +79,9 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
     // This is an access address mapping. Many addresses may have access to a single holder.
     mapping(address => uint) holderIndex;
 
+    // List of symbols that exist in a platform
+    bytes32[] public symbols;
+
     // Asset symbol to asset mapping.
     mapping(bytes32 => Asset) public assets;
 
@@ -95,9 +93,6 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
 
     // Should use interface of the emitter, but address of events history.
     address public eventsHistory;
-
-    /** Listener contract to changes of asset owners */
-    address public assetOwnershipListener;
 
     /**
      * Emits Error event with specified error message.
@@ -219,6 +214,15 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
     function removePartOwner(address _partowner) onlyContractOwner returns (uint) {
         delete partowners[_partowner];
         return OK;
+    }
+
+    /**
+    * Provides a cheap way to get number of symbols registered in a platform
+    *
+    * @return number of symbols
+    */
+    function symbolsCount() public constant returns (uint) {
+        return symbols.length;
     }
 
     /**
@@ -375,7 +379,6 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
 
         uint holderId = _createHolderId(_partowner);
         assets[_symbol].partowners[holderId] = true;
-        _invokeAssetOwnershipChanged(_symbol, 0x0, _partowner);
         return OK;
     }
 
@@ -396,22 +399,6 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
 
         uint holderId = getHolderId(_partowner);
         delete assets[_symbol].partowners[holderId];
-        _invokeAssetOwnershipChanged(_symbol, _partowner, 0x0);
-        return OK;
-    }
-
-    /**
-    * Sets an address of ownership listener compatible with AssetOwnershipListener interface.
-    * @dev Should be set by a contract owner
-    *
-    * @param _listener listener contract address
-    *
-    * @return result code of an operation
-    */
-    function setAssetOwnershipListener(address _listener) onlyContractOwner public returns (uint) {
-        if (assetOwnershipListener != _listener) {
-            assetOwnershipListener = _listener;
-        }
         return OK;
     }
 
@@ -593,12 +580,12 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         }
         uint holderId = _createHolderId(msg.sender);
 
+        symbols.push(_symbol);
         assets[_symbol] = Asset(holderId, _value, _name, _description, _isReissuable, _baseUnit);
         assets[_symbol].wallets[holderId].balance = _value;
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
         // Recursive Call: safe, all changes already made.
-        _invokeAssetOwnershipChanged(_symbol, 0x0, msg.sender);
         ChronoBankPlatformEmitter(eventsHistory).emitIssue(_symbol, _value, _address(holderId));
         return OK;
     }
@@ -701,25 +688,11 @@ contract ChronoBankPlatform is Object, ChronoBankPlatformEmitter {
         }
         address oldOwner = _address(asset.owner);
         asset.owner = newOwnerId;
-        _invokeAssetOwnershipChanged(_symbol, oldOwner, _newOwner);
         // Internal Out Of Gas/Throw: revert this transaction too;
         // Call Stack Depth Limit reached: n/a after HF 4;
         // Recursive Call: safe, all changes already made.
         ChronoBankPlatformEmitter(eventsHistory).emitOwnershipChange(oldOwner, _newOwner, _symbol);
         return OK;
-    }
-
-    /**
-    * Invokes a delegate method for asset ownership listener.
-    *
-    * @param _symbol asset's symbol
-    * @param _from an address previously owned an asset
-    * @param _to an address that receives ownership rights
-    */
-    function _invokeAssetOwnershipChanged(bytes32 _symbol, address _from, address _to) internal {
-        if (assetOwnershipListener != 0x0) {
-            AssetOwnershipListener(assetOwnershipListener).assetOwnershipChanged(address(this), _symbol, _from, _to);
-        }
     }
 
     /**

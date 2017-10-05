@@ -2,6 +2,10 @@ pragma solidity ^0.4.11;
 
 contract ChronoBankPlatformInterface {
     mapping(bytes32 => address) public proxies;
+
+    function symbols(uint _idx) public constant returns (bytes32);
+    function symbolsCount() public constant returns (uint);
+
     function name(bytes32 _symbol) returns(string);
     function setProxy(address _address, bytes32 _symbol) returns(uint errorCode);
     function isCreated(bytes32 _symbol) constant returns(bool);

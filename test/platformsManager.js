@@ -20,6 +20,15 @@ contract("PlatformsManager", function (accounts) {
         return createdPlatform
     }
 
+    const getAllPlatformsForUser = async (user) => {
+        var platforms = []
+        var platformsCount = await Setup.platformsManager.getPlatformsForUserCount.call(user)
+        for (var platformsIdx = 0; platformsIdx < platformsCount; ++platformsIdx) {
+            platforms.push(await Setup.platformsManager.getPlatformForUserAtIndex.call(user, platformsIdx))
+        }
+        return platforms
+    }
+
     before("setup", function(done) {
         Setup.setup((e) => {
             console.log(e);
@@ -32,38 +41,38 @@ contract("PlatformsManager", function (accounts) {
     context("request platform", function () {
         let owner = owner1
 
-        it("should not create platform on request if an user already has one in ownership", async () => {
-            let requestPlatformTx = await Setup.platformsManager.requestPlatform({ from: owner })
-            let requestPlatformEvent = eventsHelper.extractEvents(requestPlatformTx, "PlatformRequested")[0]
-            assert.isDefined(requestPlatformEvent)
+        it("should create platforms on request even if an user already has some in ownership", async () => {
+            let createPlatformTx = await Setup.platformsManager.createPlatform({ from: owner })
+            let createPlatformEvent = eventsHelper.extractEvents(createPlatformTx, "PlatformRequested")[0]
+            assert.isDefined(createPlatformEvent)
 
-            let platform = await ChronoBankPlatform.at(requestPlatformEvent.args.platform)
+            let platform = await ChronoBankPlatform.at(createPlatformEvent.args.platform)
             await platform.claimContractOwnership({ from: owner })
 
-            let secondRequestPlatformTx = await Setup.platformsManager.requestPlatform({ from: owner })
-            let secondRequestPlatformEvent = eventsHelper.extractEvents(secondRequestPlatformTx, "PlatformRequested")[0]
-            assert.isDefined(secondRequestPlatformEvent)
+            let secondCreatePlatformTx = await Setup.platformsManager.createPlatform({ from: owner })
+            let secondCreatePlatformEvent = eventsHelper.extractEvents(secondCreatePlatformTx, "PlatformRequested")[0]
+            assert.isDefined(secondCreatePlatformEvent)
 
-            assert.equal(requestPlatformEvent.args.platform, secondRequestPlatformEvent.args.platform)
-            assert.equal(requestPlatformEvent.args.platformId.toNumber(), secondRequestPlatformEvent.args.platformId.toNumber())
+            assert.notEqual(createPlatformEvent.args.platform, secondCreatePlatformEvent.args.platform)
+            assert.notEqual(createPlatformEvent.args.platformId.toNumber(), secondCreatePlatformEvent.args.platformId.toNumber())
         })
 
         it("revert", reverter.revert)
 
-        it("should create a new platform for an user if she has no platform in ownership", async () => {
-            let noPlatform = await Setup.platformsManager.getPlatformForUser.call(owner)
-            assert.equal(noPlatform, 0x0)
+        it("should create a new platform for an user", async () => {
+            let emptyPlatformsCount = await Setup.platformsManager.getPlatformsForUserCount.call(owner)
+            assert.equal(emptyPlatformsCount, 0)
 
-            let requestPlatformTx = await Setup.platformsManager.requestPlatform({ from: owner })
-            let requestPlatformEvent = eventsHelper.extractEvents(requestPlatformTx, "PlatformRequested")[0]
-            assert.isDefined(requestPlatformEvent)
-            assert.notEqual(requestPlatformEvent.args.tokenExtension, 0x0)
+            let createPlatformTx = await Setup.platformsManager.createPlatform({ from: owner })
+            let createPlatformEvent = eventsHelper.extractEvents(createPlatformTx, "PlatformRequested")[0]
+            assert.isDefined(createPlatformEvent)
+            assert.notEqual(createPlatformEvent.args.tokenExtension, 0x0)
 
-            let platform = await ChronoBankPlatform.at(requestPlatformEvent.args.platform)
+            let platform = await ChronoBankPlatform.at(createPlatformEvent.args.platform)
             await platform.claimContractOwnership({ from: owner })
 
-            let existedPlatform = await Setup.platformsManager.getPlatformForUser.call(owner)
-            assert.notEqual(existedPlatform, 0x0)
+            let existedPlatformsCount = await Setup.platformsManager.getPlatformsForUserCount.call(owner)
+            assert.equal(existedPlatformsCount, 1)
         })
 
         it("revert", reverter.revert)
@@ -91,12 +100,6 @@ contract("PlatformsManager", function (accounts) {
 
             let failedPlatformResultCode = await Setup.platformsManager.attachPlatform.call(platform.address, { from: systemOwner })
             assert.equal(failedPlatformResultCode, ErrorsEnum.PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS)
-        })
-
-        it("should not be able to attach a platform for a user that already has a platform in ownership", async () => {
-            let anotherPlatform = await createPlatform(owner)
-            let failedPlatformResultCode = await Setup.platformsManager.attachPlatform.call(anotherPlatform.address, { from: systemOwner })
-            assert.equal(failedPlatformResultCode, ErrorsEnum.PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM)
         })
 
         it("revert", reverter.revert)
@@ -149,29 +152,30 @@ contract("PlatformsManager", function (accounts) {
             freePlatform = await createPlatform(owner)
         })
 
-        it("should not be allowed by non-contract owner", async () => {
-            let failedReplaceResultCode = await Setup.platformsManager.replacePlatform.call(attachedPlatform.address, freePlatform.address, { from: owner })
-            assert.equal(failedReplaceResultCode, ErrorsEnum.UNAUTHORIZED)
-        })
 
         it("should not be allowed to replace platforms from different owners", async () => {
             let otherOwnerPlatform = await createPlatform(otherOwner)
-            let failedReplaceResultCode = await Setup.platformsManager.replacePlatform.call(attachedPlatform.address, otherOwnerPlatform.address, { from: systemOwner })
-            assert.equal(failedReplaceResultCode, ErrorsEnum.PLATFORMS_DIFFERENT_PLATFORM_OWNERS)
+            let failedReplaceResultCode = await Setup.platformsManager.replacePlatform.call(attachedPlatform.address, otherOwnerPlatform.address, { from: owner })
+            assert.equal(failedReplaceResultCode, ErrorsEnum.UNAUTHORIZED)
         })
 
         it("should not be allowed to replace a platform that doesn't exist in a registry", async () => {
-            let failedReplaceResultCode = await Setup.platformsManager.replacePlatform.call(freePlatform.address, attachedPlatform.address, { from: systemOwner })
+            let failedReplaceResultCode = await Setup.platformsManager.replacePlatform.call(freePlatform.address, attachedPlatform.address, { from: owner })
             assert.equal(failedReplaceResultCode, ErrorsEnum.PLATFORMS_PLATFORM_DOES_NOT_EXIST)
         })
 
-        it("should allow a contract owner to replace an existed platform with another one", async () => {
-            let attachedPlatformId = await Setup.platformsManager.getIdForPlatform.call(attachedPlatform.address)
+        it("should not allow a contract owner to replace non-owned platforms", async () => {
+            let failedReplaceResultCode = await Setup.platformsManager.replacePlatform.call(attachedPlatform.address, freePlatform.address, { from: systemOwner })
+            assert.equal(failedReplaceResultCode, ErrorsEnum.UNAUTHORIZED)
+        })
 
-            let successReplaceResultCode = await Setup.platformsManager.replacePlatform.call(attachedPlatform.address, freePlatform.address, { from: systemOwner })
+        it("should be allowed by platforms' owner", async () => {
+            let attachedPlatformId = await Setup.platformsManager.getIdForPlatform.call(attachedPlatform.address)
+            let successReplaceResultCode = await Setup.platformsManager.replacePlatform.call(attachedPlatform.address, freePlatform.address, { from: owner })
+
             assert.equal(successReplaceResultCode, ErrorsEnum.OK)
 
-            let successReplaceTx = await Setup.platformsManager.replacePlatform(attachedPlatform.address, freePlatform.address, { from: systemOwner })
+            let successReplaceTx = await Setup.platformsManager.replacePlatform(attachedPlatform.address, freePlatform.address, { from: owner })
             let event = eventsHelper.extractEvents(successReplaceTx, "PlatformReplaced")[0]
             assert.isDefined(event)
             assert.equal(event.args.fromPlatform, attachedPlatform.address)
@@ -223,25 +227,6 @@ contract("PlatformsManager", function (accounts) {
         })
         it("revert", reverter.revert)
 
-        it("should fail on updating associated platform ownership when a recipient of a new contract ownership is already holding a platform", async () => {
-            await platform.changeContractOwnership(owner, { from: otherOwner })
-            await platform.claimContractOwnership({ from: owner })
-
-            let successRequestPlatformResultCode = await Setup.platformsManager.requestPlatform.call({ from: owner})
-            assert.equal(successRequestPlatformResultCode, ErrorsEnum.OK)
-
-            let successRequestPlatformTx = await Setup.platformsManager.requestPlatform({ from: owner})
-            let event = eventsHelper.extractEvents(successRequestPlatformTx, "PlatformRequested")[0]
-            assert.isDefined(event)
-
-            let platformId = event.args.platformId
-            assert.notEqual(platformId.toNumber(), 0)
-
-            let failedUpdateAssociatedPlatformResultCode = await Setup.platformsManager.replaceAssociatedPlatformFromOwner.call(platform.address, otherOwner, { from: owner })
-            assert.equal(failedUpdateAssociatedPlatformResultCode, ErrorsEnum.PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM)
-        })
-        it("revert", reverter.revert)
-
         it("should fail on updating associated platform ownership when performed by non-contract owner of the platform", async () => {
             await platform.changeContractOwnership(owner, { from: otherOwner })
             await platform.claimContractOwnership({ from: owner })
@@ -280,13 +265,13 @@ contract("PlatformsManager", function (accounts) {
         it("snapshot", reverter.snapshot)
 
         it("should return the same platform for a user who is owning a platform", async () => {
-            let gotPlatformAddress = await Setup.platformsManager.getPlatformForUser.call(owner)
-            assert.equal(platform.address, gotPlatformAddress)
+            let gotPlatformAddresses = await getAllPlatformsForUser(owner)
+            assert.include(gotPlatformAddresses, platform.address)
         })
 
         it("should return no platform for non platform owner", async () => {
-            let noPlatformAddress = await Setup.platformsManager.getPlatformForUser.call(nonOwner)
-            assert.equal(noPlatformAddress, 0x0)
+            let noPlatformAddresses = await getAllPlatformsForUser(nonOwner)
+            assert.lengthOf(noPlatformAddresses, 0)
         })
 
         it("should have an id for a registered platform", async () => {

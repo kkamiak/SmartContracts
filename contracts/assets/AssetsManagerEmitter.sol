@@ -11,12 +11,6 @@ contract AssetsManagerEmitter is MultiEventsHistoryAdapter {
     event Error(address indexed self, uint errorCode);
 
     /** TODO */
-    event AssetOwnerAdded(address indexed self, address platform, bytes32 symbol, address owner);
-
-    /** TODO */
-    event AssetOwnerRemoved(address indexed self, address platform, bytes32 symbol, address owner);
-
-    /** TODO */
     event TokenExtensionRequested(address indexed self, address platform, address tokenExtension);
 
     /** TODO */
@@ -29,14 +23,6 @@ contract AssetsManagerEmitter is MultiEventsHistoryAdapter {
 
     function emitError(uint errorCode) {
         Error(_self(), errorCode);
-    }
-
-    function emitAssetOwnerAdded(address _platform, bytes32 _symbol, address _owner) {
-        AssetOwnerAdded(_self(), _platform, _symbol, _owner);
-    }
-
-    function emitAssetOwnerRemoved(address _platform, bytes32 _symbol, address _owner) {
-        AssetOwnerRemoved(_self(), _platform, _symbol, _owner);
     }
 
     function emitTokenExtensionRequested(address _platform, address _tokenExtension) {

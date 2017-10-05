@@ -162,10 +162,8 @@ const errorsLibrary = {
     CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17,
 
     PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS: errorScope.platforms + 1,
-    PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM: errorScope.platforms + 2,
-    PLATFORMS_PLATFORM_DOES_NOT_EXIST: errorScope.platforms + 3,
-    PLATFORMS_INCONSISTENT_INTERNAL_STATE: errorScope.platforms + 4,
-    PLATFORMS_DIFFERENT_PLATFORM_OWNERS: errorScope.platforms + 5,
+    PLATFORMS_PLATFORM_DOES_NOT_EXIST: errorScope.platforms + 2,
+    PLATFORMS_INCONSISTENT_INTERNAL_STATE: errorScope.platforms + 3,
 
     TOKEN_EXTENSION_ASSET_TOKEN_EXISTS: errorScope.tokenextension + 1,
     TOKEN_EXTENSION_ASSET_COULD_NOT_BE_REISSUED: errorScope.tokenextension + 2,

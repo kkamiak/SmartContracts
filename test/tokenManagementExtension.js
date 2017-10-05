@@ -46,7 +46,7 @@ contract("TokenManagementExtension", function(accounts) {
         let tokenExtension
 
         it("prepare", async () => {
-            let newPlatformTx = await Setup.platformsManager.requestPlatform({ from: owner })
+            let newPlatformTx = await Setup.platformsManager.createPlatform({ from: owner })
             let event = eventsHelper.extractEvents(newPlatformTx, "PlatformRequested")[0]
             assert.isDefined(event)
             assert.notEqual(event.args.tokenExtension, zeroAddress)
@@ -94,8 +94,14 @@ contract("TokenManagementExtension", function(accounts) {
         })
 
         it("should be able to identify an owner as owner of two assets", async () => {
-            let assets = await Setup.assetsManager.getAssetsForOwner.call(platform.address, owner)
-            assert.lengthOf(assets, 2)
+            let assets = []
+            let assetsCount = await Setup.assetsManager.getAssetsForOwnerCount.call(platform.address, owner)
+            for (var assetsIdx = 0; assetsIdx < assetsCount; ++assetsIdx) {
+                let asset = await Setup.assetsManager.getAssetForOwnerAtIndex.call(platform.address, owner, assetsIdx)
+                assets.push(asset)
+            }
+
+            assert.isAtLeast(assetsCount, 2)
             assert.include(assets, toBytes32(TOKEN_SYMBOL))
             assert.include(assets, toBytes32(TOKEN_WITH_FEE_SYMBOL))
         })

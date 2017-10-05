@@ -5,6 +5,10 @@ const ChronoBankAssetWithFeeProxy = artifacts.require('./ChronoBankAssetWithFeeP
 const RewardsWallet = artifacts.require('./RewardsWallet.sol')
 
 module.exports = function(deployer, network, accounts) {
+    if (network === 'main' || network === 'ropsten') {
+        return
+    }
+
     //----------
     const LHT_SYMBOL = 'LHT'
     const FEE_VALUE = 100 // 1%

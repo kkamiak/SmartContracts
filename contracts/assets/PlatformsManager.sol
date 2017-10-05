@@ -34,18 +34,19 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     /** Error codes */
 
     uint constant ERROR_PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS = 21001;
-    uint constant ERROR_PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM = 21002;
-    uint constant ERROR_PLATFORMS_PLATFORM_DOES_NOT_EXIST = 21003;
-    uint constant ERROR_PLATFORMS_INCONSISTENT_INTERNAL_STATE = 21004;
-    uint constant ERROR_PLATFORMS_DIFFERENT_PLATFORM_OWNERS = 21005;
+    uint constant ERROR_PLATFORMS_PLATFORM_DOES_NOT_EXIST = 21002;
+    uint constant ERROR_PLATFORMS_INCONSISTENT_INTERNAL_STATE = 21003;
 
     /** Storage keys */
 
     /** TODO */
     StorageInterface.Address platformsFactory;
 
-    /** TODO */
+    /** * @dev DEPRECATED. Will be removed in next release */
     StorageInterface.AddressAddressMapping ownerToPlatform;
+
+    /** TODO */
+    StorageInterface.AddressesSetMapping ownerToPlatforms;
 
     /** TODO */
     StorageInterface.OrderedAddressesSet platforms;
@@ -68,6 +69,9 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
         }
     }
 
+    /**
+    * @dev TODO
+    */
     modifier onlyPlatformIdOwner(uint _id) {
         address _platform = store.get(idToPlatform, _id);
         if (_isPlatformOwner(_platform)) {
@@ -79,7 +83,7 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     * @dev TODO
     */
     modifier onlyPreviousPlatformOwner(address _platform, address _previousOwner) {
-        if (store.get(ownerToPlatform, _previousOwner) != _platform) {
+        if (!store.includes(ownerToPlatforms, bytes32(_previousOwner), _platform)) {
             revert();
         }
         _;
@@ -88,6 +92,7 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     function PlatformsManager(Storage _store, bytes32 _crate) BaseManager(_store, _crate) {
         platformsFactory.init("platformsFactory");
         ownerToPlatform.init("ownerToPlatform");
+        ownerToPlatforms.init("ownerToPlatforms");
         platforms.init("platforms");
         idToPlatform.init("idToPlatform");
         platformToId.init("platformToId");
@@ -103,10 +108,24 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     }
 
     /**
-    * @dev TODO
+    * @dev TODO DEPRECATED. Will be removed in next release
     */
     function getPlatformForUser(address _user) public constant returns (address) {
         return store.get(ownerToPlatform, _user);
+    }
+
+    /**
+    * @dev TODO
+    */
+    function getPlatformForUserAtIndex(address _user, uint _idx) public constant returns (address) {
+        return store.get(ownerToPlatforms, bytes32(_user), _idx);
+    }
+
+    /**
+    * @dev TODO
+    */
+    function getPlatformsForUserCount(address _user) public constant returns (uint) {
+        return store.count(ownerToPlatforms, bytes32(_user));
     }
 
     /**
@@ -131,12 +150,7 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
             return _emitError(ERROR_PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS);
         }
 
-        address _owner = OwnedContract(_platform).contractOwner();
-        if (store.get(ownerToPlatform, _owner) != 0x0) {
-            return _emitError(ERROR_PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM);
-        }
-
-        uint _id = _attachPlatformWithoutValidation(_platform, _owner);
+        uint _id = _attachPlatformWithoutValidation(_platform, OwnedContract(_platform).contractOwner());
         _emitPlatformAttached(_id, _platform);
         return OK;
     }
@@ -160,14 +174,10 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     /**
     * @dev TODO
     */
-    function replacePlatform(address _fromPlatform, address _toPlatform) onlyContractOwner public returns (uint resultCode) {
-        require(_fromPlatform != 0x0);
-        require(_toPlatform != 0x0);
-
-        if (OwnedContract(_fromPlatform).contractOwner() != OwnedContract(_toPlatform).contractOwner()) {
-            return _emitError(ERROR_PLATFORMS_DIFFERENT_PLATFORM_OWNERS);
-        }
-
+    function replacePlatform(address _fromPlatform, address _toPlatform)
+    onlyPlatformOwner(_fromPlatform)
+    onlyPlatformOwner(_toPlatform)
+    public returns (uint resultCode) {
         if (!store.includes(platforms, _fromPlatform)) {
             return _emitError(ERROR_PLATFORMS_PLATFORM_DOES_NOT_EXIST);
         }
@@ -176,10 +186,12 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
             return _emitError(ERROR_PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS);
         }
 
+        address _owner = OwnedContract(_toPlatform).contractOwner();
         uint id = store.get(platformToId, _fromPlatform);
         store.add(platforms, _toPlatform);
         store.remove(platforms, _fromPlatform);
-        store.set(ownerToPlatform, OwnedContract(_toPlatform).contractOwner(), _toPlatform);
+        store.remove(ownerToPlatforms, bytes32(_owner), _fromPlatform);
+        store.add(ownerToPlatforms, bytes32(_owner), _toPlatform);
         store.set(platformToId, _toPlatform, id);
         store.set(platformToId, _fromPlatform, 0);
         store.set(idToPlatform, id, _toPlatform);
@@ -195,26 +207,17 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     onlyPlatformOwner(_platform)
     onlyPreviousPlatformOwner(_platform, _from)
     public returns (uint resultCode) {
-        if (store.get(ownerToPlatform, msg.sender) != 0x0) {
-            return _emitError(ERROR_PLATFORMS_CANNOT_OWN_MORE_THAN_ONE_PLATFORM);
-        }
-
-        store.set(ownerToPlatform, msg.sender, _platform);
+        store.add(ownerToPlatforms, bytes32(msg.sender), _platform);
+        store.remove(ownerToPlatforms, bytes32(_from), _platform);
         return OK;
     }
 
     /**
     * @dev TODO
     */
-    function requestPlatform() public returns (uint resultCode) {
-        address _platform = getPlatformForUser(msg.sender);
-        if (_platform != 0x0) {
-            _emitPlatformRequested(store.get(platformToId, _platform), _platform, 0x0);
-            return OK;
-        }
-
+    function createPlatform() public returns (uint resultCode) {
         PlatformsFactory factory = PlatformsFactory(store.get(platformsFactory));
-        _platform = factory.createPlatform(getEventsHistory(), this);
+        address _platform = factory.createPlatform(getEventsHistory(), this);
         OwnedInterface(_platform).claimContractOwnership();
         uint _platformId = _attachPlatformWithoutValidation(_platform, msg.sender);
 
@@ -224,7 +227,6 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
         if (resultCode == OK) {
             _tokenExtension = assetsManager.getTokenExtension(_platform);
             ChronoBankAssetOwnershipManager(_platform).addPartOwner(_tokenExtension);
-            ChronoBankAssetOwnershipManager(_platform).setAssetOwnershipListener(_tokenExtension);
         }
 
         OwnedInterface(_platform).changeContractOwnership(msg.sender);
@@ -236,7 +238,7 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
     * @dev TODO private
     */
     function _attachPlatformWithoutValidation(address _platform, address _owner) private returns (uint platformId) {
-        store.set(ownerToPlatform, _owner, _platform);
+        store.add(ownerToPlatforms, bytes32(_owner), _platform);
         store.add(platforms, _platform);
 
         platformId = store.get(idCounter) + 1;
@@ -254,12 +256,12 @@ contract PlatformsManager is BaseManager, PlatformsManagerEmitter {
         }
 
         address _owner = OwnedContract(_platform).contractOwner();
-        if (store.get(ownerToPlatform, _owner) != _platform) {
+        if (!store.includes(ownerToPlatforms, bytes32(_owner), _platform)) {
             /* @dev TODO: have to think how to avoid this situation */
             return _emitError(ERROR_PLATFORMS_INCONSISTENT_INTERNAL_STATE);
         }
 
-        store.set(ownerToPlatform, _owner, 0x0);
+        store.remove(ownerToPlatforms, bytes32(_owner), _platform);
         store.set(idToPlatform, _id, 0x0);
         store.set(platformToId, _platform, 0);
         store.remove(platforms, _platform);

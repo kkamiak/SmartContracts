@@ -110,22 +110,6 @@ contract BaseTokenManagementExtension is TokenManagementInterface {
     /**
     * @dev TODO
     */
-    function assetOwnershipChanged(address _platform, bytes32 _symbol, address _from, address _to) onlyPlatform public {
-        if (_from == _to) {
-            return;
-        }
-
-        if (_from != 0x0) {
-            lookupAssetsRegistry().removeRecordForAssetOwner(_symbol, _platform, _from);
-        }
-        if (_to != 0x0) {
-            lookupAssetsRegistry().addRecordForAssetOwner(_symbol, _platform, _to);
-        }
-    }
-
-    /**
-    * @dev TODO
-    */
     function createAsset(bytes32 _symbol, string _name, string _description, uint _value, uint8 _decimals, bool _isMint, bool _withFee) onlyPlatformOwner public returns (uint resultCode) {
         require(_symbol != bytes32(0));
 
@@ -297,13 +281,6 @@ contract BaseTokenManagementExtension is TokenManagementInterface {
     */
     function lookupFactoryProvider() internal constant returns (FactoryProvider) {
         return FactoryProvider(lookupService("AssetsManager"));
-    }
-
-    /**
-    * @dev TODO
-    */
-    function lookupAssetsRegistry() internal constant returns (AssetsRegistry) {
-        return AssetsRegistry(lookupService("AssetsManager"));
     }
 
     // TODO: ahiatsevich - move to library

@@ -5,6 +5,7 @@ const Reverter = require('./helpers/reverter')
 const TokenManagementExtension = artifacts.require("./TokenManagementExtension.sol")
 const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
 const ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
+const RewardsWallet = artifacts.require('./RewardsWallet.sol')
 
 contract("TokenManagementExtension", function(accounts) {
     const contractOwner = accounts[0]
@@ -57,10 +58,10 @@ contract("TokenManagementExtension", function(accounts) {
         })
 
         it("should be able to create an asset by platform owner", async () => {
-            let assetCreationResultCode = await tokenExtension.createAsset.call(TOKEN_SYMBOL, TOKEN_NAME, TOKEN_DESCRIPTION, 0, 2, true, false, { from: owner })
+            let assetCreationResultCode = await tokenExtension.createAssetWithoutFee.call(TOKEN_SYMBOL, TOKEN_NAME, TOKEN_DESCRIPTION, 0, 2, true, { from: owner })
             assert.equal(assetCreationResultCode, ErrorsEnum.OK)
 
-            let assetCreationTx  = await tokenExtension.createAsset(TOKEN_SYMBOL, TOKEN_NAME, TOKEN_DESCRIPTION, 0, 2, true, false, { from: owner })
+            let assetCreationTx  = await tokenExtension.createAssetWithoutFee(TOKEN_SYMBOL, TOKEN_NAME, TOKEN_DESCRIPTION, 0, 2, true, { from: owner })
             let event = eventsHelper.extractEvents(assetCreationTx, "AssetCreated")[0]
             assert.isDefined(event)
 
@@ -73,10 +74,10 @@ contract("TokenManagementExtension", function(accounts) {
         })
 
         it("should be able to create an asset with fee and ownership request event should be triggered", async () => {
-            let assetCreationResultCode = await tokenExtension.createAsset.call(TOKEN_WITH_FEE_SYMBOL, TOKEN_WITH_FEE_NAME, TOKEN_WITH_FEE_DESCRIPTION, 1000000000, 5, true, true, { from: owner })
+            let assetCreationResultCode = await tokenExtension.createAssetWithFee.call(TOKEN_WITH_FEE_SYMBOL, TOKEN_WITH_FEE_NAME, TOKEN_WITH_FEE_DESCRIPTION, 0, 5, true, RewardsWallet.address, 10, { from: owner })
             assert.equal(assetCreationResultCode, ErrorsEnum.OK)
 
-            let assetCreationTx  = await tokenExtension.createAsset(TOKEN_WITH_FEE_SYMBOL, TOKEN_WITH_FEE_NAME, TOKEN_WITH_FEE_DESCRIPTION, 1000000000, 5, true, true, { from: owner })
+            let assetCreationTx  = await tokenExtension.createAssetWithFee(TOKEN_WITH_FEE_SYMBOL, TOKEN_WITH_FEE_NAME, TOKEN_WITH_FEE_DESCRIPTION, 0, 5, true, RewardsWallet.address, 10, { from: owner })
             let event = eventsHelper.extractEvents(assetCreationTx, "AssetCreated")[0]
             assert.isDefined(event)
 
@@ -107,12 +108,12 @@ contract("TokenManagementExtension", function(accounts) {
         })
 
         it("should not be able to create an asset with already existed symbol", async () => {
-            let failedAssetCreationResultCode = await tokenExtension.createAsset.call(TOKEN_SYMBOL, TOKEN_NAME, TOKEN_DESCRIPTION, 0, 5, false, false, { from: owner })
+            let failedAssetCreationResultCode = await tokenExtension.createAssetWithoutFee.call(TOKEN_SYMBOL, TOKEN_NAME, TOKEN_DESCRIPTION, 0, 5, false, { from: owner })
             assert.equal(failedAssetCreationResultCode, ErrorsEnum.TOKEN_EXTENSION_ASSET_TOKEN_EXISTS)
         })
         it("should not be able to create an asset by non-platform owner", async () => {
             const TOKEN_NS_SYMBOL = "TNS"
-            let failedAssetCreationResultCode = await tokenExtension.createAsset.call(TOKEN_NS_SYMBOL, "", "", 0, 1, false, false, { from: nonOwner })
+            let failedAssetCreationResultCode = await tokenExtension.createAssetWithoutFee.call(TOKEN_NS_SYMBOL, "", "", 0, 1, false, { from: nonOwner })
             assert.equal(failedAssetCreationResultCode, ErrorsEnum.UNAUTHORIZED)
         })
 

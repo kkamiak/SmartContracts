@@ -29,7 +29,6 @@ module.exports = function(deployer, network, accounts) {
         })
     })
     .then(_addr => platformAddress = _addr)
-    .then(() => console.log("to detach platform (testnet)", platformAddress))
     .then(() => {
         return Promise.resolve()
         .then(() => assetsManager.getTokenExtension.call(platformAddress))
@@ -37,7 +36,6 @@ module.exports = function(deployer, network, accounts) {
         .then(() => {
             return Promise.resolve()
             .then(() => platformsManager.detachPlatform.call(platformAddress))
-            .then(_code => console.log("Virtual detach", _code))
             .then(() => platformsManager.detachPlatform(platformAddress))
         })
     })

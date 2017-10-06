@@ -9,20 +9,6 @@ const LOCWallet = artifacts.require('./LOCWallet.sol')
 const RewardsWallet = artifacts.require('./RewardsWallet.sol')
 
 module.exports = function(deployer, network, accounts) {
-    if (network === 'main' || network === 'ropsten') {
-        return
-    }
-
-    //----------
-    const LHT_SYMBOL = 'LHT'
-    const LHT_NAME = 'Labour-hour Token'
-    const LHT_DESCRIPTION = 'ChronoBank Lht Assets'
-    const LHT_BASE_UNIT = 8
-    const IS_REISSUABLE = true
-    const WITH_FEE = true
-
-    const FEE_VALUE = 100 // 1%
-
     const systemOwner = accounts[0]
 
     deployer
@@ -36,14 +22,22 @@ module.exports = function(deployer, network, accounts) {
     .then(_platformAddr => {
         return Promise.resolve()
         .then(() => assetsManager.getTokenExtension.call(_platformAddr))
-        .then(_tokenExtensionAddr => BaseTokenManagementExtension.at(_tokenExtensionAddr))
-        .then(_tokenExtension => tokenExtension = _tokenExtension)
-        .then(() => tokenExtension.createAssetWithFee(LHT_SYMBOL, LHT_NAME, LHT_DESCRIPTION, 0, LHT_BASE_UNIT, IS_REISSUABLE, RewardsWallet.address, FEE_VALUE))
-        .then(() => tokenExtension.getAssetOwnershipManager.call())
-        .then(_assetOwnershipManagerAddr => ChronoBankAssetOwnershipManager.at(_assetOwnershipManagerAddr))
-        .then(_assetOwnershipManager => {
+        .then(_tokenExtensionAddr => {
             return Promise.resolve()
-            .then(() => _assetOwnershipManager.addAssetPartOwner(LHT_SYMBOL, LOCWallet.address))
+            .then(() => BaseTokenManagementExtension.at(_tokenExtensionAddr))
+            .then(_tokenExtension => _tokenExtension.getAssetOwnershipManager.call())
+            .then(_addr => ChronoBankAssetOwnershipManager.at(_addr))
+            .then(_assetOwnershipManager => _assetOwnershipManager.removePartOwner(_tokenExtensionAddr))
+            .then(() => assetsManager.unregisterTokenExtension(_tokenExtensionAddr))
+        })
+        .then(() => assetsManager.requestTokenExtension(_platformAddr))
+        .then(() => assetsManager.getTokenExtension.call(_platformAddr))
+        .then(_tokenExtensionAddr => {
+            return Promise.resolve()
+            .then(() => BaseTokenManagementExtension.at(_tokenExtensionAddr))
+            .then(_tokenExtension => _tokenExtension.getAssetOwnershipManager.call())
+            .then(_addr => ChronoBankAssetOwnershipManager.at(_addr))
+            .then(_assetOwnershipManager => _assetOwnershipManager.addPartOwner(_tokenExtensionAddr))
         })
     })
 }

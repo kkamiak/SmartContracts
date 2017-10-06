@@ -8,4 +8,6 @@ contract FeeInterface {
     uint32 public feePercent;
 
     function calculateFee(uint _value) returns(uint);
+
+    function setupFee(address _feeAddress, uint32 _feePercent);
 }

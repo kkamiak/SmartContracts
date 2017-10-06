@@ -9,6 +9,7 @@ import "../core/erc20/ERC20ManagerInterface.sol";
 import "../core/erc20/ERC20Interface.sol";
 import "./AssetsManagerInterface.sol";
 import "./TokenManagementInterface.sol";
+import "./FeeInterface.sol";
 
 
 contract ChronoBankAsset {
@@ -107,23 +108,47 @@ contract BaseTokenManagementExtension is TokenManagementInterface {
         return OK;
     }
 
-    /**
-    * @dev TODO
-    */
-    function createAsset(bytes32 _symbol, string _name, string _description, uint _value, uint8 _decimals, bool _isMint, bool _withFee) onlyPlatformOwner public returns (uint resultCode) {
+    function createAssetWithoutFee(bytes32 _symbol, string _name, string _description, uint _value, uint8 _decimals, bool _isMint) onlyPlatformOwner public returns (uint resultCode) {
         require(_symbol != bytes32(0));
 
-        ERC20ManagerInterface _erc20Manager = ERC20ManagerInterface(lookupService("ERC20Manager"));
-        if (_erc20Manager.getTokenAddressBySymbol(_symbol) != 0x0) {
-            return _emitError(ERROR_TOKEN_EXTENSION_ASSET_TOKEN_EXISTS);
-        }
-
-        address _token;
-        (resultCode, _token) = _createNewAsset(_erc20Manager, _symbol, _name, _description, _value, _decimals, _isMint, _withFee);
+        resultCode = _prepareAndIssueAssetOnPlatform(_symbol, _name, _description, _value, _decimals, _isMint);
         if (resultCode != OK) {
             return _emitError(resultCode);
         }
 
+        TokenFactory _factory = lookupFactoryProvider().getTokenFactory();
+        address _asset = _createAsset(_factory);
+
+        address _token;
+        (_token, resultCode) = _bindAssetWithToken(_factory, _asset, _symbol, _name, _value, _decimals);
+        if (resultCode != OK) {
+            return _emitError(resultCode);
+        }
+
+        AssetCreated(this, platform, _symbol, _token);
+        return OK;
+    }
+
+    function createAssetWithFee(bytes32 _symbol, string _name, string _description, uint _value, uint8 _decimals, bool _isMint, address _feeAddress, uint32 _feePercent) onlyPlatformOwner public returns (uint resultCode) {
+        require(_symbol != bytes32(0));
+        require(_feeAddress != 0x0);
+        require(_feePercent != 0);
+
+        resultCode = _prepareAndIssueAssetOnPlatform(_symbol, _name, _description, _value, _decimals, _isMint);
+        if (resultCode != OK) {
+            return _emitError(resultCode);
+        }
+
+        TokenFactory _factory = lookupFactoryProvider().getTokenFactory();
+        address _asset = _createAssetWithFee(_factory, _feeAddress, _feePercent);
+
+        address _token;
+        (_token, resultCode) = _bindAssetWithToken(_factory, _asset, _symbol, _name, _value, _decimals);
+        if (resultCode != OK) {
+            return _emitError(resultCode);
+        }
+
+        AssetOwnershipClaimRequired(this, _asset, msg.sender);
         AssetCreated(this, platform, _symbol, _token);
         return OK;
     }
@@ -189,81 +214,77 @@ contract BaseTokenManagementExtension is TokenManagementInterface {
     }
 
     /**
-    * Issues an asset in a platform and creates asset contract
-    *
-    * @param erc20Manager ERC20Manager interface compliant contract
-    * @param symbol asset's symbol
-    * @param name name of an asset
-    * @param description short description of an asset
-    * @param value amount of tokens
-    * @param decimals number of digits after floating point
-    * @param isMint `true` if asset can be reissueable, `false` otherwise
-    * @param withFee 'true' if asset can produce fee, `false` otherwise
-    *
-    * @return {
-        errorCode: result code
-        token: address of a created token
-    }
+    * @dev TODO
     */
-    function _createNewAsset(address erc20Manager, bytes32 symbol, string name, string description, uint value, uint8 decimals, bool isMint, bool withFee) private returns(uint errorCode, address token) {
-        TokenFactory factory = lookupFactoryProvider().getTokenFactory();
-        token = factory.createProxy();
-
-        errorCode = ChronoBankPlatformInterface(platform).issueAsset(symbol, value, name, description, decimals, isMint);
-        if (errorCode != OK) {
-            return (errorCode, 0x0);
+    function _prepareAndIssueAssetOnPlatform(bytes32 _symbol, string _name, string _description, uint _value, uint8 _decimals, bool _isMint) private returns (uint) {
+        ERC20ManagerInterface _erc20Manager = ERC20ManagerInterface(lookupService("ERC20Manager"));
+        if (_erc20Manager.getTokenAddressBySymbol(_symbol) != 0x0) {
+            return ERROR_TOKEN_EXTENSION_ASSET_TOKEN_EXISTS;
         }
 
-        address asset;
-        if (withFee) {
-            asset = factory.createAssetWithFee(msg.sender);
-        } else {
-            asset = factory.createAsset();
-        }
+        return ChronoBankPlatformInterface(platform).issueAsset(_symbol, _value, _name, _description, _decimals, _isMint);
+    }
 
-        errorCode = ChronoBankPlatformInterface(platform).setProxy(token, symbol);
+    /**
+    * @dev TODO
+    */
+    function _bindAssetWithToken(TokenFactory _factory, address _asset, bytes32 _symbol, string _name, uint _value, uint8 _decimals) private returns (address token, uint errorCode) {
+        token = _factory.createProxy();
+
+        errorCode = ChronoBankPlatformInterface(platform).setProxy(token, _symbol);
         if (errorCode != OK) {
-            return (errorCode, 0x0);
+            return (0x0, errorCode);
         }
 
         ChronoBankAssetOwnershipManager _assetOwnershipManager = ChronoBankAssetOwnershipManager(getAssetOwnershipManager());
+        ChronoBankAssetProxyInterface(token).init(platform, bytes32ToString(_symbol), _name);
+        ChronoBankAssetProxyInterface(token).proposeUpgrade(_asset);
+        ChronoBankAsset(_asset).init(ChronoBankAssetProxyInterface(token));
+        _assetCreationSetupFinished(_symbol, platform, token, msg.sender);
+        _assetOwnershipManager.addAssetPartOwner(_symbol, this);
+        _assetOwnershipManager.changeOwnership(_symbol, msg.sender);
 
-        ChronoBankAssetProxyInterface(token).init(platform, bytes32ToString(symbol), name);
-        ChronoBankAssetProxyInterface(token).proposeUpgrade(asset);
-        ChronoBankAsset(asset).init(ChronoBankAssetProxyInterface(token));
-        _assetCreationSetupFinished(symbol, platform, token, msg.sender);
-        _assetOwnershipManager.addAssetPartOwner(symbol, this);
-        _assetOwnershipManager.changeOwnership(symbol, msg.sender);
-        if (value > 0 && !ERC20Interface(token).transfer(msg.sender, value)) {
+        if (_value > 0 && !ERC20Interface(token).transfer(msg.sender, _value)) {
             revert();
         }
 
-        // if with fee then fire an event that ownership assignment is required
-        if (withFee) {
-            AssetOwnershipClaimRequired(this, asset, msg.sender);
-        }
-
-        errorCode = _addToken(erc20Manager, token, symbol, decimals);
+        errorCode = _addToken(token, _symbol, _decimals);
         if (errorCode != OK) {
-            return (errorCode, 0x0);
+            return (0x0, errorCode);
         }
+        return (token, OK);
+    }
 
-        return (OK, token);
+    /**
+    * @dev TODO
+    */
+    function _createAssetWithFee(TokenFactory _factory, address _feeAddress, uint32 _fee) private returns (address _asset) {
+        _asset = _factory.createAssetWithFee(this);
+        OwnedInterface(_asset).claimContractOwnership();
+        FeeInterface(_asset).setupFee(_feeAddress, _fee);
+        OwnedInterface(_asset).changeContractOwnership(msg.sender);
+    }
+
+    /**
+    * @dev TODO
+    */
+    function _createAsset(TokenFactory _factory) private returns (address _asset) {
+        _asset = _factory.createAsset();
     }
 
     /**
     * Adds token to ERC20Manager contract
     * @dev Make as a separate function because of stack size limits
     *
-    * @param erc20Manager ERC20Manager interface compliant contract
     * @param token token's address
     * @param symbol asset's symbol
     * @param decimals number of digits after floating point
     *
     * @return errorCode result code of an operation
     */
-    function _addToken(address erc20Manager, address token, bytes32 symbol, uint8 decimals) private returns (uint errorCode) {
-        errorCode = ERC20ManagerInterface(erc20Manager).addToken(token, bytes32(0), symbol, bytes32(0), decimals, bytes32(0), bytes32(0));
+    function _addToken(address token, bytes32 symbol, uint8 decimals) private returns (uint errorCode) {
+        ERC20ManagerInterface erc20Manager = ERC20ManagerInterface(lookupService("ERC20Manager"));
+        errorCode = erc20Manager.addToken(token, bytes32(0), symbol, bytes32(0), decimals, bytes32(0), bytes32(0));
     }
 
     /**

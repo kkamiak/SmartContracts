@@ -25,7 +25,15 @@ module.exports = function(deployer, network, accounts) {
     .then(_assetAddr => ChronoBankAssetWithFee.at(_assetAddr))
     .then(_asset => {
         return Promise.resolve()
-        .then(() => _asset.claimContractOwnership())
-        .then(() => _asset.setupFee(RewardsWallet.address, FEE_VALUE))
+        .then(() => _asset.feeAddress.call())
+        .then(_feeAddress => {
+            if (_feeAddress != 0x0) {
+                return
+            }
+
+            return Promise.resolve()
+            .then(() => _asset.claimContractOwnership())
+            .then(() => _asset.setupFee(RewardsWallet.address, FEE_VALUE))
+        })
     })
 }

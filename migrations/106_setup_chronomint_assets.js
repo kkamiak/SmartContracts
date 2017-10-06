@@ -34,19 +34,7 @@ module.exports = function(deployer, network, accounts) {
         .then(() => assetsManager.getTokenExtension.call(_platformAddr))
         .then(_tokenExtensionAddr => BaseTokenManagementExtension.at(_tokenExtensionAddr))
         .then(_tokenExtension => tokenExtension = _tokenExtension)
-        .then(() => tokenExtension.createAsset(LHT_SYMBOL, LHT_NAME, LHT_DESCRIPTION, 0, LHT_BASE_UNIT, IS_REISSUABLE, WITH_FEE))
-        .then(() => {
-            return Promise.resolve()
-            .then(() => erc20Manager.getTokenAddressBySymbol.call(LHT_SYMBOL))
-            .then(_tokenAddr => ChronoBankAssetWithFeeProxy.at(_tokenAddr))
-            .then(_token => _token.getLatestVersion.call())
-            .then(_assetAddr => ChronoBankAssetWithFee.at(_assetAddr))
-            .then(_asset => {
-                return Promise.resolve()
-                .then(() => _asset.claimContractOwnership())
-                .then(() => _asset.setupFee(RewardsWallet.address, FEE_VALUE))
-            })
-        })
+        .then(() => tokenExtension.createAssetWithFee(LHT_SYMBOL, LHT_NAME, LHT_DESCRIPTION, 0, LHT_BASE_UNIT, IS_REISSUABLE, RewardsWallet.address, FEE_VALUE))
         .then(() => tokenExtension.getAssetOwnershipManager.call())
         .then(_assetOwnershipManagerAddr => ChronoBankAssetOwnershipManager.at(_assetOwnershipManagerAddr))
         .then(_assetOwnershipManager => {

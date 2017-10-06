@@ -151,7 +151,7 @@ contract AssetsManager is AssetsManagerInterface, TokenExtensionRegistry, BaseMa
         }
 
         store.remove(tokenExtensions, _tokenExtension);
-        store.set(platformToExtension, TokenManagementInterface(_tokenExtension).platform(), _tokenExtension);
+        store.set(platformToExtension, TokenManagementInterface(_tokenExtension).platform(), 0x0);
         _emitTokenExtensionUnregistered(_tokenExtension);
         return OK;
     }

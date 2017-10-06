@@ -20,48 +20,6 @@
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_symbol",
-          "type": "bytes32"
-        },
-        {
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "name": "_description",
-          "type": "string"
-        },
-        {
-          "name": "_value",
-          "type": "uint256"
-        },
-        {
-          "name": "_decimals",
-          "type": "uint8"
-        },
-        {
-          "name": "_isMint",
-          "type": "bool"
-        },
-        {
-          "name": "_withFee",
-          "type": "bool"
-        }
-      ],
-      "name": "createAsset",
-      "outputs": [
-        {
-          "name": "resultCode",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
       "constant": true,
       "inputs": [],
       "name": "platform",
@@ -113,24 +71,37 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_platform",
-          "type": "address"
-        },
-        {
           "name": "_symbol",
           "type": "bytes32"
         },
         {
-          "name": "_from",
-          "type": "address"
+          "name": "_name",
+          "type": "string"
         },
         {
-          "name": "_to",
-          "type": "address"
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "name": "_isMint",
+          "type": "bool"
         }
       ],
-      "name": "assetOwnershipChanged",
-      "outputs": [],
+      "name": "createAssetWithoutFee",
+      "outputs": [
+        {
+          "name": "resultCode",
+          "type": "uint256"
+        }
+      ],
       "payable": false,
       "type": "function"
     },
@@ -142,6 +113,52 @@
         {
           "name": "",
           "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "name": "_isMint",
+          "type": "bool"
+        },
+        {
+          "name": "_feeAddress",
+          "type": "address"
+        },
+        {
+          "name": "_feePercent",
+          "type": "uint32"
+        }
+      ],
+      "name": "createAssetWithFee",
+      "outputs": [
+        {
+          "name": "resultCode",
+          "type": "uint256"
         }
       ],
       "payable": false,
@@ -314,7 +331,386 @@
     }
   ],
   "unlinked_binary": "0x",
-  "networks": {},
+  "networks": {
+    "1": {
+      "links": {},
+      "events": {
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        },
+        "0x744c9136ec748d483c5956d6bafe7ff0b225f2ae0d7762ea1c6f70ee0d6a293a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "name": "AssetCreated",
+          "type": "event"
+        },
+        "0xae04404f9ca596169658a152e19b5944c1b87ad0aaa43fad5c958eb092acf309": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "AssetOwnershipClaimRequired",
+          "type": "event"
+        },
+        "0x4cc6e20f50556a4c91e20278ffb0c352f7491f10290b02591c130626c9fc4356": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "campaign",
+              "type": "address"
+            }
+          ],
+          "name": "CrowdsaleCampaignCreated",
+          "type": "event"
+        },
+        "0x44ca12820bad16b3d168144cd6883bfa849f8b758502af05dfc6a3b383dca2e3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "campaign",
+              "type": "address"
+            }
+          ],
+          "name": "CrowdsaleCampaignRemoved",
+          "type": "event"
+        }
+      },
+      "updated_at": 1507231136231
+    },
+    "4": {
+      "links": {},
+      "events": {
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        },
+        "0x744c9136ec748d483c5956d6bafe7ff0b225f2ae0d7762ea1c6f70ee0d6a293a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "name": "AssetCreated",
+          "type": "event"
+        },
+        "0xae04404f9ca596169658a152e19b5944c1b87ad0aaa43fad5c958eb092acf309": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "AssetOwnershipClaimRequired",
+          "type": "event"
+        },
+        "0x4cc6e20f50556a4c91e20278ffb0c352f7491f10290b02591c130626c9fc4356": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "campaign",
+              "type": "address"
+            }
+          ],
+          "name": "CrowdsaleCampaignCreated",
+          "type": "event"
+        },
+        "0x44ca12820bad16b3d168144cd6883bfa849f8b758502af05dfc6a3b383dca2e3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "campaign",
+              "type": "address"
+            }
+          ],
+          "name": "CrowdsaleCampaignRemoved",
+          "type": "event"
+        }
+      },
+      "updated_at": 1507221904045
+    },
+    "42": {
+      "links": {},
+      "events": {
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        },
+        "0x744c9136ec748d483c5956d6bafe7ff0b225f2ae0d7762ea1c6f70ee0d6a293a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            }
+          ],
+          "name": "AssetCreated",
+          "type": "event"
+        },
+        "0xae04404f9ca596169658a152e19b5944c1b87ad0aaa43fad5c958eb092acf309": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "asset",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "AssetOwnershipClaimRequired",
+          "type": "event"
+        },
+        "0x4cc6e20f50556a4c91e20278ffb0c352f7491f10290b02591c130626c9fc4356": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "campaign",
+              "type": "address"
+            }
+          ],
+          "name": "CrowdsaleCampaignCreated",
+          "type": "event"
+        },
+        "0x44ca12820bad16b3d168144cd6883bfa849f8b758502af05dfc6a3b383dca2e3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "campaign",
+              "type": "address"
+            }
+          ],
+          "name": "CrowdsaleCampaignRemoved",
+          "type": "event"
+        }
+      },
+      "updated_at": 1507298325349
+    }
+  },
   "schema_version": "0.0.5",
-  "updated_at": 1506780491105
+  "updated_at": 1507298325349
 }

@@ -2,48 +2,6 @@
   "contract_name": "TokenManagementInterface",
   "abi": [
     {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "symbol",
-          "type": "bytes32"
-        },
-        {
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "name": "_description",
-          "type": "string"
-        },
-        {
-          "name": "_value",
-          "type": "uint256"
-        },
-        {
-          "name": "_decimals",
-          "type": "uint8"
-        },
-        {
-          "name": "_isMint",
-          "type": "bool"
-        },
-        {
-          "name": "_withFee",
-          "type": "bool"
-        }
-      ],
-      "name": "createAsset",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
       "constant": true,
       "inputs": [],
       "name": "platform",
@@ -70,6 +28,44 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "name": "_isMint",
+          "type": "bool"
+        }
+      ],
+      "name": "createAssetWithoutFee",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
       "constant": true,
       "inputs": [],
       "name": "getAssetOwnershipManager",
@@ -77,6 +73,52 @@
         {
           "name": "",
           "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "name": "_isMint",
+          "type": "bool"
+        },
+        {
+          "name": "_feeAddress",
+          "type": "address"
+        },
+        {
+          "name": "_feePercent",
+          "type": "uint32"
+        }
+      ],
+      "name": "createAssetWithFee",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
         }
       ],
       "payable": false,
@@ -99,5 +141,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1506829744328
+  "updated_at": 1507298186053
 }

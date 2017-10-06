@@ -90,28 +90,6 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_platform",
-          "type": "address"
-        },
-        {
-          "name": "_owner",
-          "type": "address"
-        }
-      ],
-      "name": "getAssetsForOwner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32[]"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
@@ -169,5 +147,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1506843825970
+  "updated_at": 1507298186042
 }

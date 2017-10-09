@@ -6,7 +6,7 @@
       "type": "fallback"
     }
   ],
-  "unlinked_binary": "0x60606040523415600e57600080fd5b5b603f80601c6000396000f30060606040525b3415600f57600080fd5b5b5b0000a165627a7a72305820e2fa1576fec10b83dec442c7e581eb2f609b74fb0ca299919e9b5bc9745920410029",
+  "unlinked_binary": "0x60606040523415600e57600080fd5b5b603f80601c6000396000f30060606040525b3415600f57600080fd5b5b5b0000a165627a7a72305820fd051340fa4c37e1064aeef1269c3983f158df82e523a746d7d5abb73ccd53350029",
   "networks": {
     "1": {
       "links": {},
@@ -28,8 +28,14 @@
       "links": {},
       "address": "0x8023f8e3c739516f43566feb6ceae50696d04d0c",
       "updated_at": 1506859178123
+    },
+    "1507563245302": {
+      "events": {},
+      "links": {},
+      "address": "0x63ee59da15adb1d20aa302c341ce46570ec16d4f",
+      "updated_at": 1507563828121
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1507558452549
+  "updated_at": 1507564573660
 }

@@ -363,7 +363,7 @@
       },
       "links": {},
       "address": "0x039052dfe655f78743f5248380dfb1b3f78ef46e",
-      "updated_at": 1507558808264
+      "updated_at": 1507565064519
     },
     "42": {
       "events": {
@@ -538,8 +538,66 @@
       "links": {},
       "address": "0x8959043fa15d6ff74babd93148a4511bb557eb67",
       "updated_at": 1507298019087
+    },
+    "1507563245302": {
+      "events": {
+        "0x78d9711b4e43a110a220145d4f6de39235c995d1f4a0054cd049d5273fe3faac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddContract",
+          "type": "event"
+        },
+        "0x7f67b774d78008c48b01a427dfff3aac1b7fd790158c7b0fb434b5941ac51d43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogContractAddressChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x46632ad0ab14eeae92fd725a8fd4c51642bc4cb5",
+      "updated_at": 1507563953389
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1507558808264
+  "updated_at": 1507565064519
 }

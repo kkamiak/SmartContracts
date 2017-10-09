@@ -1077,7 +1077,7 @@
       },
       "links": {},
       "address": "0x03d4e31d8c58e81d12085c3f94844c9d72dc84db",
-      "updated_at": 1507558974260
+      "updated_at": 1507564973862
     },
     "42": {
       "events": {
@@ -1449,8 +1449,93 @@
       "links": {},
       "address": "0x88bd4288d7b823fae8b8800eb34f0fda943fd65b",
       "updated_at": 1506859189771
+    },
+    "1507563245302": {
+      "events": {
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        },
+        "0xf149a753669bf8ae72a54d5becee2a0f78297c8513b9c74bac5aa1acd59a8426": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "tokenExtension",
+              "type": "address"
+            }
+          ],
+          "name": "TokenExtensionRequested",
+          "type": "event"
+        },
+        "0xadaec20b36aa073df965798f4aa38bd5cedd19491766793d87792ae08c4bae9d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "tokenExtension",
+              "type": "address"
+            }
+          ],
+          "name": "TokenExtensionRegistered",
+          "type": "event"
+        },
+        "0x3f50f7daabc6e49127dd3b03b7f7326b60b1ae07a5f8956899da1fd1b51b0554": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "tokenExtension",
+              "type": "address"
+            }
+          ],
+          "name": "TokenExtensionUnregistered",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x0d362271076ad3ad0b121e374d26777f575dfe27",
+      "updated_at": 1507563953113
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1507558974260
+  "updated_at": 1507564973862
 }

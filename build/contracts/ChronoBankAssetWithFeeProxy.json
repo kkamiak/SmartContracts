@@ -958,8 +958,71 @@
       "links": {},
       "address": "0xa62042d19fe22d4ba2cb0a3810c2afa4d2b9aa57",
       "updated_at": 1507563857969
+    },
+    "1508356779676": {
+      "events": {
+        "0xaf574319215a31df9b528258f1bdeef2b12b169dc85ff443a49373248c77493a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "newVersion",
+              "type": "address"
+            }
+          ],
+          "name": "UpgradeProposal",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        },
+        "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3809e0f8d9d674f5f9dba3fa29c1ea2e58409f11",
+      "updated_at": 1508408791915
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1508356390829
+  "updated_at": 1508415944412
 }

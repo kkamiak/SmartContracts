@@ -1961,8 +1961,218 @@
       "links": {},
       "address": "0x7491096f394722b71239911fe335faeda84f2982",
       "updated_at": 1507563836283
+    },
+    "1508356779676": {
+      "events": {
+        "0x5a76ac301d83fd69e9182d51f4d166a232e361578fba9b67612ba18cb577ebd6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "AssetSent",
+          "type": "event"
+        },
+        "0x0feb0875de2ce4b1f14a44a2a6e2e4a610cb2d8741bb0944bf6b7b7bb74f7d83": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "locName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "oldHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "HashUpdate",
+          "type": "event"
+        },
+        "0xc145a293b84bfd203f83a51c887e4a7cfd69e94d97175a0cfedee731ac42874c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "locName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "NewLOC",
+          "type": "event"
+        },
+        "0x859432cf3ef34d4c3b49848b2a78f5deded8c5215bbc5af84b0b45143709c730": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "locName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "UpdateLOC",
+          "type": "event"
+        },
+        "0xee5ac2c3b886aafee842da34458ece5978e6a2f25bd4cf416cb6de15e9123b80": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "locName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "RemLOC",
+          "type": "event"
+        },
+        "0x53b00f41cbc4b7de5706fcbc6263bf35511abd6d9de1bc5e53383a48c586261a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "locName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "oldStatus",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "newStatus",
+              "type": "uint256"
+            }
+          ],
+          "name": "UpdLOCStatus",
+          "type": "event"
+        },
+        "0x8d1562f2eb2dacf77bc2222979221684eacec5d02a20eb16e309c346964cc49e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "locName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Reissue",
+          "type": "event"
+        },
+        "0x596e6e7149b1bee6fbb4600421c0c1dbb6d8c930942e88d976ff16c5a4c36de4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "locName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Revoke",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x9103ae64dce2e64dab34d8fcb6a63e1d556b0069",
+      "updated_at": 1508408791931
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1508356390841
+  "updated_at": 1508415944442
 }

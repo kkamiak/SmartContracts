@@ -372,27 +372,28 @@ contract Wallet is multiowned {
         if(!isOwner(msg.sender)) {
             return _emitError(WALLET_UNKNOWN_OWNER);
         }
-        address erc20Manager = ContractsManager(contractsManager).getContractAddressByType(bytes32("ERC20Manager"));
-        if(_symbol != bytes32('ETH') && ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol) == 0)
-            return _emitError(WALLET_UNKNOWN_TOKEN_TRANSFER);
         if(_symbol == bytes32('ETH')) {
             if(this.balance < _value) {
                 return _emitError(WALLET_INSUFFICIENT_BALANCE);
             }
-        }
-        else {
-            address token = ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol);
-            if(ERC20Interface(token).balanceOf(this) < _value)
+        } else {
+            address erc20Manager = ContractsManager(contractsManager).getContractAddressByType(bytes32("ERC20Manager"));
+            if(_symbol != bytes32('ETH') && ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol) == 0)
+            return _emitError(WALLET_UNKNOWN_TOKEN_TRANSFER);
+            else {
+                address token = ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol);
+                if(ERC20Interface(token).balanceOf(this) < _value)
                 return _emitError(WALLET_INSUFFICIENT_BALANCE);
+            }
         }
         // determine our operation hash.
-        bytes32 _r = sha3(msg.data, block.number);
-        uint status = confirm(_r);
-        if (!(status == OK) && (m_txs[_r].to == 0)) {
+        bytes32 _r = sha3(msg.data, now);
+        if (m_txs[_r].to == 0) {
             m_txs[_r].to = _to;
             m_txs[_r].value = _value;
             m_txs[_r].symbol = _symbol;
             _emitConfirmationNeeded(_r, msg.sender, _value, _to, _symbol);
+            uint status = confirm(_r);
             return status;
         }
         return _emitError(WALLET_TRANSFER_ALREADY_REGISTERED);

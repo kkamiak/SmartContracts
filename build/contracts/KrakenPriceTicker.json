@@ -417,8 +417,39 @@
       "links": {},
       "address": "0x9f2f6fe5a45044dff0c1cf166995358bf6e9a008",
       "updated_at": 1507563828127
+    },
+    "1508356779676": {
+      "events": {
+        "0x46cb989ef9cef13e930e3b7f286225a086e716a90d63e0b7da85d310a9db0c9a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "name": "newOraclizeQuery",
+          "type": "event"
+        },
+        "0xf5d9356ebb584d3c57a6d507d145b1e4a28ad9c1f5320d7f58edfed2a5aa6ba6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "price",
+              "type": "string"
+            }
+          ],
+          "name": "newKrakenPriceTicker",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x66ebe3315604be66ca7e680d009a8249d7b56932",
+      "updated_at": 1508408794262
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1508356390822
+  "updated_at": 1508415944379
 }

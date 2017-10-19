@@ -1,31 +1,35 @@
 {
-  "contract_name": "PendingManagerInterface",
+  "contract_name": "WalletsFactoryInterface",
   "abi": [
     {
       "constant": false,
       "inputs": [
         {
-          "name": "_hash",
+          "name": "_owners",
+          "type": "address[]"
+        },
+        {
+          "name": "_required",
+          "type": "uint256"
+        },
+        {
+          "name": "_contractsManager",
+          "type": "address"
+        },
+        {
+          "name": "_eventsEmiter",
+          "type": "address"
+        },
+        {
+          "name": "_name",
           "type": "bytes32"
-        },
-        {
-          "name": "_data",
-          "type": "bytes"
-        },
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "_sender",
-          "type": "address"
         }
       ],
-      "name": "addTx",
+      "name": "createWallet",
       "outputs": [
         {
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "payable": false,
@@ -35,5 +39,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1508415944444
+  "updated_at": 1508415944340
 }

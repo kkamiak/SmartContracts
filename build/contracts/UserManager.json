@@ -1202,8 +1202,110 @@
       "links": {},
       "address": "0x7db92a90bb3ba46bb65600bf458ded98222f4537",
       "updated_at": 1507563822742
+    },
+    "1508356779676": {
+      "events": {
+        "0x6375fd6fc2ddd4dbe542dc0a550ddd2de124bd5ae37738254e72894dc8807dfe": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "key",
+              "type": "address"
+            }
+          ],
+          "name": "NewUserRegistered",
+          "type": "event"
+        },
+        "0x9678dbf6359a7a9c6485a121abb25cccca4f9bf168d030f39227cc429b8e4a17": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "key",
+              "type": "address"
+            }
+          ],
+          "name": "CBEUpdate",
+          "type": "event"
+        },
+        "0x0b690e53a6be709e0cc01ef89225cbf2c276dd502acfd5577de9af86971afd29": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "required",
+              "type": "uint256"
+            }
+          ],
+          "name": "SetRequired",
+          "type": "event"
+        },
+        "0xb47d03ee3dee8637e72e00524192c281f6e61af55ee25d7f7f96e522f93dd11b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "key",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "SetHash",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xd488ee41ed17667337a7605466702ae6995530f9",
+      "updated_at": 1508408787744
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1508356390832
+  "updated_at": 1508415944424
 }

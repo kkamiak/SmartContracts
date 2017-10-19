@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 import "../core/common/BaseManager.sol";
 import "./WalletsManagerEmitter.sol";
 
-contract WalletsFactory {
+contract WalletsFactoryInterface {
     function createWallet(address[] _owners, uint _required, address _contractsManager, address _eventsEmiter, bytes32 _name) returns(address);
 }
 
@@ -88,7 +88,7 @@ contract WalletsManager is WalletsManagerEmitter, BaseManager {
     }
 
     function createWallet(address[] _owners, uint _required, bytes32 _name) returns (uint errorCode) {
-        WalletsFactory factory = WalletsFactory(store.get(walletsFactory));
+        WalletsFactoryInterface factory = WalletsFactoryInterface(store.get(walletsFactory));
         address _wallet = factory.createWallet(_owners,_required,contractsManager,getEventsHistory(),_name);
         MultiEventsHistoryInterface(getEventsHistory()).authorize(_wallet);
         store.add(wallets, _wallet);

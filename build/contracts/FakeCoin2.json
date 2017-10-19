@@ -311,8 +311,37 @@
       "links": {},
       "address": "0x155d462379393821f19fe564a199074daea67c6a",
       "updated_at": 1507563828117
+    },
+    "1508356779676": {
+      "events": {
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x1ffad62ab83724062a6bee0cddccff380e65fd1d",
+      "updated_at": 1508408794259
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1508356390837
+  "updated_at": 1508415944435
 }

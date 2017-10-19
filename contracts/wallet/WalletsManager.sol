@@ -1,8 +1,19 @@
 pragma solidity ^0.4.11;
 
 import "../core/common/BaseManager.sol";
-import "./Wallet.sol";
 import "./WalletsManagerEmitter.sol";
+
+contract WalletsFactory {
+    function createWallet(address[] _owners, uint _required, address _contractsManager, address _eventsEmiter, bytes32 _name) returns(address);
+}
+
+contract WalletInterface {
+    function isOwner(address _addr) returns (bool);
+}
+
+contract MultiEventsHistoryInterface {
+    function authorize(address _caller) returns(bool);
+}
 
 contract WalletsManager is WalletsManagerEmitter, BaseManager {
 
@@ -12,18 +23,22 @@ contract WalletsManager is WalletsManagerEmitter, BaseManager {
     uint constant ERROR_WALLET_CANNOT_ADD_TO_REGISTRY = 14003;
     uint constant ERROR_WALLET_UNKNOWN = 14004;
 
-StorageInterface.OrderedAddressesSet wallets;
+    StorageInterface.OrderedAddressesSet wallets;
+
+    StorageInterface.Address walletsFactory;
 
     function isWalletOwner(address _wallet, address _owner) internal returns (bool) {
-        return Wallet(_wallet).isOwner(_owner);
+        return WalletInterface(_wallet).isOwner(_owner);
     }
 
     function WalletsManager(Storage _store, bytes32 _crate) BaseManager(_store, _crate) {
+        walletsFactory.init("walletsFactory");
         wallets.init('wallets');
     }
 
-    function init(address _contractsManager) onlyContractOwner returns (uint) {
+    function init(address _contractsManager, address _walletsFactory) onlyContractOwner returns (uint) {
         BaseManager.init(_contractsManager, "WalletsManager");
+        store.set(walletsFactory, _walletsFactory);
         return OK;
     }
 
@@ -73,7 +88,9 @@ StorageInterface.OrderedAddressesSet wallets;
     }
 
     function createWallet(address[] _owners, uint _required, bytes32 _name) returns (uint errorCode) {
-        address _wallet = new Wallet(_owners,_required, contractsManager, _name);
+        WalletsFactory factory = WalletsFactory(store.get(walletsFactory));
+        address _wallet = factory.createWallet(_owners,_required,contractsManager,getEventsHistory(),_name);
+        MultiEventsHistoryInterface(getEventsHistory()).authorize(_wallet);
         store.add(wallets, _wallet);
         _emitWalletCreated(_wallet);
         return OK;

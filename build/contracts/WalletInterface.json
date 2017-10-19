@@ -5,11 +5,11 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_h",
-          "type": "bytes32"
+          "name": "_addr",
+          "type": "address"
         }
       ],
-      "name": "confirm",
+      "name": "isOwner",
       "outputs": [
         {
           "name": "",
@@ -18,53 +18,10 @@
       ],
       "payable": false,
       "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "_value",
-          "type": "uint256"
-        },
-        {
-          "name": "_data",
-          "type": "bytes"
-        }
-      ],
-      "name": "execute",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "name": "_to",
-          "type": "address"
-        }
-      ],
-      "name": "changeOwner",
-      "outputs": [],
-      "payable": false,
-      "type": "function"
     }
   ],
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1507563322779
+  "updated_at": 1508356390849
 }

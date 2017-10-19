@@ -1,23 +1,19 @@
 {
-  "contract_name": "PlatformsFactory",
+  "contract_name": "MultiEventsHistoryInterface",
   "abi": [
     {
       "constant": false,
       "inputs": [
         {
-          "name": "eventsHistory",
-          "type": "address"
-        },
-        {
-          "name": "owner",
+          "name": "_caller",
           "type": "address"
         }
       ],
-      "name": "createPlatform",
+      "name": "authorize",
       "outputs": [
         {
           "name": "",
-          "type": "address"
+          "type": "bool"
         }
       ],
       "payable": false,
@@ -27,5 +23,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1508356390822
+  "updated_at": 1508356390849
 }

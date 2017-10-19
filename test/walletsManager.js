@@ -51,7 +51,7 @@ contract('Wallets Manager', function(accounts) {
     it("Token and balances initialization should pass.", function () {
       return FakeCoin.deployed().then(function (instance) {
         coin = instance;
-        return Wallet.new([owner1], 2, Setup.contractsManager.address, "Wallet1").then(function (instance) {
+        return Wallet.new([owner1], 2, Setup.contractsManager.address, Setup.multiEventsHistory.address, "Wallet1").then(function (instance) {
           wallet = instance;
           return Setup.erc20Manager.addToken(coin.address, TOKEN_SYMBOL, TOKEN_SYMBOL, TOKEN_URL, TOKEN_DECIMALS, TOKEN_IPFS_HASH, TOKEN_SWARM_HASH, {
             from: owner,

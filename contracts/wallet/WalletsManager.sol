@@ -27,9 +27,9 @@ contract WalletsManager is WalletsManagerEmitter, BaseManager {
 
     StorageInterface.Address walletsFactory;
 
-    function isWalletOwner(address _wallet, address _owner) internal returns (bool) {
-        return WalletInterface(_wallet).isOwner(_owner);
-    }
+    StorageInterface.Address oracleAddress;
+
+    StorageInterface.UInt oraclePrice;
 
     function WalletsManager(Storage _store, bytes32 _crate) BaseManager(_store, _crate) {
         walletsFactory.init("walletsFactory");
@@ -48,6 +48,18 @@ contract WalletsManager is WalletsManagerEmitter, BaseManager {
         return OK;
     }
 
+    function getOraclePrice() constant returns (uint) {
+        return store.get(oraclePrice);
+    }
+
+    function getOracleAddress() constant returns (address) {
+        return store.get(oracleAddress);
+    }
+
+    function isWalletOwner(address _wallet, address _owner) internal returns (bool) {
+        return WalletInterface(_wallet).isOwner(_owner);
+    }
+
     function getWallets() constant returns (address[] result) {
         StorageInterface.Iterator memory iterator = store.listIterator(wallets);
         address wallet;
@@ -58,6 +70,16 @@ contract WalletsManager is WalletsManagerEmitter, BaseManager {
                 result[j++] = wallet;
             }
         }
+    }
+
+    function setOraclePrice(uint _price) external returns (uint) {
+        store.set(oraclePrice,_price);
+        return OK;
+    }
+
+    function setOracleAddress(address _address) external returns (uint) {
+        store.set(oracleAddress,_address);
+        return OK;
     }
 
     function addWallet(address _wallet) returns (uint) {
@@ -87,9 +109,20 @@ contract WalletsManager is WalletsManagerEmitter, BaseManager {
         return _emitError(ERROR_WALLET_UNKNOWN);
     }
 
-    function createWallet(address[] _owners, uint _required, bytes32 _name) returns (uint errorCode) {
+    function createWallet(address[] _owners, uint _required, bytes32 _name, bool _use2FA) returns (uint errorCode) {
         WalletsFactoryInterface factory = WalletsFactoryInterface(store.get(walletsFactory));
-        address _wallet = factory.createWallet(_owners,_required,contractsManager,getEventsHistory(),_name);
+        address _wallet;
+        if(_use2FA) {
+            address[] owners;
+            for(uint i=0;i<_owners.length;i++) {
+                owners.push(_owners[i]);
+            }
+            owners.push(getOracleAddress());
+            _wallet = factory.createWallet(owners,_required,contractsManager,getEventsHistory(),_name);
+        }
+        else {
+            _wallet = factory.createWallet(_owners,_required,contractsManager,getEventsHistory(),_name);
+        }
         MultiEventsHistoryInterface(getEventsHistory()).authorize(_wallet);
         store.add(wallets, _wallet);
         _emitWalletCreated(_wallet);

@@ -449,13 +449,13 @@ contract Wallet is multiowned {
                 return _emitError(WALLET_INVALID_INVOCATION);
             }
         }
-        if(_symbol == bytes32('ETH')) {
+        if(_symbol == bytes32('ETH') || _symbol == bytes32(0)) {
             if(this.balance < _value) {
                 return _emitError(WALLET_INSUFFICIENT_BALANCE);
             }
         } else {
             address erc20Manager = ContractsManager(contractsManager).getContractAddressByType(bytes32("ERC20Manager"));
-            if(_symbol != bytes32('ETH') && ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol) == 0)
+            if(ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol) == 0)
             return _emitError(WALLET_UNKNOWN_TOKEN_TRANSFER);
             else {
                 address token = ERC20Manager(erc20Manager).getTokenAddressBySymbol(_symbol);

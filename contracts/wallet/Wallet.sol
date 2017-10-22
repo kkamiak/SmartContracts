@@ -439,6 +439,9 @@ contract Wallet is multiowned {
             address walletsManager = ContractsManager(contractsManager).getContractAddressByType(bytes32("WalletsManager"));
             uint oraclePrice = WalletsManagerInterface(walletsManager).getOraclePrice();
             address oracleAddress = WalletsManagerInterface(walletsManager).getOracleAddress();
+            if(oraclePrice == 0 || oracleAddress == address(0)) {
+                return _emitError(WALLET_INVALID_INVOCATION);
+            }
             if(msg.value < oraclePrice) {
                 return _emitError(WALLET_INVALID_INVOCATION);
             }

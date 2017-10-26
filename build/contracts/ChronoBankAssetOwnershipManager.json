@@ -1,0 +1,185 @@
+{
+  "contract_name": "ChronoBankAssetOwnershipManager",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_partowner",
+          "type": "address"
+        }
+      ],
+      "name": "addAssetPartOwner",
+      "outputs": [
+        {
+          "name": "errorCode",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_partowner",
+          "type": "address"
+        }
+      ],
+      "name": "removePartOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_partowner",
+          "type": "address"
+        }
+      ],
+      "name": "addPartOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "hasAssetRights",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_idx",
+          "type": "uint256"
+        }
+      ],
+      "name": "symbols",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_partowner",
+          "type": "address"
+        }
+      ],
+      "name": "removeAssetPartOwner",
+      "outputs": [
+        {
+          "name": "errorCode",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "symbolsCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "changeOwnership",
+      "outputs": [
+        {
+          "name": "errorCode",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {
+    "1": {
+      "links": {},
+      "events": {},
+      "updated_at": 1507231136231
+    },
+    "4": {
+      "links": {},
+      "events": {},
+      "updated_at": 1507221904046
+    },
+    "42": {
+      "links": {},
+      "events": {},
+      "updated_at": 1507222624848
+    },
+    "1506859110923": {
+      "links": {},
+      "events": {},
+      "updated_at": 1506859189773
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1507231136231
+}

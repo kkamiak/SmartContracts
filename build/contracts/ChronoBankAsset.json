@@ -1,0 +1,51 @@
+{
+  "contract_name": "ChronoBankAsset",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_proxy",
+          "type": "address"
+        }
+      ],
+      "name": "init",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {
+    "1": {
+      "links": {},
+      "events": {},
+      "updated_at": 1502131992430
+    },
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x17ed0fe088e9d2606c42e8839484a64a5160fe97",
+      "updated_at": 1502123174910
+    },
+    "42": {
+      "events": {},
+      "links": {},
+      "address": "0xb662ca118af19b47f9e1f3b1bf7d0627493d3aa1",
+      "updated_at": 1502111591187
+    },
+    "1506859110923": {
+      "events": {},
+      "links": {},
+      "address": "0xaeb19eddef1246b8983a80e6d90a99bdb02b08fa",
+      "updated_at": 1506859175547
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1507224901881
+}

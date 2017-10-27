@@ -289,6 +289,48 @@
         {
           "name": "_symbol",
           "type": "bytes32"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "name": "_baseUnit",
+          "type": "uint8"
+        },
+        {
+          "name": "_isReissuable",
+          "type": "bool"
+        },
+        {
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "issueAsset",
+      "outputs": [
+        {
+          "name": "errorCode",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_symbol",
+          "type": "bytes32"
         }
       ],
       "name": "totalSupply",
@@ -460,5 +502,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1507224901884
+  "updated_at": 1509111177682
 }

@@ -5,7 +5,20 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_caller",
+          "name": "_eventEmitter",
+          "type": "address"
+        }
+      ],
+      "name": "reject",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_eventEmitter",
           "type": "address"
         }
       ],
@@ -23,5 +36,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1506780491107
+  "updated_at": 1509111177674
 }

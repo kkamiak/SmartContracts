@@ -83,10 +83,32 @@
       ],
       "payable": false,
       "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_account",
+          "type": "address"
+        },
+        {
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "takeFeatureFee",
+      "outputs": [
+        {
+          "name": "resultCode",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
     }
   ],
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1506843825973
+  "updated_at": 1509111177687
 }

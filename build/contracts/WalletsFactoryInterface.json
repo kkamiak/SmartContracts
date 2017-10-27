@@ -1,0 +1,47 @@
+{
+  "contract_name": "WalletsFactoryInterface",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_owners",
+          "type": "address[]"
+        },
+        {
+          "name": "_required",
+          "type": "uint256"
+        },
+        {
+          "name": "_contractsManager",
+          "type": "address"
+        },
+        {
+          "name": "_eventsEmiter",
+          "type": "address"
+        },
+        {
+          "name": "_use2FA",
+          "type": "bool"
+        },
+        {
+          "name": "_releaseTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "createWallet",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509111177668
+}

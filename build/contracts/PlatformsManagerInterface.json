@@ -5,29 +5,11 @@
       "constant": true,
       "inputs": [
         {
-          "name": "_id",
-          "type": "uint256"
-        }
-      ],
-      "name": "getPlatformWithId",
-      "outputs": [
-        {
-          "name": "",
+          "name": "_user",
           "type": "address"
         }
       ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_platform",
-          "type": "address"
-        }
-      ],
-      "name": "getIdForPlatform",
+      "name": "getPlatformsForUserCount",
       "outputs": [
         {
           "name": "",
@@ -45,11 +27,51 @@
           "type": "address"
         }
       ],
-      "name": "getPlatformForUser",
+      "name": "getPlatformsMetadataForUser",
+      "outputs": [
+        {
+          "name": "_platforms",
+          "type": "address[]"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        },
+        {
+          "name": "_idx",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPlatformForUserAtIndex",
+      "outputs": [
+        {
+          "name": "_platform",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_platform",
+          "type": "address"
+        }
+      ],
+      "name": "isPlatformAttached",
       "outputs": [
         {
           "name": "",
-          "type": "address"
+          "type": "bool"
         }
       ],
       "payable": false,
@@ -59,5 +81,5 @@
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1507224901882
+  "updated_at": 1509111177676
 }

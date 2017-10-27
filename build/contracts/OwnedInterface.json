@@ -31,6 +31,24 @@
       ],
       "payable": false,
       "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "transferContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
     }
   ],
   "unlinked_binary": "0x",
@@ -42,5 +60,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1507224901882
+  "updated_at": 1509111177678
 }

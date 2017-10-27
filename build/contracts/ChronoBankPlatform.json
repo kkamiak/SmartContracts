@@ -1555,7 +1555,7 @@
               "type": "uint256"
             },
             {
-              "indexed": false,
+              "indexed": true,
               "name": "by",
               "type": "address"
             }
@@ -1577,7 +1577,7 @@
               "type": "uint256"
             },
             {
-              "indexed": false,
+              "indexed": true,
               "name": "by",
               "type": "address"
             }
@@ -1667,11 +1667,23 @@
           ],
           "name": "Error",
           "type": "event"
+        },
+        "0x2e36a7093f25f22bd4cbdeb6040174c3ba4c5fe8f1abc04e7c3c48f26c7413e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
         }
       },
       "links": {},
       "address": "0x0d8903c0cf4876dc7491ea5e127e24277125fdd5",
-      "updated_at": 1507221754631
+      "updated_at": 1509117040677
     },
     "42": {
       "events": {
@@ -2019,5 +2031,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509112184340
+  "updated_at": 1509117040677
 }

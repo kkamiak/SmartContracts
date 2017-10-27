@@ -814,10 +814,103 @@
           ],
           "name": "Error",
           "type": "event"
+        },
+        "0xcdc5b8b215eb83fcaa86f308963042cd82160281b9800937b75f8a2a842e62ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "by",
+              "type": "address"
+            }
+          ],
+          "name": "PlatformAttached",
+          "type": "event"
+        },
+        "0x91fa8213ec3e06d6c6fc812bc9bdabb5cdeb5921d3ec76d0d710b744bb96b5d6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "by",
+              "type": "address"
+            }
+          ],
+          "name": "PlatformDetached",
+          "type": "event"
+        },
+        "0x675ebf44364662d6fd674a3ec79555047e602de0ed7429ee703618a9d5ce5661": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "platform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "tokenExtension",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "by",
+              "type": "address"
+            }
+          ],
+          "name": "PlatformRequested",
+          "type": "event"
+        },
+        "0xd7ce3ddd0ef249f86bc111aab33791dd478faef4dafabb858e90fe0c23e24cb3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "fromPlatform",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "toPlatform",
+              "type": "address"
+            }
+          ],
+          "name": "PlatformReplaced",
+          "type": "event"
         }
       },
-      "updated_at": 1507221993841,
-      "address": "0x61c811e9f24d038ab687b7087ef28b62bb778c65"
+      "updated_at": 1509117040675,
+      "address": "0x7ccdf5ec9d93307fda6c7970404683ef21e4daa0"
     },
     "42": {
       "links": {},
@@ -1158,5 +1251,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509112184338
+  "updated_at": 1509117040675
 }

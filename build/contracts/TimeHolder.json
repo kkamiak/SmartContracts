@@ -840,11 +840,33 @@
           ],
           "name": "ListenerRemoved",
           "type": "event"
+        },
+        "0xcec073f4b81cdc9c1b8aa3d9631d027b454361d3253d97f33e8e23ff4785c247": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "FeatureFeeTaken",
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0x3f6236a858bbd5865ec4f5dec95fd2876d7cb603",
-      "updated_at": 1506785756657
+      "address": "0xcbe633f269e961311f5575228b92467e7d631042",
+      "updated_at": 1509115510529
     },
     "42": {
       "events": {
@@ -1034,5 +1056,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509111501027
+  "updated_at": 1509115510529
 }

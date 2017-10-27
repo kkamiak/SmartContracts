@@ -103,20 +103,22 @@ contract WalletsManager is WalletsManagerEmitter, FeatureFeeAdapter, BaseManager
         return _create2FAWallet(_releaseTime, [uint(0)]);
     }
 
+    function addWallet(address _wallet) public returns (uint) {
+        return _addWallet(_wallet, [uint(0)]);
+    }
+
     /**
-    *  Deletes sender from a list of wallets if present. Designed to be called only by wallet.
+    *  Deletes sender from a list of wallets if present.
+    *  Designed to be called only by wallet.
     */
     function removeWallet() public returns (uint) {
-        if(!store.includes(wallets,msg.sender)) {
+        if(!store.includes(wallets, msg.sender)) {
             return _emitError(ERROR_WALLET_UNKNOWN);
         }
 
-        store.remove(wallets,msg.sender);
+        store.remove(wallets, msg.sender);
+        _emitWalletDeleted(msg.sender);
         return OK;
-    }
-
-    function addWallet(address _wallet) public returns (uint) {
-        return _addWallet(_wallet, [uint(0)]);
     }
 
     function isWalletOwner(address _wallet, address _owner) internal returns (bool) {
@@ -132,16 +134,18 @@ contract WalletsManager is WalletsManagerEmitter, FeatureFeeAdapter, BaseManager
         if(!r) {
             return _emitError(ERROR_WALLET_UNKNOWN);
         }
+
         if(store.includes(wallets,_wallet)) {
             return _emitError(ERROR_WALLET_EXISTS);
         }
+
         if(!isWalletOwner(_wallet,msg.sender)) {
             return _emitError(ERROR_WALLET_CANNOT_ADD_TO_REGISTRY);
         }
 
         store.add(wallets, _wallet);
 
-        _emitWalletAdded(_wallet);
+        _emitWalletAdded(_wallet, msg.sender);
 
         _result[0] = OK;
         return OK;
@@ -152,11 +156,17 @@ contract WalletsManager is WalletsManagerEmitter, FeatureFeeAdapter, BaseManager
     featured(_result)
     returns (uint errorCode)
     {
+        require(_owners.length >= _required);
+        
         WalletsFactoryInterface factory = WalletsFactoryInterface(store.get(walletsFactory));
-        address _wallet = factory.createWallet(_owners,_required,contractsManager,getEventsHistory(), false, _releaseTime);
-        MultiEventsHistoryInterface(getEventsHistory()).authorize(_wallet);
+        address _wallet = factory.createWallet(_owners, _required, contractsManager, getEventsHistory(), false, _releaseTime);
+        if (!MultiEventsHistoryInterface(getEventsHistory()).authorize(_wallet)) {
+            revert();
+        }
+
         store.add(wallets, _wallet);
-        _emitWalletCreated(_wallet);
+
+        _emitWalletCreated(_wallet, msg.sender);
 
         _result[0] = OK;
         return OK;
@@ -167,13 +177,24 @@ contract WalletsManager is WalletsManagerEmitter, FeatureFeeAdapter, BaseManager
     featured(_result)
     returns (uint errorCode)
     {
+        if (getOracleAddress() == 0x0) {
+            return _emitError(ERROR_WALLET_INVALID_INVOCATION);
+        }
+
         WalletsFactoryInterface factory = WalletsFactoryInterface(store.get(walletsFactory));
+
         address[] memory _owners = new address[](2);
         _owners[0] = msg.sender;
         _owners[1] = getOracleAddress();
+
         address _wallet = factory.createWallet(_owners,2,contractsManager,getEventsHistory(), true, _releaseTime);
+        if (!MultiEventsHistoryInterface(getEventsHistory()).authorize(_wallet)) {
+            revert();
+        }
+
         store.add(wallets, _wallet);
-        _emitWalletCreated(_wallet);
+
+        _emitWalletCreated(_wallet, msg.sender);
 
         _result[0] = OK;
         return OK;
@@ -184,12 +205,16 @@ contract WalletsManager is WalletsManagerEmitter, FeatureFeeAdapter, BaseManager
         return error;
     }
 
-    function _emitWalletAdded(address wallet) internal {
-        WalletsManager(getEventsHistory()).emitWalletAdded(wallet);
+    function _emitWalletAdded(address wallet, address by) internal {
+        WalletsManager(getEventsHistory()).emitWalletAdded(wallet, by);
     }
 
-    function _emitWalletCreated(address wallet) internal {
-        WalletsManager(getEventsHistory()).emitWalletCreated(wallet);
+    function _emitWalletCreated(address wallet, address by) internal {
+        WalletsManager(getEventsHistory()).emitWalletCreated(wallet, by);
+    }
+
+    function _emitWalletDeleted(address wallet) internal {
+        WalletsManager(getEventsHistory()).emitWalletDeleted(wallet);
     }
 
     function() {

@@ -27,6 +27,8 @@ contract WalletEmitter is MultiEventsHistoryAdapter {
     // the last one is emitted if the required signatures change
     event MultisigWalletRequirementChanged(address indexed self, uint newRequirement);
 
+    event MultisigWallet2FAChanged(address indexed self, bool enabled);
+
     event Error(address indexed self, uint errorCode);
 
     function emitError(uint errorCode) {
@@ -71,5 +73,9 @@ contract WalletEmitter is MultiEventsHistoryAdapter {
 
     function emitRequirementChanged(uint newRequirement) {
         MultisigWalletRequirementChanged(_self(), newRequirement);
+    }
+
+    function emit2FAChanged(bool enabled) {
+        MultisigWallet2FAChanged(_self(), enabled);
     }
 }

@@ -277,6 +277,8 @@ contract multiowned is WalletEmitter {
                 return OK;
             }
         }
+
+        _emit2FAChanged(use2FA);
     }
 
     function clearPending() internal {
@@ -330,6 +332,10 @@ contract multiowned is WalletEmitter {
 
     function _emitRequirementChanged(uint newRequirement) {
         Wallet(getEventsHistory()).emitRequirementChanged(newRequirement);
+    }
+
+    function _emit2FAChanged(bool enabled) {
+        Wallet(getEventsHistory()).emit2FAChanged(enabled);
     }
 
    	// FIELDS

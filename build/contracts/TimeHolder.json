@@ -867,11 +867,38 @@
           ],
           "name": "FeatureFeeTaken",
           "type": "event"
+        },
+        "0x2943030ec8237acc21c9f7b88449db73d4b0f8e1c64675fa50b58844c9fb69ec": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "FeatureFeeTaken",
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0xcbe633f269e961311f5575228b92467e7d631042",
-      "updated_at": 1509115510529
+      "address": "0xf7c110b9fafc407510480de4428fceaaf24dac4f",
+      "updated_at": 1509221431512
     },
     "42": {
       "events": {
@@ -1088,5 +1115,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509218297131
+  "updated_at": 1509221431512
 }

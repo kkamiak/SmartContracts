@@ -1773,7 +1773,7 @@
           "anonymous": false,
           "inputs": [
             {
-              "indexed": false,
+              "indexed": true,
               "name": "self",
               "type": "address"
             },
@@ -1785,9 +1785,271 @@
           ],
           "name": "Error",
           "type": "event"
+        },
+        "0xbee6d2975bcdff8dc26bc64942959415ca30aff94e84977a5954a760da30fbfe": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "MultisigWalletDeposit",
+          "type": "event"
+        },
+        "0x113341d7c6797c7fd2ab72bb6f21014dc77b4bfaaffde795ad5f9b5fd70c76f0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MultisigWalletSingleTransact",
+          "type": "event"
+        },
+        "0xec604b4a62b21dd5d4021a01def168795513550bcf89c8fac0363bee0e763ca6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "operation",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MultisigWalletMultiTransact",
+          "type": "event"
+        },
+        "0x99650330103279c27894c26446e08829e4f4a97c737d9de68ee66b0070b47551": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "operation",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "name": "initiator",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MultisigWalletConfirmationNeeded",
+          "type": "event"
+        },
+        "0x619980af4e2d2067d8772c53365a0449d1bdd2ccd48b6e504ea1cab5a50ca752": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "operation",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MultisigWalletConfirmation",
+          "type": "event"
+        },
+        "0x19488fab9001d4fd32730335b6e16f41b8d0fffe8f210fe291016d939f829052": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "operation",
+              "type": "bytes32"
+            }
+          ],
+          "name": "MultisigWalletRevoke",
+          "type": "event"
+        },
+        "0xf326492b55079c92d5144c6c5e02fe1f6cb1ec9064e12de0d269f0615171e8df": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "oldOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "MultisigWalletOwnerChanged",
+          "type": "event"
+        },
+        "0xfda769962711e3e34f112435e5900b6f209a31363e82cdbb4bf28ef0fe810baf": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "MultisigWalletOwnerAdded",
+          "type": "event"
+        },
+        "0x00d0db01d039330b725890e8de587ddb67d2c41528c68f07057500e4026c4877": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "oldOwner",
+              "type": "address"
+            }
+          ],
+          "name": "MultisigWalletOwnerRemoved",
+          "type": "event"
+        },
+        "0xb26123dbf7a81d26e5f647fcaabebe1583079e0c43904aae3954496eba952c4a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "newRequirement",
+              "type": "uint256"
+            }
+          ],
+          "name": "MultisigWalletRequirementChanged",
+          "type": "event"
+        },
+        "0x3c05c875f0fe54dcedd51664a7ceb9a463f3b1f1bbf04bdd0a1c15c1758967b1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "enabled",
+              "type": "bool"
+            }
+          ],
+          "name": "MultisigWallet2FAChanged",
+          "type": "event"
         }
       },
-      "updated_at": 1509117401432
+      "updated_at": 1509223366042
     },
     "42": {
       "links": {},
@@ -2741,5 +3003,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509219090487
+  "updated_at": 1509223366042
 }

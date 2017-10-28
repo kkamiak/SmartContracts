@@ -657,11 +657,72 @@
           ],
           "name": "WalletCreated",
           "type": "event"
+        },
+        "0xab5e58da9d3260e1f73a5b4f6a270e75b7230b399ec2e3b3879089e10a15799c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "by",
+              "type": "address"
+            }
+          ],
+          "name": "WalletAdded",
+          "type": "event"
+        },
+        "0xca0b7dde26052d34217ef1a0cee48085a07ca32da0a918609937a307d496bbf5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "by",
+              "type": "address"
+            }
+          ],
+          "name": "WalletCreated",
+          "type": "event"
+        },
+        "0x49de411f58cbd9799f63088434ff82d488c93ad291d4844de5c68b6bc6704cdd": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "wallet",
+              "type": "address"
+            }
+          ],
+          "name": "WalletDeleted",
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0x0936b3db44648b8ce11a6a982579b60a8946c5ec",
-      "updated_at": 1509117401427
+      "address": "0x7cb54b91ff9d583fb706b71aa8abec5183262371",
+      "updated_at": 1509223366040
     },
     "42": {
       "events": {
@@ -842,5 +903,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1509219090480
+  "updated_at": 1509223366040
 }

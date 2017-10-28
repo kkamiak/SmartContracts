@@ -37,7 +37,6 @@ module.exports = function(deployer, network, accounts) {
     .then(_tx => {
         // return Promise.resolve()
         // .then(() => )
-        console.log("logs", _tx.logs)
         let event = eventsHelper.extractEvents(_tx, "PlatformRequested")[0]
         if (event !== undefined) {
             return event.args.platform

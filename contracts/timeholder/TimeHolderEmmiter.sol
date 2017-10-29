@@ -26,7 +26,7 @@ contract TimeHolderEmmiter is MultiEventsHistoryAdapter {
     /**
     * Fee for Feature is taken
     */
-    event FeatureFeeTaken(address from, address to, uint amount);
+    event FeatureFeeTaken(address self, address indexed from, address indexed to, uint amount);
 
     /**
     *  Something went wrong.
@@ -50,7 +50,7 @@ contract TimeHolderEmmiter is MultiEventsHistoryAdapter {
     }
 
     function emitFeatureFeeTaken(address _from, address _to, uint _amount) {
-        FeatureFeeTaken(_from, _to, _amount);
+        FeatureFeeTaken(_self(), _from, _to, _amount);
     }
 
     function emitError(uint error) {

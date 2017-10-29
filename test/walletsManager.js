@@ -147,7 +147,7 @@ contract('Wallets Manager', function(accounts) {
 
         it('should be able to multisig send ETH', function() {
             eventsHelper.setupEvents(eventor)
-            watcher = eventor.ConfirmationNeeded()
+            watcher = eventor.MultisigWalletConfirmationNeeded()
             balanceETH = web3.eth.getBalance(wallet.address)
             return wallet.transfer.call(owner3, 5000, 'ETH').then(function (r) {
                 return wallet.transfer(owner3, 5000, 'ETH').then(function (tx) {

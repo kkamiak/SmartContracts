@@ -277,6 +277,8 @@ contract multiowned is WalletEmitter {
                 return OK;
             }
         }
+
+        _emit2FAChanged(use2FA);
     }
 
     function clearPending() internal {
@@ -330,6 +332,10 @@ contract multiowned is WalletEmitter {
 
     function _emitRequirementChanged(uint newRequirement) {
         Wallet(getEventsHistory()).emitRequirementChanged(newRequirement);
+    }
+
+    function _emit2FAChanged(bool enabled) {
+        Wallet(getEventsHistory()).emit2FAChanged(enabled);
     }
 
    	// FIELDS
@@ -390,18 +396,24 @@ contract Wallet is multiowned {
         return result;
     }
 
-    function getPendings() constant returns (address[] result1, uint[] result2, bytes32[] result3, bytes32[] operations) {
+    function getPendings()
+    public
+    constant
+    returns (address[] result1, uint[] result2, bytes32[] result3, bytes32[] operations, bool[] isConfirmed)
+    {
         result1 = new address[](m_pendingIndex.length);
         result2 = new uint[](m_pendingIndex.length);
         result3 = new bytes32[](m_pendingIndex.length);
         operations = new bytes32[](m_pendingIndex.length);
+        isConfirmed = new bool[](m_pendingIndex.length);
         for(uint i=0;i<m_pendingIndex.length;i++) {
             result1[i] = m_txs[m_pendingIndex[i]].to;
             result2[i] = m_txs[m_pendingIndex[i]].value;
             result3[i] = m_txs[m_pendingIndex[i]].symbol;
             operations[i] = m_pendingIndex[i];
+            isConfirmed[i] = hasConfirmed(m_pendingIndex[i], msg.sender);
         }
-        return (result1,result2,result3,operations);
+        return (result1, result2, result3, operations, isConfirmed);
     }
 
     // kills the contract sending everything to `_to`.

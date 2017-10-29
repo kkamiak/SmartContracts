@@ -1,7 +1,8 @@
 pragma solidity ^0.4.11;
 
 import "../core/contracts/ContractsManagerInterface.sol";
-import "../assets/AssetsManager.sol";
+import "../core/erc20/ERC20Manager.sol";
+import "../core/erc20/ERC20Interface.sol";
 
 /**
 *  @title AssetDonator
@@ -23,7 +24,7 @@ contract AssetDonator {
     }
 
     /**
-    *  @notice Sends 1000 TIME to caller.
+    *  @notice Sends 10 TIME to caller.
     *  @notice It is permitted to send TIMEs only once.
     *
     *  @return success or not
@@ -33,10 +34,12 @@ contract AssetDonator {
            return false;
         }
 
-        address assetManager = ContractsManagerInterface(contractManager)
-              .getContractAddressByType("AssetsManager");
+        address erc20Manager = ContractsManagerInterface(contractManager)
+              .getContractAddressByType("ERC20Manager");
+        address token = ERC20Manager(erc20Manager).getTokenAddressBySymbol(bytes32("TIME"));
 
-        if (!AssetsManager(assetManager).sendAsset(bytes32("TIME"), msg.sender, 1000000000)) {
+
+        if (!ERC20Interface(token).transfer(msg.sender, 1000000000)) {
             return false;
         }
 

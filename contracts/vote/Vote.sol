@@ -37,6 +37,7 @@ contract Vote is VoteEmitter, BaseManager {
     StorageInterface.UIntUIntMapping deadline;
     StorageInterface.UIntBoolMapping status;
     StorageInterface.UIntBoolMapping active;
+    StorageInterface.UIntUIntMapping creationTime;
 
     StorageInterface.UIntAddressUIntMapping memberOption;
     StorageInterface.UIntAddressUIntMapping memberVotes;
@@ -65,6 +66,7 @@ contract Vote is VoteEmitter, BaseManager {
         memberPolls.init('memberPolls');
         ipfsHashes.init('ipfsHashes');
         optionsId.init('optionsId');
+        creationTime.init('creationTime');
     }
 
     function checkPollIsActive(uint _pollId) constant returns (bool) {

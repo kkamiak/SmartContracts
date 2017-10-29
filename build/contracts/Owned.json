@@ -1,0 +1,97 @@
+{
+  "contract_name": "Owned",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "claimContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "changeContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pendingContractOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "destroy",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "transferContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "contractOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "type": "constructor"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b60008054600160a060020a03191633600160a060020a03161790555b5b6103368061003c6000396000f300606060405236156100755763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416634592cd1d811461007a578063557f4bc9146100a15780635aa77d3c146100d457806383197ef014610103578063a843c51f14610118578063ce606ee01461014b575b600080fd5b341561008557600080fd5b61008d61017a565b604051901515815260200160405180910390f35b34156100ac57600080fd5b61008d600160a060020a03600435166101d2565b604051901515815260200160405180910390f35b34156100df57600080fd5b6100e7610233565b604051600160a060020a03909116815260200160405180910390f35b341561010e57600080fd5b610116610242565b005b341561012357600080fd5b61008d600160a060020a0360043516610269565b604051901515815260200160405180910390f35b341561015657600080fd5b6100e76102fb565b604051600160a060020a03909116815260200160405180910390f35b60015460009033600160a060020a0390811691161461019b575060006101cf565b50600180546000805473ffffffffffffffffffffffffffffffffffffffff19908116600160a060020a038416179091551681555b90565b6000805433600160a060020a039081169116141561022c57600160a060020a03821615156102025750600061022c565b506001805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161781555b5b5b919050565b600154600160a060020a031681565b60005433600160a060020a03908116911614156102655733600160a060020a0316ff5b5b5b565b6000805433600160a060020a039081169116141561022c57600160a060020a03821615156102995750600061022c565b600154600160a060020a0316156102c8576001805473ffffffffffffffffffffffffffffffffffffffff191690555b506000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03831617905560015b5b5b919050565b600054600160a060020a0316815600a165627a7a72305820e5ac46180413341e611768f517a77784ed871b76d01ea8153471b720f9da55910029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509266591165
+}

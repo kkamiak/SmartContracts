@@ -1,12 +1,19 @@
 pragma solidity ^0.4.11;
 
 contract AssetsManagerInterface {
-    function sendAsset(bytes32 _symbol, address _to, uint _value) returns (bool);
-    function reissueAsset(bytes32 _symbol, uint _value) returns (bool);
-    function revokeAsset(bytes32 _symbol, uint _value) returns (bool);
-    function isAssetOwner(bytes32 _symbol, address _owner) constant returns (bool);
-    function getAssetsForOwner(address owner) constant returns (bytes32[] result);
-    function getAssetBySymbol(bytes32 symbol) constant returns (address);
-    function getAssetsCount() constant returns (uint);
-    function getSymbolById(uint _id) constant returns (bytes32);
+    function isAssetSymbolExists(bytes32 _symbol) constant returns (bool);
+
+    function isAssetOwner(bytes32 _symbol, address _user) constant returns (bool);
+    function getAssetBySymbol(bytes32 _symbol) constant returns (address);
+
+    function getAssetsForOwnerCount(address _platform, address _owner) constant returns (uint);
+    function getAssetForOwnerAtIndex(address _platform, address _owner, uint idx) constant returns (bytes32);
+
+    function getTokenExtension(address _platform) constant returns (address);
+    function requestTokenExtension(address _platform) returns (uint);
+}
+
+
+contract TokenExtensionRegistry {
+    function containsTokenExtension(address _tokenExtension) public constant returns (bool);
 }

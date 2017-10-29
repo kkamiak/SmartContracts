@@ -9,11 +9,13 @@ const errorScope = {
     vote: 8000,
     reward: 9000,
     contract: 10000,
-    assets: 11000,
+    assets: 30000,
     timeholder: 12000,
     ercmanager: 13000,
     walletsmanager: 14000,
-    chronobankplatform: 15000
+    chronobankplatform: 15000,
+    platforms: 21000,
+    tokenextension: 23000
 }
 
 const errorsLibrary = {
@@ -130,21 +132,26 @@ const errorsLibrary = {
     ERCMANAGER_TOKEN_ALREADY_EXISTS: errorScope.ercmanager + 5,
     ERCMANAGER_TOKEN_UNCHANGED: errorScope.ercmanager + 6,
 
-    ASSETS_INVALID_INVOCATION: errorScope.assets + 0,
-    ASSETS_EXISTS: errorScope.assets + 1,
-    ASSETS_TOKEN_EXISTS: errorScope.assets + 2,
-    ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP: errorScope.assets + 3,
-    ASSETS_WRONG_PLATFORM: errorScope.assets + 4,
-    ASSETS_NOT_A_PROXY: errorScope.assets + 5,
-    ASSETS_OWNER_ONLY: errorScope.assets + 6,
-    ASSETS_CANNOT_ADD_TO_REGISTRY: errorScope.assets + 7,
-    ASSETS_CANNON_PASS_PLATFORM_OWNERSHIP: errorScope.assets + 8,
+    ASSETS_MANAGER_SYMBOL_ALREADY_EXISTS: errorScope.assets + 1,
+    ASSETS_MANAGER_INVALID_INVOCATION: errorScope.assets + 2,
+    ASSETS_MANAGER_EXTENSION_ALREADY_EXISTS: errorScope.assets + 3,
 
     ERROR_WALLET_INVALID_INVOCATION: errorScope.walletsmanager + 0,
     ERROR_WALLET_EXISTS: errorScope.walletsmanager + 1,
     ERROR_WALLET_OWNER_ONLY: errorScope.walletsmanager + 2,
     ERROR_WALLET_CANNOT_ADD_TO_REGISTRY: errorScope.walletsmanager + 3,
     ERROR_WALLET_UNKNOWN: errorScope.walletsmanager + 4,
+
+    WALLET_INVALID_INVOCATION: errorScope.walletsmanager + 10,
+    WALLET_UNKNOWN_OWNER: errorScope.walletsmanager + 12,
+    WALLET_OWNER_ALREADY_EXISTS: errorScope.walletsmanager + 13,
+    WALLET_CONFIRMATION_NEEDED: errorScope.walletsmanager + 14,
+    WALLET_UNKNOWN_OPERATION: errorScope.walletsmanager + 15,
+    WALLET_OWNERS_LIMIT_EXIDED: errorScope.walletsmanager + 16,
+    WALLET_UNKNOWN_TOKEN_TRANSFER: errorScope.walletsmanager + 17,
+    WALLET_TRANSFER_ALREADY_REGISTERED: errorScope.walletsmanager + 18,
+    WALLET_INSUFFICIENT_BALANCE: errorScope.walletsmanager + 19,
+    WALLET_RELEASE_TIME_ERROR: errorScope.walletsmanager + 20,
 
     CHRONOBANK_PLATFORM_PROXY_ALREADY_EXISTS: errorScope.chronobankplatform + 0,
     CHRONOBANK_PLATFORM_CANNOT_APPLY_TO_ONESELF: errorScope.chronobankplatform + 1,
@@ -160,10 +167,25 @@ const errorsLibrary = {
     CHRONOBANK_PLATFORM_ALREADY_TRUSTED: errorScope.chronobankplatform + 11,
     CHRONOBANK_PLATFORM_SHOULD_RECOVER_TO_NEW_ADDRESS: errorScope.chronobankplatform + 12,
     CHRONOBANK_PLATFORM_ASSET_IS_NOT_ISSUED: errorScope.chronobankplatform + 13,
-    CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_OWNER: errorScope.chronobankplatform + 14,
-    CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_PROXY: errorScope.chronobankplatform + 15,
-    CHRONOBANK_PLATFORM_ACCESS_DENIED_ONLY_TRUSTED: errorScope.chronobankplatform + 16,
-    CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17
+    CHRONOBANK_PLATFORM_INVALID_INVOCATION: errorScope.chronobankplatform + 17,
+
+    PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS: errorScope.platforms + 1,
+    PLATFORMS_PLATFORM_DOES_NOT_EXIST: errorScope.platforms + 2,
+    PLATFORMS_INCONSISTENT_INTERNAL_STATE: errorScope.platforms + 3,
+    PLATFORMS_UPDATE_PLATFORM_METADATA_THE_SAME_NAME: errorScope.platforms + 4,
+    PLATFORMS_REPEAT_SYNC_IS_NOT_COMPLETED: errorScope.platforms + 5,
+
+    TOKEN_EXTENSION_ASSET_TOKEN_EXISTS: errorScope.tokenextension + 1,
+    TOKEN_EXTENSION_ASSET_COULD_NOT_BE_REISSUED: errorScope.tokenextension + 2,
+    TOKEN_EXTENSION_ASSET_COULD_NOT_BE_REVOKED: errorScope.tokenextension + 3,
+    TOKEN_EXTENSION_ASSET_OWNER_ONLY: errorScope.tokenextension + 4,
+    TOKEN_EXTENSION_CANNOT_PASS_PLATFORM_OWNERSHIP: errorScope.tokenextension + 51,
+    TOKEN_EXTENSION_CANNOT_CLAIM_PLATFORM_OWNERSHIP: errorScope.tokenextension + 52,
+    TOKEN_EXTENSION_SENDER_DOES_NOT_SUPPORT_ASSET_FALLBACK: errorScope.tokenextension + 53,
+    TOKEN_EXTENSION_CANNOT_PASS_ASSET_OWNERSHIP: errorScope.tokenextension + 54,
+    TOKEN_EXTENSION_CANNOT_CLAIM_ASSET_OWNERSHIP: errorScope.tokenextension + 55,
+
+    FEATURE_IS_UNAVAILABE: 22000,
 }
 
 module.exports = errorsLibrary

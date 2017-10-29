@@ -61,6 +61,7 @@ contract PollManager is PollEmitter, Vote {
         store.set(deadline, id, _deadline);
         store.set(status, id, true);
         store.set(active, id, false);
+        store.set(creationTime, id, now);
         uint i;
         for (i = 0; i < _options.length; i++) {
             if (_options[i] != bytes32(0)) {
@@ -139,6 +140,7 @@ contract PollManager is PollEmitter, Vote {
         store.set(detailsIpfsHash, _pollId, bytes32(0));
         store.set(votelimit, _pollId, 0);
         store.set(deadline, _pollId, 0);
+        store.set(creationTime, _pollId, 0);
 
         _emitPollDeleted(_pollId);
         return OK;

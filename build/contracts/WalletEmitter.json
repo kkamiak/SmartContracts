@@ -1,0 +1,504 @@
+{
+  "contract_name": "WalletEmitter",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "emitOwnerAdded",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "operation",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitConfirmation",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitDeposit",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newRequirement",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitRequirementChanged",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "emit2FAChanged",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "operation",
+          "type": "bytes32"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitMultiTransact",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "oldOwner",
+          "type": "address"
+        },
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "emitOwnerChanged",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "oldOwner",
+          "type": "address"
+        }
+      ],
+      "name": "emitOwnerRemoved",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitSingleTransact",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "operation",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitRevoke",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "errorCode",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitError",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "operation",
+          "type": "bytes32"
+        },
+        {
+          "name": "initiator",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitConfirmationNeeded",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "MultisigWalletDeposit",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "MultisigWalletSingleTransact",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "operation",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "MultisigWalletMultiTransact",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "operation",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "name": "initiator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "symbol",
+          "type": "bytes32"
+        }
+      ],
+      "name": "MultisigWalletConfirmationNeeded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "operation",
+          "type": "bytes32"
+        }
+      ],
+      "name": "MultisigWalletConfirmation",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "operation",
+          "type": "bytes32"
+        }
+      ],
+      "name": "MultisigWalletRevoke",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "oldOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "MultisigWalletOwnerChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "MultisigWalletOwnerAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "oldOwner",
+          "type": "address"
+        }
+      ],
+      "name": "MultisigWalletOwnerRemoved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "newRequirement",
+          "type": "uint256"
+        }
+      ],
+      "name": "MultisigWalletRequirementChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "MultisigWallet2FAChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "self",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "errorCode",
+          "type": "uint256"
+        }
+      ],
+      "name": "Error",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b6106cc8061001f6000396000f300606060405236156100b75763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166311673db981146100bc57806314da0797146100dd57806328ba84ca14610101578063418cbda9146101255780634367f19a1461013d5780634f39cb53146101575780635b0b6f6614610189578063660918ca146100bc57806376583f66146101d1578063d4554737146101ff578063df26ca0814610223578063eb559c141461023b575b600080fd5b34156100c757600080fd5b6100db600160a060020a036004351661026c565b005b34156100e857600080fd5b6100db600160a060020a03600435166024356102b7565b005b341561010c57600080fd5b6100db600160a060020a036004351660243561030a565b005b341561013057600080fd5b6100db600435610364565b005b341561014857600080fd5b6100db60043515156103ac565b005b341561016257600080fd5b6100db600160a060020a036004358116906024359060443590606435166084356103f6565b005b341561019457600080fd5b6100db600160a060020a0360043581169060243516610472565b005b34156100c757600080fd5b6100db600160a060020a036004351661026c565b005b34156101dc57600080fd5b6100db600160a060020a036004358116906024359060443516606435610513565b005b341561020a57600080fd5b6100db600160a060020a0360043516602435610584565b005b341561022e57600080fd5b6100db6004356105d7565b005b341561024657600080fd5b6100db600435600160a060020a03602435811690604435906064351660843561061f565b005b80600160a060020a031661027e61069b565b600160a060020a03167ffda769962711e3e34f112435e5900b6f209a31363e82cdbb4bf28ef0fe810baf60405160405180910390a35b50565b81600160a060020a03166102c961069b565b600160a060020a03167f619980af4e2d2067d8772c53365a0449d1bdd2ccd48b6e504ea1cab5a50ca7528360405190815260200160405180910390a35b5050565b61031261069b565b600160a060020a03167fbee6d2975bcdff8dc26bc64942959415ca30aff94e84977a5954a760da30fbfe8383604051600160a060020a03909216825260208201526040908101905180910390a25b5050565b61036c61069b565b600160a060020a03167fb26123dbf7a81d26e5f647fcaabebe1583079e0c43904aae3954496eba952c4a8260405190815260200160405180910390a25b50565b6103b461069b565b600160a060020a03167f3c05c875f0fe54dcedd51664a7ceb9a463f3b1f1bbf04bdd0a1c15c1758967b182604051901515815260200160405180910390a25b50565b84600160a060020a031661040861069b565b600160a060020a03167fec604b4a62b21dd5d4021a01def168795513550bcf89c8fac0363bee0e763ca6868686866040519384526020840192909252600160a060020a031660408084019190915260608301919091526080909101905180910390a35b5050505050565b80600160a060020a031682600160a060020a031661048e61069b565b600160a060020a03167ff326492b55079c92d5144c6c5e02fe1f6cb1ec9064e12de0d269f0615171e8df60405160405180910390a45b5050565b80600160a060020a031661027e61069b565b600160a060020a03167ffda769962711e3e34f112435e5900b6f209a31363e82cdbb4bf28ef0fe810baf60405160405180910390a35b50565b83600160a060020a031661052561069b565b600160a060020a03167f113341d7c6797c7fd2ab72bb6f21014dc77b4bfaaffde795ad5f9b5fd70c76f0858585604051928352600160a060020a0390911660208301526040808301919091526060909101905180910390a35b50505050565b81600160a060020a031661059661069b565b600160a060020a03167f19488fab9001d4fd32730335b6e16f41b8d0fffe8f210fe291016d939f8290528360405190815260200160405180910390a35b5050565b6105df61069b565b600160a060020a03167f9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c8260405190815260200160405180910390a25b50565b83600160a060020a031661063161069b565b600160a060020a03167f99650330103279c27894c26446e08829e4f4a97c737d9de68ee66b0070b47551878686866040519384526020840192909252600160a060020a031660408084019190915260608301919091526080909101905180910390a35b5050505050565b335b905600a165627a7a72305820a6b387906f9bab8bb1d42597e7f4a232386935a3dd851ef7efe190d8f7c8b1d30029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509266591171
+}

@@ -132,6 +132,7 @@ contract PollDetails is Vote {
     uint _deadline,
     bool _status,
     bool _active,
+    uint _creationTime,
     bytes32[] _options,
     bytes32[] _hashes) {
         if (!isPollExist(_pollId)) {
@@ -145,6 +146,7 @@ contract PollDetails is Vote {
         _deadline = store.get(deadline, _pollId);
         _status = store.get(status, _pollId);
         _active = store.get(active, _pollId);
+        _creationTime = store.get(creationTime, _pollId);
 
         StorageInterface.Iterator memory setIterator = store.listIterator(optionsId, bytes32(_pollId));
         _options = new bytes32[](setIterator.count());

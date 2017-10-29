@@ -1,0 +1,35 @@
+{
+  "contract_name": "PlatformsFactory",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "eventsHistory",
+          "type": "address"
+        },
+        {
+          "name": "eventsHistoryAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "createPlatform",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509266591164
+}

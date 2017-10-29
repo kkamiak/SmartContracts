@@ -1,0 +1,57 @@
+{
+  "contract_name": "CrowdsaleManager",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_creator",
+          "type": "address"
+        },
+        {
+          "name": "_symbol",
+          "type": "bytes32"
+        },
+        {
+          "name": "_factoryName",
+          "type": "bytes32"
+        }
+      ],
+      "name": "createCrowdsale",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "crowdsale",
+          "type": "address"
+        }
+      ],
+      "name": "deleteCrowdsale",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509220630076
+}

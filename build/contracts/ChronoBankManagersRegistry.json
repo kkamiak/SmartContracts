@@ -1,0 +1,40 @@
+{
+  "contract_name": "ChronoBankManagersRegistry",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_idx",
+          "type": "uint256"
+        }
+      ],
+      "name": "holders",
+      "outputs": [
+        {
+          "name": "_holderAddress",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "holdersCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1509266591166
+}

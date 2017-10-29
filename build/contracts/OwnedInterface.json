@@ -1,0 +1,64 @@
+{
+  "contract_name": "OwnedInterface",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "claimContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "changeContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "transferContractOwnership",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {
+    "1506859110923": {
+      "links": {},
+      "events": {},
+      "updated_at": 1506859175551
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1509266591165
+}

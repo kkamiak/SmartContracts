@@ -1,0 +1,79 @@
+{
+  "contract_name": "ManagerMock",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_actor",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isAllowed",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_actor",
+          "type": "address"
+        }
+      ],
+      "name": "hasAccess",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "deny",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b6101558061001f6000396000f300606060405263ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416635cb8dd09811461005357806395a078e814610096578063a3fdfee3146100d6575b600080fd5b341561005e57600080fd5b61008273ffffffffffffffffffffffffffffffffffffffff600435166024356100eb565b604051901515815260200160405180910390f35b34156100a157600080fd5b61008273ffffffffffffffffffffffffffffffffffffffff60043516610111565b604051901515815260200160405180910390f35b34156100e157600080fd5b6100e9610119565b005b6000805460ff161561010757506000805460ff1916815561010b565b5060015b92915050565b60015b919050565b6000805460ff191660011790555b5600a165627a7a723058200f5f96fd68316ad12d8f95f2b03c6f2ebe1ec37b6b78ca902910b9567d4dd0940029",
+  "networks": {
+    "1": {
+      "links": {},
+      "events": {},
+      "updated_at": 1502132959383
+    },
+    "4": {
+      "links": {},
+      "events": {},
+      "updated_at": 1502123774541
+    },
+    "42": {
+      "links": {},
+      "events": {},
+      "updated_at": 1502111764398
+    },
+    "1506859110923": {
+      "events": {},
+      "links": {},
+      "address": "0x059975b54c5e5b80134ed2e29341080f0b2e1d50",
+      "updated_at": 1506859178122
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1509114662542
+}

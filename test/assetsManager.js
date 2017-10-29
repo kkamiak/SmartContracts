@@ -1,256 +1,124 @@
+const Setup = require('../setup/setup')
+const eventsHelper = require('./helpers/eventsHelper')
+const ErrorsEnum = require("../common/errors")
+const Reverter = require('./helpers/reverter')
 const ChronoBankAssetProxy = artifacts.require('./ChronoBankAssetProxy.sol')
-const Setup = require('../setup/setup');
-const Reverter = require('./helpers/reverter');
-const bytes32 = require('./helpers/bytes32');
-const bytes32fromBase58 = require('./helpers/bytes32fromBase58');
-const eventsHelper = require('./helpers/eventsHelper');
-const ErrorsEnum = require("../common/errors");
+const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
+const TokenManagementInterface = artifacts.require("./TokenManagementInterface.sol")
+const PlatformTokenExtensionGatewayManagerEmitter = artifacts.require("./PlatformTokenExtensionGatewayManagerEmitter.sol")
 
 contract('Assets Manager', function(accounts) {
-  var owner = accounts[0];
-  var owner1 = accounts[1];
-  var owner2 = accounts[2];
-  var owner3 = accounts[3];
-  var owner4 = accounts[4];
-  var owner5 = accounts[5];
-  var nonOwner = accounts[6];
-  var locController1 = accounts[7];
-  var locController2 = accounts[7];
-  var conf_sign;
-  var conf_sign2;
-  var conf_sign3;
-  var txId;
-  var watcher;
-  var unix = Math.round(+new Date()/1000);
+    const contractOwner = accounts[0]
+    const systemOwner = accounts[0]
+    const owner1 = accounts[1]
+    const owner2 = accounts[2]
+    const owner3 = accounts[3]
+    const owner4 = accounts[4]
+    const owner5 = accounts[5]
+    const nonOwner = accounts[6]
 
-  const TIME_SYMBOL = 'TIME';
-  const LHT_SYMBOL = 'LHT';
-  const NAME = 'Time Token';
-  const DESCRIPTION = 'ChronoBank Time Shares';
-  const NAME2 = 'Labour-hour Token';
-  const DESCRIPTION2 = 'ChronoBank Lht Assets';
-  const BASE_UNIT = 2;
-  const IS_REISSUABLE = true;
-  const IS_NOT_REISSUABLE = false;
-  const BALANCE_ETH = 1000;
-  const fakeArgs = [0,0,0,0,0,0,0,0];
+    const reverter = new Reverter(web3)
 
-  before('setup', function(done) {
+    var unix = Math.round(+new Date()/1000)
+    let utils = web3._extend.utils
 
-    Setup.setup(done);
+    const zeroAddress = '0x' + utils.padLeft(utils.toHex("0").substr(2), 40)
 
-  });
+    before('setup', function(done) {
+        Setup.setup((e) => {
+            console.log(e);
+            reverter.snapshot((e) => {
+                done(e)
+            })
+        })
+    })
 
-  context("initial tests", function() {
-    it("Platform has correct TIME proxy address.", function() {
-      return Setup.chronoBankPlatform.proxies(TIME_SYMBOL).then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetProxy.address);
-      });
-    });
+    context("AssetManager", function () {
+        context("properties check", function () {
+            it("should have token factory setup", async () => {
+                let tokenFactory = await Setup.assetsManager.getTokenFactory.call()
+                assert.notEqual(tokenFactory, zeroAddress)
+            })
 
-    it("Platform has correct LHT proxy address.", function() {
-      return Setup.chronoBankPlatform.proxies(LHT_SYMBOL).then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetWithFeeProxy.address);
-      });
-    });
+            it("should have token extension management factory setup", async () => {
+                let tokenExtensionFactory = await Setup.assetsManager.getTokenExtensionFactory.call()
+                assert.notEqual(tokenExtensionFactory, zeroAddress)
+            })
+        })
 
+        context("platform-related", function () {
+            let owner = owner1
+            let platformId
+            let platform
 
-    it("TIME contract has correct TIME proxy address.", function() {
-      return Setup.chronoBankAsset.proxy().then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetProxy.address);
-      });
-    });
+            it("prepare", async () => {
+                let successRequestPlatfortTx = await Setup.platformsManager.createPlatform({ from: owner })
+                let event = eventsHelper.extractEvents(successRequestPlatfortTx, "PlatformRequested")[0]
+                assert.isDefined(event)
+                platform = await ChronoBankPlatform.at(event.args.platform)
+                platformToId = event.args.platformId
+                assert.notEqual(event.args.tokenExtension, zeroAddress)
+            })
 
-    it("LHT contract has correct LHT proxy address.", function() {
-      return Setup.chronoBankAssetWithFee.proxy().then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetWithFeeProxy.address);
-      });
-    });
+            it("should have a tokenExtension for a platform", async () => {
+                let tokenExtensionAddress = await Setup.assetsManager.getTokenExtension.call(platform.address)
+                assert.notEqual(tokenExtensionAddress, zeroAddress)
+            })
 
-    it("TIME proxy has right version", function() {
-      return Setup.chronoBankAssetProxy.getLatestVersion().then(function(r) {
-        assert.equal(r,Setup.chronoBankAsset.address);
-      });
-    });
+            it("should have the same token extension if it already exists", async () => {
+                let tokenExtensionAddress = await Setup.assetsManager.getTokenExtension.call(platform.address)
+                let tokenExtensionRequestResultCode = await Setup.assetsManager.requestTokenExtension.call(platform.address)
+                assert.equal(tokenExtensionRequestResultCode, ErrorsEnum.OK)
 
-    it("LHT proxy has right version", function() {
-      return Setup.chronoBankAssetWithFeeProxy.getLatestVersion().then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetWithFee.address);
-      });
-    });
-  });
+                let tokenExtensionRequestTx = await Setup.assetsManager.requestTokenExtension(platform.address)
+                let event = eventsHelper.extractEvents(tokenExtensionRequestTx, "TokenExtensionRequested")[0]
+                assert.isDefined(event)
+                assert.equal(event.args.tokenExtension, tokenExtensionAddress)
+            })
 
-  context("CRUD test", function(){
+            it("should return no assets for a newly created platform without any assets", async () => {
+                let assetsCount = await Setup.assetsManager.getAssetsForOwnerCount.call(platform.address, owner)
+                assert.equal(assetsCount, 0)
+            })
 
-    it("can issue new Asset", function() {
-        const supplyValue = 1000000;
-        console.log(Setup.assetsManager.address);
-      return Setup.assetsManager.createAsset.call('TEST','TEST','TEST',supplyValue,2,true,false).then(function(r1) {
-        return Setup.assetsManager.createAsset('TEST','TEST','TEST',supplyValue,2,true,false,{
-          from: accounts[0],
-          gas: 3000000
-      }).then((tx) => {
-          assert.equal(r1, ErrorsEnum.OK);
-          const assetCreatedEvents = eventsHelper.extractEvents(tx, "AssetCreated")
-          assert.notEqual(assetCreatedEvents.length, 0);
-            const tokenAddress = assetCreatedEvents[0].args.token;
-          return ChronoBankAssetProxy.at(tokenAddress).then(function(instance) {
-            return instance.totalSupply().then(function(r2) {
-              assert.equal(r2, supplyValue);
-            });
-          });
-        });
-      });
-    });
+            it("should return one asset after creating an asset on a platform", async () => {
+                let symbol = "MTT"
+                let desc = 'My Test Token'
 
-    it("allow add TIME Asset", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetProxy.address,'TIME', owner).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetProxy.address,'TIME', owner, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function(tx) {
-          return Setup.assetsManager.getAssets.call().then(function(r2) {
-            assert.equal(r,ErrorsEnum.OK);
-            assert.equal(r2.length,2);
-          });
-        });
-      });
-    });
+                let tokenExtensionAddress = await Setup.assetsManager.getTokenExtension.call(platform.address)
+                let tokenExtension = await TokenManagementInterface.at(tokenExtensionAddress)
+                let tokenEmitter = await PlatformTokenExtensionGatewayManagerEmitter.at(tokenExtensionAddress)
+                let assetResultCode = await tokenExtension.createAssetWithoutFee.call(symbol, desc, "", 0, 8, true, 0x0, { from: owner })
+                assert.equal(assetResultCode, ErrorsEnum.OK)
 
-    it("doesn't allow add TIME Asset with LHT symbol", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetProxy.address,'LHT', owner).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetProxy.address,'LHT', owner, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function(tx) {
-          return Setup.assetsManager.getAssets.call().then(function(r2) {
-            assert.equal(r,ErrorsEnum.ASSETS_NOT_A_PROXY);
-            assert.equal(r2.length,2);
-          });
-        });
-      });
-    });
+                let assetTx = await tokenExtension.createAssetWithoutFee(symbol, desc, "", 0, 8, true, 0x0, { from: owner })
+                let logs = await eventsHelper.extractReceiptLogs(assetTx, tokenEmitter.AssetCreated())
+                assert.isDefined(logs[0])
 
-    it("doesn't allow to add LHT Asset with TIME symbol", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetWithFeeProxy.address,'TIME', Setup.chronoMint.address).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address,'TIME', Setup.chronoMint.address, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function(tx) {
-          return Setup.assetsManager.getAssets.call().then(function(r2) {
-            assert.equal(r,ErrorsEnum.ASSETS_EXISTS);
-            assert.equal(r2.length,2);
-          });
-        });
-      });
-    });
+                let assetsCount = await Setup.assetsManager.getAssetsForOwnerCount.call(platform.address, owner)
+                assert.equal(assetsCount, 1)
 
-    it("allow add LHT Asset", function() {
-      return Setup.assetsManager.addAsset.call(Setup.chronoBankAssetWithFeeProxy.address,bytes32('LHT'), Setup.chronoMint.address).then(function(r) {
-        return Setup.assetsManager.addAsset(Setup.chronoBankAssetWithFeeProxy.address,bytes32('LHT'), Setup.chronoMint.address, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function(tx) {
-          return Setup.assetsManager.getAssets.call().then(function(r2) {
-            assert.equal(r,ErrorsEnum.OK);
-            assert.equal(r2.length,3);
-          });
-        });
-      });
-    });
+                let isAssetOwner = await Setup.assetsManager.isAssetOwner.call(symbol, owner)
+                assert.isOk(isAssetOwner)
+            })
 
-    it("can provide TimeProxyContract address.", function() {
-      return Setup.erc20Manager.getTokenAddressBySymbol.call('TIME').then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetProxy.address);
-      });
-    });
+            it("revert", reverter.revert)
+        })
 
-    it("can provide LHProxyContract address.", function() {
-      return Setup.erc20Manager.getTokenAddressBySymbol.call('LHT').then(function(r) {
-        assert.equal(r,Setup.chronoBankAssetWithFeeProxy.address);
-      });
-    });
+        context("asset owner related", function () {
+            it("prepare")
+            it("should recognize an user added through platform as an asset owner in AssetsManager")
+            it("should remove an asset owner from a platform and show it in AssetsManager")
+        })
 
-    it("should show 1000000000000 TIME balance", function () {
-      return Setup.assetsManager.getAssetBalance.call(bytes32('TIME')).then(function (r) {
-        assert.equal(r, 1000000000000);
-      });
-    });
-
-    it("should know owner as TIME owner", function () {
-      return Setup.assetsManager.isAssetOwner.call(bytes32('TIME'),owner).then(function (r) {
-        assert.equal(r, true);
-      });
-    });
-
-    it("shouldn't know owner1 as TIME owner", function () {
-      return Setup.assetsManager.isAssetOwner.call(bytes32('TIME'),owner1).then(function (r) {
-        assert.equal(r, false);
-      });
-    });
-
-    it("should show owners for asset by SYMBOL", function () {
-      return Setup.assetsManager.getAssetOwners.call(bytes32('TIME')).then(function (r) {
-        assert.equal(r[0], owner);
-      });
-    });
-
-    it("should show assets symbol owner by address provided", function () {
-      return Setup.assetsManager.getAssetsForOwner.call(owner).then(function (r) {
-        assert.equal(r.length, 2);
-      });
-    });
-
-    it("should be able to send 100 TIME to owner", function () {
-      return Setup.assetsManager.sendAsset.call(bytes32('TIME'), owner, 100).then(function (r) {
-        return Setup.assetsManager.sendAsset(bytes32('TIME'), owner, 100, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function () {
-          assert.isOk(r);
-        });
-      });
-    });
-
-    it("check Owner has 100 TIME", function () {
-      return Setup.chronoBankAssetProxy.balanceOf.call(owner).then(function (r) {
-        assert.equal(r, 100);
-      });
-    });
-
-   /* it("should be able to send 1000 TIME to msg.sender", function () {
-      return Setup.assetsManager.sendTime({from: owner2, gas: 3000000}).then(function () {
-        return Setup.chronoBankAssetProxy.balanceOf.call(owner2).then(function (r) {
-          assert.equal(r, 1000000000);
-        });
-      });
-    });
-
-    it("shouldn't be able to send 1000 TIME to msg.sender twice", function () {
-      return Setup.assetsManager.sendTime({from: owner2, gas: 3000000}).then(function () {
-        return Setup.chronoBankAssetProxy.balanceOf.call(owner2).then(function (r) {
-          assert.equal(r, 1000000000);
-        });
-      });
-    });*/
-
-    it("should be able to send 100 TIME to owner1", function () {
-      return Setup.assetsManager.sendAsset.call(TIME_SYMBOL, owner1, 100).then(function (r) {
-        return Setup.assetsManager.sendAsset(TIME_SYMBOL, owner1, 100, {
-          from: accounts[0],
-          gas: 3000000
-        }).then(function () {
-          assert.isOk(r);
-        });
-      });
-    });
-
-    it("check Owner1 has 100 TIME", function () {
-      return Setup.chronoBankAssetProxy.balanceOf.call(owner1).then(function (r) {
-        assert.equal(r, 100);
-      });
-    });
-
-
-  });
-});
+        context("statistics", function () {
+            it("should have 1 platform count for a user")
+            it("should have 2 platforms after creating a new platform")
+            it("should have 1 total token number from two platforms")
+            it("should have 3 total token number after creating 2 tokens on different platforms")
+            it("should have 2 managers for LHT token")
+            it("should have 1 manager for newly created token")
+            it("should have 2 managers in total from all platforms")
+        })
+    })
+})

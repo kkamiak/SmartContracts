@@ -2,15 +2,17 @@ pragma solidity ^0.4.11;
 
 import "../../core/common/Object.sol";
 import "../../core/contracts/ContractsManagerInterface.sol";
-import "../../assets/AssetsManagerInterface.sol";
 import "../../core/lib/SafeMath.sol";
+import "../../core/erc20/ERC20ManagerInterface.sol";
+import "../../core/erc20/ERC20Interface.sol";
+import "../../core/platform/ChronoBankAssetProxyInterface.sol";
+import "../../core/platform/ChronoBankPlatformInterface.sol";
 
 contract Bounty {
-    function reissueAsset(bytes32 _symbol, uint _value) returns (bool);
-    function sendAsset(bytes32 _symbol, address _to, uint _value) returns (bool);
-    function isAssetSymbolExists(bytes32 _symbol) returns (bool);
-    function isAssetOwner(bytes32 _symbol, address _owner) returns (bool);
+    function isAssetSymbolExists(bytes32 _symbol) constant returns (bool);
+    function isAssetOwner(bytes32 _symbol, address _owner) constant returns (bool);
 }
+
 
 /**
 * @title BaseCrowdsale is a base crowdsale contract.
@@ -145,10 +147,17 @@ contract BaseCrowdsale is Object {
     */
     function mintTokensTo(address beneficiary, uint amount) internal onlyRunning {
         tokensSold = tokensSold.add(amount);
+        ERC20ManagerInterface erc20Manager = ERC20ManagerInterface(lookupService("ERC20Manager"));
+        ChronoBankAssetProxyInterface token = ChronoBankAssetProxyInterface(erc20Manager.getTokenAddressBySymbol(symbol));
+        ChronoBankPlatformInterface platform = ChronoBankPlatformInterface(token.chronoBankPlatform());
 
-        if (!lookupBounty().reissueAsset(symbol, amount)) revert();
+        if (platform.reissueAsset(symbol, amount) != OK) {
+            revert();
+        }
 
-        if (!lookupBounty().sendAsset(symbol, beneficiary, amount)) revert();
+        if (!ERC20Interface(token).transfer(beneficiary, amount)) {
+            revert();
+        }
 
         MintTokenEvent(address(this), beneficiary, amount);
     }

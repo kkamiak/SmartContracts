@@ -1,12 +1,14 @@
 function Reverter(web3) {
-  var snapshotId;
+  this.snapshotId = 0;
 
-  this.revert = (done) => {
+  this.revert = (done, id) => {
+    let toSnapshotId = (id !== undefined) ? id : this.snapshotId
+    
     web3.currentProvider.sendAsync({
       jsonrpc: "2.0",
       method: "evm_revert",
       id: new Date().getTime(),
-      params: [snapshotId]
+      params: [toSnapshotId]
     }, (err, result) => {
       if (err) {
         done(err);
@@ -27,7 +29,7 @@ function Reverter(web3) {
         done(err);
       }
       else {
-        snapshotId = web3.toDecimal(result.result);
+        this.snapshotId = web3.toDecimal(result.result);
         done();
       }
     });

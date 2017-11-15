@@ -19063,7 +19063,1068 @@
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {
+        "0x73609df94f0cdda7cefeb2582bd51608ff83c3695a495443f92e63e455966f26": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddToken",
+          "type": "event"
+        },
+        "0x53fe1ea0801d7db69e52461a8651ad2383b8393708265ab1ee003bc4543dbfac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenChange",
+          "type": "event"
+        },
+        "0x4ccdcd8814db6192247498559fa8327074683d742535a83effa9481f4cd2f99e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogRemoveToken",
+          "type": "event"
+        },
+        "0x06f061748bf9482f3f59d4a181f9b4601ca49aaf0c16a25e44d66514d98d9818": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenNameChange",
+          "type": "event"
+        },
+        "0xd58677b3507a9941a9142be0c17730fc4be30bcc12671f9ad894a24df543cfe9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSymbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSymbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSymbolChange",
+          "type": "event"
+        },
+        "0xd09074eb04288533d34d23a15e2eb5ecd6ab832012f2c566512389564316e1a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldUrl",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newUrl",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenUrlChange",
+          "type": "event"
+        },
+        "0xe46a8f26cfc48c12e40cf50c1063e5913b2a17da6aa396f9b008b2dfd6f273b5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldIpfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newIpfsHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenIpfsHashChange",
+          "type": "event"
+        },
+        "0xa9fd216856477e73d11c1a9140fa3d425fce2e10a5475a996440b31c2e8f1ea4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSwarmHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSwarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSwarmHashChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x9ce20bc57cb5a5731a95a1d5b8869a9d7d12b299",
+      "updated_at": 1509271921091
+    },
+    "4": {
+      "events": {
+        "0x73609df94f0cdda7cefeb2582bd51608ff83c3695a495443f92e63e455966f26": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddToken",
+          "type": "event"
+        },
+        "0x53fe1ea0801d7db69e52461a8651ad2383b8393708265ab1ee003bc4543dbfac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenChange",
+          "type": "event"
+        },
+        "0x4ccdcd8814db6192247498559fa8327074683d742535a83effa9481f4cd2f99e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogRemoveToken",
+          "type": "event"
+        },
+        "0x06f061748bf9482f3f59d4a181f9b4601ca49aaf0c16a25e44d66514d98d9818": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenNameChange",
+          "type": "event"
+        },
+        "0xd58677b3507a9941a9142be0c17730fc4be30bcc12671f9ad894a24df543cfe9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSymbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSymbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSymbolChange",
+          "type": "event"
+        },
+        "0xd09074eb04288533d34d23a15e2eb5ecd6ab832012f2c566512389564316e1a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldUrl",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newUrl",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenUrlChange",
+          "type": "event"
+        },
+        "0xe46a8f26cfc48c12e40cf50c1063e5913b2a17da6aa396f9b008b2dfd6f273b5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldIpfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newIpfsHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenIpfsHashChange",
+          "type": "event"
+        },
+        "0xa9fd216856477e73d11c1a9140fa3d425fce2e10a5475a996440b31c2e8f1ea4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSwarmHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSwarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSwarmHashChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x78a0be7082c23624aefc8ab3d99d0f5a2510d3a6",
+      "updated_at": 1509223610066
+    },
+    "42": {
+      "events": {
+        "0x73609df94f0cdda7cefeb2582bd51608ff83c3695a495443f92e63e455966f26": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddToken",
+          "type": "event"
+        },
+        "0x53fe1ea0801d7db69e52461a8651ad2383b8393708265ab1ee003bc4543dbfac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenChange",
+          "type": "event"
+        },
+        "0x4ccdcd8814db6192247498559fa8327074683d742535a83effa9481f4cd2f99e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogRemoveToken",
+          "type": "event"
+        },
+        "0x06f061748bf9482f3f59d4a181f9b4601ca49aaf0c16a25e44d66514d98d9818": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenNameChange",
+          "type": "event"
+        },
+        "0xd58677b3507a9941a9142be0c17730fc4be30bcc12671f9ad894a24df543cfe9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSymbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSymbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSymbolChange",
+          "type": "event"
+        },
+        "0xd09074eb04288533d34d23a15e2eb5ecd6ab832012f2c566512389564316e1a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldUrl",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newUrl",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenUrlChange",
+          "type": "event"
+        },
+        "0xe46a8f26cfc48c12e40cf50c1063e5913b2a17da6aa396f9b008b2dfd6f273b5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldIpfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newIpfsHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenIpfsHashChange",
+          "type": "event"
+        },
+        "0xa9fd216856477e73d11c1a9140fa3d425fce2e10a5475a996440b31c2e8f1ea4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSwarmHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSwarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSwarmHashChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x4a64a982d06643553c4eeac36c341746eaa333bc",
+      "updated_at": 1509219169844
+    },
+    "1506859110923": {
+      "events": {
+        "0x73609df94f0cdda7cefeb2582bd51608ff83c3695a495443f92e63e455966f26": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddToken",
+          "type": "event"
+        },
+        "0x53fe1ea0801d7db69e52461a8651ad2383b8393708265ab1ee003bc4543dbfac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "oldToken",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenChange",
+          "type": "event"
+        },
+        "0x4ccdcd8814db6192247498559fa8327074683d742535a83effa9481f4cd2f99e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "symbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "url",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "decimals",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "name": "ipfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "swarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogRemoveToken",
+          "type": "event"
+        },
+        "0x06f061748bf9482f3f59d4a181f9b4601ca49aaf0c16a25e44d66514d98d9818": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenNameChange",
+          "type": "event"
+        },
+        "0xd58677b3507a9941a9142be0c17730fc4be30bcc12671f9ad894a24df543cfe9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSymbol",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSymbol",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSymbolChange",
+          "type": "event"
+        },
+        "0xd09074eb04288533d34d23a15e2eb5ecd6ab832012f2c566512389564316e1a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldUrl",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newUrl",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenUrlChange",
+          "type": "event"
+        },
+        "0xe46a8f26cfc48c12e40cf50c1063e5913b2a17da6aa396f9b008b2dfd6f273b5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldIpfsHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newIpfsHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenIpfsHashChange",
+          "type": "event"
+        },
+        "0xa9fd216856477e73d11c1a9140fa3d425fce2e10a5475a996440b31c2e8f1ea4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldSwarmHash",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "name": "newSwarmHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogTokenSwarmHashChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xa5502cfa825213a3ea46370190a817540355b26b",
+      "updated_at": 1506859180687
+    }
+  },
   "schemaVersion": "1.0.1",
   "updatedAt": "2017-11-15T09:25:14.849Z"
 }

@@ -12028,7 +12028,732 @@
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {
+        "0xca8635f861d7d46674a4a9fe54ae651789412ed8624a466c07b2f0c3eb141f87": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeRemoved",
+          "type": "event"
+        },
+        "0xdcf10ae57be6f6d02ae3cc35750483d7f191f48aec92652a721b50ce5279ef2d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeAdded",
+          "type": "event"
+        },
+        "0x12fff04f1bd52bb3584b47bab1bbf594e105a8a1727f99689e194b0f95cd18a7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldExchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "newExchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeEdited",
+          "type": "event"
+        },
+        "0xae72fcb3a03816c7f6d7d3eeee19497e5df191daed620ae5d7c1431dfa019488": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeCreated",
+          "type": "event"
+        },
+        "0x7f1fa1fa2da289247703799f5cfbf9957a0122fe19aa9b26feeae4736de7652a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerAdded",
+          "type": "event"
+        },
+        "0xcf88c159e70f503976d612b76365646b85c7742ca802852ab1d305af87c13592": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerRemoved",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x50ecc73bbec0acc6e96a909380ad032ab3fa7821",
+      "updated_at": 1502133993409
+    },
+    "4": {
+      "events": {
+        "0xca8635f861d7d46674a4a9fe54ae651789412ed8624a466c07b2f0c3eb141f87": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeRemoved",
+          "type": "event"
+        },
+        "0xdcf10ae57be6f6d02ae3cc35750483d7f191f48aec92652a721b50ce5279ef2d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeAdded",
+          "type": "event"
+        },
+        "0x12fff04f1bd52bb3584b47bab1bbf594e105a8a1727f99689e194b0f95cd18a7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldExchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "newExchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeEdited",
+          "type": "event"
+        },
+        "0xae72fcb3a03816c7f6d7d3eeee19497e5df191daed620ae5d7c1431dfa019488": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeCreated",
+          "type": "event"
+        },
+        "0x7f1fa1fa2da289247703799f5cfbf9957a0122fe19aa9b26feeae4736de7652a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerAdded",
+          "type": "event"
+        },
+        "0xcf88c159e70f503976d612b76365646b85c7742ca802852ab1d305af87c13592": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerRemoved",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x1f5f2b81e18e0413098b7dbb1cb04a22ed802a53",
+      "updated_at": 1502124463462
+    },
+    "42": {
+      "events": {
+        "0xca8635f861d7d46674a4a9fe54ae651789412ed8624a466c07b2f0c3eb141f87": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeRemoved",
+          "type": "event"
+        },
+        "0xdcf10ae57be6f6d02ae3cc35750483d7f191f48aec92652a721b50ce5279ef2d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeAdded",
+          "type": "event"
+        },
+        "0x12fff04f1bd52bb3584b47bab1bbf594e105a8a1727f99689e194b0f95cd18a7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldExchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "newExchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeEdited",
+          "type": "event"
+        },
+        "0xae72fcb3a03816c7f6d7d3eeee19497e5df191daed620ae5d7c1431dfa019488": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeCreated",
+          "type": "event"
+        },
+        "0x7f1fa1fa2da289247703799f5cfbf9957a0122fe19aa9b26feeae4736de7652a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerAdded",
+          "type": "event"
+        },
+        "0xcf88c159e70f503976d612b76365646b85c7742ca802852ab1d305af87c13592": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerRemoved",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x27ba8d9e54915351fb1ef9083cf3b8e09d9864d7",
+      "updated_at": 1502111721124
+    },
+    "1506859110923": {
+      "events": {
+        "0xca8635f861d7d46674a4a9fe54ae651789412ed8624a466c07b2f0c3eb141f87": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeRemoved",
+          "type": "event"
+        },
+        "0xdcf10ae57be6f6d02ae3cc35750483d7f191f48aec92652a721b50ce5279ef2d": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeAdded",
+          "type": "event"
+        },
+        "0x12fff04f1bd52bb3584b47bab1bbf594e105a8a1727f99689e194b0f95cd18a7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "oldExchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "newExchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeEdited",
+          "type": "event"
+        },
+        "0xae72fcb3a03816c7f6d7d3eeee19497e5df191daed620ae5d7c1431dfa019488": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "ExchangeCreated",
+          "type": "event"
+        },
+        "0x7f1fa1fa2da289247703799f5cfbf9957a0122fe19aa9b26feeae4736de7652a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerAdded",
+          "type": "event"
+        },
+        "0xcf88c159e70f503976d612b76365646b85c7742ca802852ab1d305af87c13592": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeOwnerRemoved",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xd863949acb21f91a96d22ea520ec17dcdee27f0f",
+      "updated_at": 1506859180021
+    }
+  },
   "schemaVersion": "1.0.1",
   "updatedAt": "2017-11-15T09:25:14.933Z"
 }

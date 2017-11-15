@@ -3538,7 +3538,240 @@
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {
+        "0x78d9711b4e43a110a220145d4f6de39235c995d1f4a0054cd049d5273fe3faac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddContract",
+          "type": "event"
+        },
+        "0x7f67b774d78008c48b01a427dfff3aac1b7fd790158c7b0fb434b5941ac51d43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogContractAddressChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8cfff180c725990f1632b1aead1ac7feeafb1211",
+      "updated_at": 1509269935642
+    },
+    "4": {
+      "events": {
+        "0x78d9711b4e43a110a220145d4f6de39235c995d1f4a0054cd049d5273fe3faac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddContract",
+          "type": "event"
+        },
+        "0x7f67b774d78008c48b01a427dfff3aac1b7fd790158c7b0fb434b5941ac51d43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogContractAddressChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x039052dfe655f78743f5248380dfb1b3f78ef46e",
+      "updated_at": 1509223366045
+    },
+    "42": {
+      "events": {
+        "0x78d9711b4e43a110a220145d4f6de39235c995d1f4a0054cd049d5273fe3faac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddContract",
+          "type": "event"
+        },
+        "0x7f67b774d78008c48b01a427dfff3aac1b7fd790158c7b0fb434b5941ac51d43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogContractAddressChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x5087c0319b0ebdd4dba18a80750ccca3f737e03b",
+      "updated_at": 1509219090485
+    },
+    "1506859110923": {
+      "events": {
+        "0x78d9711b4e43a110a220145d4f6de39235c995d1f4a0054cd049d5273fe3faac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogAddContract",
+          "type": "event"
+        },
+        "0x7f67b774d78008c48b01a427dfff3aac1b7fd790158c7b0fb434b5941ac51d43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "t",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LogContractAddressChange",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x87d101b1471208b8032858473d19793d9ce1d5f9",
+      "updated_at": 1506859190525
+    }
+  },
   "schemaVersion": "1.0.1",
   "updatedAt": "2017-11-15T09:25:14.847Z"
 }

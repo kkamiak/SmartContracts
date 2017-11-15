@@ -3199,7 +3199,280 @@
     "name": "solc",
     "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {
+        "0xb6798040b2ff718946767eb5764382753f7d49017204678c8905ccbd393f48bc": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessGiven",
+          "type": "event"
+        },
+        "0xd21adfcaa3724e99864abea371528f9aa867d0b433e7d29dd972bf8d839ce467": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessBlocked",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x192d99505cc76cf75d491b8b0763c152031f434a",
+      "updated_at": 1509269935641
+    },
+    "4": {
+      "events": {
+        "0xb6798040b2ff718946767eb5764382753f7d49017204678c8905ccbd393f48bc": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessGiven",
+          "type": "event"
+        },
+        "0xd21adfcaa3724e99864abea371528f9aa867d0b433e7d29dd972bf8d839ce467": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessBlocked",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xf74488dba66d0a6ed6662eb4a4c81561281279c0",
+      "updated_at": 1509223366041
+    },
+    "42": {
+      "events": {
+        "0xb6798040b2ff718946767eb5764382753f7d49017204678c8905ccbd393f48bc": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessGiven",
+          "type": "event"
+        },
+        "0xd21adfcaa3724e99864abea371528f9aa867d0b433e7d29dd972bf8d839ce467": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessBlocked",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xcb7e35826cbf77f1672e62f030116438ca4dae7f",
+      "updated_at": 1509219090484
+    },
+    "1506859110923": {
+      "events": {
+        "0xb6798040b2ff718946767eb5764382753f7d49017204678c8905ccbd393f48bc": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessGiven",
+          "type": "event"
+        },
+        "0xd21adfcaa3724e99864abea371528f9aa867d0b433e7d29dd972bf8d839ce467": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "name": "AccessBlocked",
+          "type": "event"
+        },
+        "0x9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "errorCode",
+              "type": "uint256"
+            }
+          ],
+          "name": "Error",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x236a81df346e5aa7fe574e19ced21443bd0bbfeb",
+      "updated_at": 1506859190524
+    }
+  },
   "schemaVersion": "1.0.1",
   "updatedAt": "2017-11-15T09:25:14.905Z"
 }

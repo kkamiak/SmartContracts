@@ -1,12 +1,127 @@
 {
-  "contract_name": "Stub",
+  "contractName": "Stub",
   "abi": [
     {
       "payable": false,
+      "stateMutability": "nonpayable",
       "type": "fallback"
     }
   ],
-  "unlinked_binary": "0x60606040523415600b57fe5b5b60408060196000396000f30060606040525b3415600c57fe5b60125b5b565b0000a165627a7a72305820b36577482627bfddd264002f5d71773c92d49368311351952187ea07eabfc0460029",
+  "bytecode": "0x60606040523415600e57600080fd5b603c80601b6000396000f30060606040523415600e57600080fd5b0000a165627a7a7230582042a1bd9a3cb04fb270b51ed3215e7bc0503a52870ade1e50aba94333ffbe56e90029",
+  "deployedBytecode": "0x60606040523415600e57600080fd5b0000a165627a7a7230582042a1bd9a3cb04fb270b51ed3215e7bc0503a52870ade1e50aba94333ffbe56e90029",
+  "sourceMap": "51:36:83:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "51:36:83:-;;;;;;;;;;;",
+  "source": "pragma solidity ^0.4.11;\n\n// For testing purposes.\ncontract Stub {\n    function () {}\n}\n",
+  "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/helpers/Stub.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/helpers/Stub.sol",
+      "exportedSymbols": {
+        "Stub": [
+          23710
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".11"
+          ]
+        },
+        "id": 23705,
+        "name": "PragmaDirective",
+        "src": "0:24:83"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            23710
+          ],
+          "name": "Stub",
+          "scope": 23711
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "",
+              "payable": false,
+              "scope": 23710,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 23706,
+                "name": "ParameterList",
+                "src": "80:2:83"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 23707,
+                "name": "ParameterList",
+                "src": "83:0:83"
+              },
+              {
+                "attributes": {
+                  "statements": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 23708,
+                "name": "Block",
+                "src": "83:2:83"
+              }
+            ],
+            "id": 23709,
+            "name": "FunctionDefinition",
+            "src": "71:14:83"
+          }
+        ],
+        "id": 23710,
+        "name": "ContractDefinition",
+        "src": "51:36:83"
+      }
+    ],
+    "id": 23711,
+    "name": "SourceUnit",
+    "src": "0:88:83"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+  },
   "networks": {
     "1": {
       "links": {},
@@ -30,6 +145,6 @@
       "updated_at": 1506859178123
     }
   },
-  "schema_version": "0.0.5",
-  "updated_at": 1506859178123
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2017-11-15T09:25:14.937Z"
 }

@@ -22,7 +22,8 @@ contract OwnedContract {
 
 
 /**
-* @dev TODO
+* @title Defines implementation for managing platforms creation and tracking system's platforms.
+* Some methods could require to pay additional fee in TIMEs during their invocation.
 */
 contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmitter, PlatformsManagerInterface {
 
@@ -39,20 +40,20 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
 
     /** Storage keys */
 
-    /** TODO */
+    /** @dev address of platforms factory contract */
     StorageInterface.Address platformsFactory;
 
-    /** TODO */
+    /** @dev mapping (address => set(address)) stands for (owner => set(platform)) */
     StorageInterface.AddressesSetMapping ownerToPlatforms;
 
-    /** TODO */
+    /** @dev set(address) stands for set(platform) */
     StorageInterface.OrderedAddressesSet platforms;
 
-    /** TODO */
+    /** @dev mapping (address => uint256) stands for (platform => index) */
     StorageInterface.AddressUIntMapping syncPlatformToSymbolIdx;
 
     /**
-    * @dev TODO
+    * @dev Guards methods for only platform owners
     */
     modifier onlyPlatformOwner(address _platform) {
         if (_isPlatformOwner(_platform)) {
@@ -61,7 +62,7 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO
+    * @dev Guards methods for contracts that was platorm's owners the last time they were accessed
     */
     modifier onlyPreviousPlatformOwner(address _platform, address _previousOwner) {
         if (store.includes(ownerToPlatforms, bytes32(_previousOwner), _platform)) {
@@ -85,35 +86,66 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO
+    * @dev Returns a platform owned by passed user by accessing it by index that is registered in the system.
+    *
+    * @param _user associated owner of platforms
+    * @param _idx index of a platform
+    *
+    * @return _platform platform address
     */
     function getPlatformForUserAtIndex(address _user, uint _idx) public constant returns (address _platform) {
         _platform = store.get(ownerToPlatforms, bytes32(_user), _idx);
     }
 
     /**
-    * @dev TODO
+    * @dev Gets number of platform that are owned by passed user.
+    *
+    * @param _user associated owner of platforms
+    *
+    * @return number of platforms owned by user
     */
     function getPlatformsForUserCount(address _user) public constant returns (uint) {
         return store.count(ownerToPlatforms, bytes32(_user));
     }
 
     /**
-    * @dev TODO
+    * @dev Gets list of platforms owned by passed user
+    *
+    * @param _user associated owner of platforms
+    *
+    * @return _platforms list of platforms owned by user
     */
     function getPlatformsMetadataForUser(address _user) public constant returns (address[] _platforms) {
         _platforms = store.get(ownerToPlatforms, bytes32(_user));
     }
 
     /**
-    * @dev TODO
+    * @dev Checks if passed platform is presented in the system
+    *
+    * @param _platform platform address
+    *
+    * @return `true` if it is registered, `false` otherwise
     */
     function isPlatformAttached(address _platform) public constant returns (bool) {
         return store.includes(platforms, _platform);
     }
 
     /**
-    * @dev TODO
+    * @dev Responsible for registering an existed platform in the system. Could be performed only by owner of passed platform.
+    * It also reset platform's event history to system's one, so an owner should install PlatformsManager as eventsAdmin in its
+    * platform contract.
+    *
+    * Attaching a new platform also leads to synchronyzing all assets hosted in a platform and their owners so it is possible
+    * in case when a platform has a lot of assets and managers that this process of registering a platform will end up with
+    * ERROR_PLATFORMS_REPEAT_SYNC_IS_NOT_COMPLETED error. It means that all goes right just keep calling this method until
+    * `OK` result code will be returned; synchronysation might take several attemtps before it will be finished.
+    *
+    * @param _platform platform address
+    *
+    * @return resultCode result code of an operation.
+    *   ERROR_PLATFORMS_ATTACHING_PLATFORM_ALREADY_EXISTS,
+    *   ERROR_PLATFORMS_CANNOT_UPDATE_EVENTS_HISTORY_NOT_EVENTS_ADMIN,
+    *   ERROR_PLATFORMS_REPEAT_SYNC_IS_NOT_COMPLETED might be returned.
     */
     function attachPlatform(address _platform) onlyPlatformOwner(_platform) public returns (uint resultCode) {
         if (store.includes(platforms, _platform)) {
@@ -136,7 +168,22 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO
+    * @dev Responsible for removing a platform from the system. Could be performed only by owner of passed platform.
+    * It also reset platform's eventsHistory and set platform as a new eventsHistory; still PlatformsManager should
+    * be eventsAdmin in a platform.
+    *
+    * Detaching process also includes removal of all assets and managers from system's registry, so as an opposite
+    * to a synchronization during attaching this process clean up all records about assets and their owners. It could
+    * take several attempts until all data will be removed. ERROR_PLATFORMS_REPEAT_SYNC_IS_NOT_COMPLETED will be returned
+    * in case if clean up process is not going to finish during this iteration so keep calling until `OK` will be a result.
+    *
+    * @param _platform platform address
+    *
+    * @return resultCode result code of an operation.
+    *   ERROR_PLATFORMS_PLATFORM_DOES_NOT_EXIST,
+    *   ERROR_PLATFORMS_INCONSISTENT_INTERNAL_STATE,
+    *   ERROR_PLATFORMS_CANNOT_UPDATE_EVENTS_HISTORY_NOT_EVENTS_ADMIN,
+    *   ERROR_PLATFORMS_REPEAT_SYNC_IS_NOT_COMPLETED might be returned.
     */
     function detachPlatform(address _platform) onlyPlatformOwner(_platform) public returns (uint resultCode) {
         if (!store.includes(platforms, _platform)) {
@@ -145,7 +192,6 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
 
         address _owner = OwnedContract(_platform).contractOwner();
         if (!store.includes(ownerToPlatforms, bytes32(_owner), _platform)) {
-            /* @dev TODO: have to think how to avoid this situation */
             return _emitError(ERROR_PLATFORMS_INCONSISTENT_INTERNAL_STATE);
         }
 
@@ -166,7 +212,15 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO
+    * @dev Designed to keep PlatformsManager in consistent state when platform's owner might be changed.
+    * New owner of a platform should call this method to update a record about platform ownership.
+    * Until this operation would not be performed, then user of a platform couldn't do anything with this
+    * platform.
+    *
+    * @param _platform platform address
+    * @param _from previous owner of a platform*
+    *
+    * @return resultCode result code of an operation.
     */
     function replaceAssociatedPlatformFromOwner(address _platform, address _from)
     onlyPlatformOwner(_platform)
@@ -178,7 +232,10 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO
+    * @dev Creates a brand new platform.
+    * This method might take an additional fee in TIMEs.
+    *
+    * @return resultCode result code of an operation
     */
     function createPlatform() public returns (uint resultCode) {
         return _createPlatform([uint(0)]);
@@ -207,7 +264,7 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO private
+    * @dev Sets up internal variables during a platform attach. PRIVATE
     */
     function _attachPlatformWithoutValidation(address _platform, address _owner) private {
         store.add(ownerToPlatforms, bytes32(_owner), _platform);
@@ -215,14 +272,14 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO private
+    * @dev Checks if passed platform is owned by msg.sender. PRIVATE
     */
     function _isPlatformOwner(address _platform) private constant returns (bool) {
         return OwnedContract(_platform).contractOwner() == msg.sender;
     }
 
     /**
-    * @dev TODO private
+    * @dev Performs synchronization during attaching platforms. PRIVATE
     */
     function _syncAssetsInPlatformBeforeAttach(address _platform) private returns (uint resultCode) {
         uint _lastSyncIdx = store.get(syncPlatformToSymbolIdx, _platform);
@@ -244,7 +301,7 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
     }
 
     /**
-    * @dev TODO private
+    * @dev Performs synchronization during detaching platforms. PRIVATE
     */
     function _syncAssetsInPlatformBeforeDetach(address _platform) private returns (uint resultCode) {
         uint _lastSyncIdx = store.get(syncPlatformToSymbolIdx, _platform);
@@ -265,7 +322,9 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
         return OK;
     }
 
-
+    /**
+    * @dev Main synchronization method during attach/detach. PRIVATE
+    */
     function _runThroughPlatform(uint _lastSyncIdx, address _platform, function (bytes32, address, address) external ownerUpdate) private returns (uint) {
         ChronoBankAssetOwnershipManager _chronoBankPlatform = ChronoBankAssetOwnershipManager(_platform);
         ChronoBankManagersRegistry _chronoBankRegistry = ChronoBankManagersRegistry(_platform);
@@ -320,6 +379,9 @@ contract PlatformsManager is FeatureFeeAdapter, BaseManager, PlatformsManagerEmi
         PlatformsManagerEmitter(getEventsHistory()).emitPlatformRequested(_platform, _tokenExtension, sender);
     }
 
+    /**
+    * @dev DEPRECATED. WILL BE REMOVED IN FUTURE RELEASES
+    */
     function _emitPlatformReplaced(address _fromPlatform, address _toPlatform) private {
         PlatformsManagerEmitter(getEventsHistory()).emitPlatformReplaced(_fromPlatform, _toPlatform);
     }

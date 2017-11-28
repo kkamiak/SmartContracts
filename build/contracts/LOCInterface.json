@@ -1,5 +1,5 @@
 {
-  "contract_name": "LOCInterface",
+  "contractName": "LOCInterface",
   "abi": [
     {
       "constant": true,
@@ -12,6 +12,7 @@
         }
       ],
       "payable": false,
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -25,6 +26,7 @@
         }
       ],
       "payable": false,
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -38,11 +40,270 @@
         }
       ],
       "payable": false,
+      "stateMutability": "view",
       "type": "function"
     }
   ],
-  "unlinked_binary": "0x",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.11;\n\ncontract LOCInterface {\n  function getContractOwner() constant returns(address);\n  function getIssued() constant returns(uint);\n  function getIssueLimit() constant returns(uint);\n}\n",
+  "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/loc/LOCInterface.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/loc/LOCInterface.sol",
+      "exportedSymbols": {
+        "LOCInterface": [
+          23728
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".11"
+          ]
+        },
+        "id": 23712,
+        "name": "PragmaDirective",
+        "src": "0:24:84"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            23728
+          ],
+          "name": "LOCInterface",
+          "scope": 23729
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "constant": true,
+              "implemented": false,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getContractOwner",
+              "payable": false,
+              "scope": 23728,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 23713,
+                "name": "ParameterList",
+                "src": "77:2:84"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 23717,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 23714,
+                        "name": "ElementaryTypeName",
+                        "src": "97:7:84"
+                      }
+                    ],
+                    "id": 23715,
+                    "name": "VariableDeclaration",
+                    "src": "97:7:84"
+                  }
+                ],
+                "id": 23716,
+                "name": "ParameterList",
+                "src": "96:9:84"
+              }
+            ],
+            "id": 23717,
+            "name": "FunctionDefinition",
+            "src": "52:54:84"
+          },
+          {
+            "attributes": {
+              "body": null,
+              "constant": true,
+              "implemented": false,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getIssued",
+              "payable": false,
+              "scope": 23728,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 23718,
+                "name": "ParameterList",
+                "src": "127:2:84"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 23722,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 23719,
+                        "name": "ElementaryTypeName",
+                        "src": "147:4:84"
+                      }
+                    ],
+                    "id": 23720,
+                    "name": "VariableDeclaration",
+                    "src": "147:4:84"
+                  }
+                ],
+                "id": 23721,
+                "name": "ParameterList",
+                "src": "146:6:84"
+              }
+            ],
+            "id": 23722,
+            "name": "FunctionDefinition",
+            "src": "109:44:84"
+          },
+          {
+            "attributes": {
+              "body": null,
+              "constant": true,
+              "implemented": false,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getIssueLimit",
+              "payable": false,
+              "scope": 23728,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 23723,
+                "name": "ParameterList",
+                "src": "178:2:84"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 23727,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 23724,
+                        "name": "ElementaryTypeName",
+                        "src": "198:4:84"
+                      }
+                    ],
+                    "id": 23725,
+                    "name": "VariableDeclaration",
+                    "src": "198:4:84"
+                  }
+                ],
+                "id": 23726,
+                "name": "ParameterList",
+                "src": "197:6:84"
+              }
+            ],
+            "id": 23727,
+            "name": "FunctionDefinition",
+            "src": "156:48:84"
+          }
+        ],
+        "id": 23728,
+        "name": "ContractDefinition",
+        "src": "26:180:84"
+      }
+    ],
+    "id": 23729,
+    "name": "SourceUnit",
+    "src": "0:207:84"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+  },
   "networks": {},
-  "schema_version": "0.0.5",
-  "updated_at": 1502110727443
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2017-11-15T09:25:14.937Z"
 }

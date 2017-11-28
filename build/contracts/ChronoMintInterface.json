@@ -1,5 +1,5 @@
 {
-  "contract_name": "ChronoMintInterface",
+  "contractName": "ChronoMintInterface",
   "abi": [
     {
       "constant": false,
@@ -21,11 +21,186 @@
         }
       ],
       "payable": false,
+      "stateMutability": "nonpayable",
       "type": "function"
     }
   ],
-  "unlinked_binary": "0x",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.11;\n\ncontract ChronoMintInterface {\n  function setLOCIssued(address _LOCaddr, uint _issued) returns(bool);\n}\n",
+  "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/platform/ChronoMintInterface.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/platform/ChronoMintInterface.sol",
+      "exportedSymbols": {
+        "ChronoMintInterface": [
+          11295
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".11"
+          ]
+        },
+        "id": 11285,
+        "name": "PragmaDirective",
+        "src": "0:24:51"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            11295
+          ],
+          "name": "ChronoMintInterface",
+          "scope": 11296
+        },
+        "children": [
+          {
+            "attributes": {
+              "body": null,
+              "constant": false,
+              "implemented": false,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "setLOCIssued",
+              "payable": false,
+              "scope": 11295,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_LOCaddr",
+                      "scope": 11294,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 11286,
+                        "name": "ElementaryTypeName",
+                        "src": "81:7:51"
+                      }
+                    ],
+                    "id": 11287,
+                    "name": "VariableDeclaration",
+                    "src": "81:16:51"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_issued",
+                      "scope": 11294,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 11288,
+                        "name": "ElementaryTypeName",
+                        "src": "99:4:51"
+                      }
+                    ],
+                    "id": 11289,
+                    "name": "VariableDeclaration",
+                    "src": "99:12:51"
+                  }
+                ],
+                "id": 11290,
+                "name": "ParameterList",
+                "src": "80:32:51"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 11294,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 11291,
+                        "name": "ElementaryTypeName",
+                        "src": "121:4:51"
+                      }
+                    ],
+                    "id": 11292,
+                    "name": "VariableDeclaration",
+                    "src": "121:4:51"
+                  }
+                ],
+                "id": 11293,
+                "name": "ParameterList",
+                "src": "120:6:51"
+              }
+            ],
+            "id": 11294,
+            "name": "FunctionDefinition",
+            "src": "59:68:51"
+          }
+        ],
+        "id": 11295,
+        "name": "ContractDefinition",
+        "src": "26:103:51"
+      }
+    ],
+    "id": 11296,
+    "name": "SourceUnit",
+    "src": "0:130:51"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+  },
   "networks": {},
-  "schema_version": "0.0.5",
-  "updated_at": 1502110727440
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2017-11-15T09:25:14.891Z"
 }

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 contract Clock {
-    function time() constant returns (uint) {
+    function time() view returns (uint) {
         return now;
     }
 }

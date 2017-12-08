@@ -7,11 +7,7 @@ contract ExchangeManagerEmitter is MultiEventsHistoryAdapter {
         address indexed self,
         address indexed user,
         address exchange,
-        bytes32 symbol,
-        address rewards,
-        uint fee,
-        uint buyPrice,
-        uint sellPrice);
+        bytes32 symbol);
     event ExchangeAdded(address indexed self, address indexed user, address exchange, bytes32 symbol);
     event ExchangeRemoved(address indexed self, address exchange, bytes32 symbol);
     event Error(address indexed self, uint errorCode);
@@ -19,14 +15,10 @@ contract ExchangeManagerEmitter is MultiEventsHistoryAdapter {
     function emitExchangeCreated(
         address user,
         address exchange,
-        bytes32 symbol,
-        address rewards,
-        uint fee,
-        uint buyPrice,
-        uint sellPrice)
+        bytes32 symbol)
     public
     {
-        ExchangeCreated(_self(), user, exchange, symbol, rewards, fee, buyPrice, sellPrice);
+        ExchangeCreated(_self(), user, exchange, symbol);
     }
 
     function emitExchangeRemoved(address exchange, bytes32 symbol) public {

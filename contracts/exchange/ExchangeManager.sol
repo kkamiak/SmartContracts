@@ -8,6 +8,7 @@ import {ERC20Interface as Asset} from "../core/erc20/ERC20Interface.sol";
 import "./Exchange.sol";
 import "./ExchangeManagerEmitter.sol";
 import "./ExchangeFactory.sol";
+import "../timeholder/FeatureFeeAdapter.sol";
 
 /// @title ExchangeManager
 ///
@@ -17,7 +18,7 @@ import "./ExchangeFactory.sol";
 /// The entry point for creating new exchanges.
 ///
 /// CBE users are permited to manage fee value against which an exchange will calculate fee.
-contract ExchangeManager is ExchangeManagerEmitter, BaseManager {
+contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManager {
     uint constant ERROR_EXCHANGE_STOCK_NOT_FOUND = 7000;
     uint constant ERROR_EXCHANGE_STOCK_INTERNAL = 7001;
     uint constant ERROR_EXCHANGE_STOCK_UNKNOWN_SYMBOL = 7002;
@@ -88,6 +89,21 @@ contract ExchangeManager is ExchangeManagerEmitter, BaseManager {
         address _authorizedManager,
         bool _isActive)
     public
+    returns (uint errorCode) {
+        return _createExchange(_symbol, _buyPrice, _buyDecimals, _sellPrice, _sellDecimals, _authorizedManager, _isActive, [uint(0)]);
+    }
+
+    function _createExchange(
+        bytes32 _symbol,
+        uint _buyPrice,
+        uint _buyDecimals,
+        uint _sellPrice,
+        uint _sellDecimals,
+        address _authorizedManager,
+        bool _isActive,
+        uint[1] memory _result)
+    private
+    featured(_result)
     returns (uint errorCode)
     {
         address token = lookupERC20Manager().getTokenAddressBySymbol(_symbol);
@@ -136,7 +152,9 @@ contract ExchangeManager is ExchangeManagerEmitter, BaseManager {
         assert(exchange.rewards() == rewards);
         assert(exchange.feePercent() == getFee());
 
-        _emitExchangeCreated(msg.sender, exchange, _symbol, rewards, getFee(), _buyPrice, _sellPrice);
+        _emitExchangeCreated(msg.sender, exchange, _symbol);
+
+        _result[0] = OK;
         return OK;
     }
 
@@ -259,15 +277,11 @@ contract ExchangeManager is ExchangeManagerEmitter, BaseManager {
     function _emitExchangeCreated(
         address _user,
         address _exchange,
-        bytes32 _symbol,
-        address _rewards,
-        uint _fee,
-        uint _buyPrice,
-        uint _sellPrice)
+        bytes32 _symbol)
     internal
     {
         ExchangeManagerEmitter(getEventsHistory())
-            .emitExchangeCreated(_user, _exchange, _symbol, _rewards, _fee, _buyPrice, _sellPrice);
+            .emitExchangeCreated(_user, _exchange, _symbol);
     }
 
     function _emitError(uint error) internal returns (uint) {

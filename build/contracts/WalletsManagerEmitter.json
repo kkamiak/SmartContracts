@@ -51,19 +51,22 @@
       "constant": false,
       "inputs": [
         {
-          "name": "wallet",
-          "type": "address"
+          "name": "self",
+          "type": "address",
+          "indexed": true
         },
         {
-          "name": "by",
-          "type": "address"
+          "name": "errorCode",
+          "type": "uint256",
+          "indexed": false
         }
       ],
-      "name": "emitWalletAdded",
+      "name": "Error",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "event",
+      "anonymous": false
     },
     {
       "anonymous": false,
@@ -75,11 +78,16 @@
         },
         {
           "indexed": false,
-          "name": "errorCode",
-          "type": "uint256"
+          "name": "wallet",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "by",
+          "type": "address"
         }
       ],
-      "name": "Error",
+      "name": "WalletCreated",
       "type": "event"
     },
     {
@@ -101,7 +109,7 @@
           "type": "address"
         }
       ],
-      "name": "WalletAdded",
+      "name": "WalletDeleted",
       "type": "event"
     },
     {
@@ -144,18 +152,18 @@
       "type": "event"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b6102678061001e6000396000f3006060604052600436106100615763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663250aa1a18114610066578063bea995661461008d578063df26ca08146100ac578063e136ea8d146100c2575b600080fd5b341561007157600080fd5b61008b600160a060020a03600435811690602435166100e7565b005b341561009857600080fd5b61008b600160a060020a0360043516610143565b34156100b757600080fd5b61008b600435610194565b34156100cd57600080fd5b61008b600160a060020a03600435811690602435166101db565b80600160a060020a03166100f9610237565b600160a060020a03167fca0b7dde26052d34217ef1a0cee48085a07ca32da0a918609937a307d496bbf584604051600160a060020a03909116815260200160405180910390a35050565b61014b610237565b600160a060020a03167f49de411f58cbd9799f63088434ff82d488c93ad291d4844de5c68b6bc6704cdd82604051600160a060020a03909116815260200160405180910390a250565b61019c610237565b600160a060020a03167f9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c8260405190815260200160405180910390a250565b80600160a060020a03166101ed610237565b600160a060020a03167fab5e58da9d3260e1f73a5b4f6a270e75b7230b399ec2e3b3879089e10a15799c84604051600160a060020a03909116815260200160405180910390a35050565b33905600a165627a7a72305820456ea51e8f536d0065de9c180fbf73ec57629ed739aee60e6d955c51507794f30029",
-  "deployedBytecode": "0x6060604052600436106100615763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663250aa1a18114610066578063bea995661461008d578063df26ca08146100ac578063e136ea8d146100c2575b600080fd5b341561007157600080fd5b61008b600160a060020a03600435811690602435166100e7565b005b341561009857600080fd5b61008b600160a060020a0360043516610143565b34156100b757600080fd5b61008b600435610194565b34156100cd57600080fd5b61008b600160a060020a03600435811690602435166101db565b80600160a060020a03166100f9610237565b600160a060020a03167fca0b7dde26052d34217ef1a0cee48085a07ca32da0a918609937a307d496bbf584604051600160a060020a03909116815260200160405180910390a35050565b61014b610237565b600160a060020a03167f49de411f58cbd9799f63088434ff82d488c93ad291d4844de5c68b6bc6704cdd82604051600160a060020a03909116815260200160405180910390a250565b61019c610237565b600160a060020a03167f9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c8260405190815260200160405180910390a250565b80600160a060020a03166101ed610237565b600160a060020a03167fab5e58da9d3260e1f73a5b4f6a270e75b7230b399ec2e3b3879089e10a15799c84604051600160a060020a03909116815260200160405180910390a35050565b33905600a165627a7a72305820456ea51e8f536d0065de9c180fbf73ec57629ed739aee60e6d955c51507794f30029",
-  "sourceMap": "81:772:115:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "81:772:115:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;635:113;;;;;;;;;;-1:-1:-1;;;;;635:113:115;;;;;;;;;;;;754:97;;;;;;;;;;-1:-1:-1;;;;;754:97:115;;;;;430:84;;;;;;;;;;;;;;520:109;;;;;;;;;;-1:-1:-1;;;;;520:109:115;;;;;;;;;;635:113;738:2;-1:-1:-1;;;;;707:34:115;721:7;:5;:7::i;:::-;-1:-1:-1;;;;;707:34:115;;730:6;707:34;;-1:-1:-1;;;;;707:34:115;;;;;;;;;;;;;;635:113;;:::o;754:97::-;828:7;:5;:7::i;:::-;-1:-1:-1;;;;;814:30:115;;837:6;814:30;;-1:-1:-1;;;;;814:30:115;;;;;;;;;;;;;;754:97;:::o;430:84::-;488:7;:5;:7::i;:::-;-1:-1:-1;;;;;482:25:115;;497:9;482:25;;;;;;;;;;;;;;430:84;:::o;520:109::-;619:2;-1:-1:-1;;;;;590:32:115;602:7;:5;:7::i;:::-;-1:-1:-1;;;;;590:32:115;;611:6;590:32;;-1:-1:-1;;;;;590:32:115;;;;;;;;;;;;;;520:109;;:::o;234:87:36:-;304:10;234:87;:::o",
-  "source": "pragma solidity ^0.4.11;\n\nimport '../core/event/MultiEventsHistoryAdapter.sol';\n\ncontract WalletsManagerEmitter is MultiEventsHistoryAdapter {\n    event Error(address indexed self, uint errorCode);\n    event WalletAdded(address indexed self, address wallet, address indexed by);\n    event WalletCreated(address indexed self, address wallet, address indexed by);\n    event WalletDeleted(address indexed self, address wallet);\n\n    function emitError(uint errorCode) public {\n        Error(_self(), errorCode);\n    }\n\n    function emitWalletAdded(address wallet, address by) public {\n        WalletAdded(_self(), wallet, by);\n    }\n\n    function emitWalletCreated(address wallet, address by) public {\n        WalletCreated(_self(), wallet, by);\n    }\n\n    function emitWalletDeleted(address wallet) public {\n        WalletDeleted(_self(), wallet);\n    }\n}\n",
+  "bytecode": "0x6060604052341561000f57600080fd5b6101db8061001e6000396000f3006060604052600436106100565763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663250aa1a1811461005b578063bea9956614610082578063df26ca08146100a1575b600080fd5b341561006657600080fd5b610080600160a060020a03600435811690602435166100b7565b005b341561008d57600080fd5b610080600160a060020a0360043516610113565b34156100ac57600080fd5b610080600435610164565b80600160a060020a03166100c96101ab565b600160a060020a03167fca0b7dde26052d34217ef1a0cee48085a07ca32da0a918609937a307d496bbf584604051600160a060020a03909116815260200160405180910390a35050565b61011b6101ab565b600160a060020a03167f49de411f58cbd9799f63088434ff82d488c93ad291d4844de5c68b6bc6704cdd82604051600160a060020a03909116815260200160405180910390a250565b61016c6101ab565b600160a060020a03167f9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c8260405190815260200160405180910390a250565b33905600a165627a7a723058207eba97829f71fe1fce77e992c95721b3218fad892c162865c6d83fa7aa1664e50029",
+  "deployedBytecode": "0x6060604052600436106100565763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663250aa1a1811461005b578063bea9956614610082578063df26ca08146100a1575b600080fd5b341561006657600080fd5b610080600160a060020a03600435811690602435166100b7565b005b341561008d57600080fd5b610080600160a060020a0360043516610113565b34156100ac57600080fd5b610080600435610164565b80600160a060020a03166100c96101ab565b600160a060020a03167fca0b7dde26052d34217ef1a0cee48085a07ca32da0a918609937a307d496bbf584604051600160a060020a03909116815260200160405180910390a35050565b61011b6101ab565b600160a060020a03167f49de411f58cbd9799f63088434ff82d488c93ad291d4844de5c68b6bc6704cdd82604051600160a060020a03909116815260200160405180910390a250565b61016c6101ab565b600160a060020a03167f9cf38cf2dbf9139f5c32639950507b10775fbbe0421f3e168bc2d1bb1ae3208c8260405190815260200160405180910390a250565b33905600a165627a7a723058207eba97829f71fe1fce77e992c95721b3218fad892c162865c6d83fa7aa1664e50029",
+  "sourceMap": "81:580:41:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "81:580:41:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;443:113;;;;;;;;;;-1:-1:-1;;;;;443:113:41;;;;;;;;;;;;562:97;;;;;;;;;;-1:-1:-1;;;;;562:97:41;;;;;353:84;;;;;;;;;;;;;;443:113;546:2;-1:-1:-1;;;;;515:34:41;529:7;:5;:7::i;:::-;-1:-1:-1;;;;;515:34:41;;538:6;515:34;;-1:-1:-1;;;;;515:34:41;;;;;;;;;;;;;;443:113;;:::o;562:97::-;636:7;:5;:7::i;:::-;-1:-1:-1;;;;;622:30:41;;645:6;622:30;;-1:-1:-1;;;;;622:30:41;;;;;;;;;;;;;;562:97;:::o;353:84::-;411:7;:5;:7::i;:::-;-1:-1:-1;;;;;405:25:41;;420:9;405:25;;;;;;;;;;;;;;353:84;:::o;234:87:12:-;304:10;234:87;:::o",
+  "source": "pragma solidity ^0.4.11;\n\nimport '../core/event/MultiEventsHistoryAdapter.sol';\n\ncontract WalletsManagerEmitter is MultiEventsHistoryAdapter {\n    event Error(address indexed self, uint errorCode);    \n    event WalletCreated(address indexed self, address wallet, address indexed by);\n    event WalletDeleted(address indexed self, address wallet);\n\n    function emitError(uint errorCode) public {\n        Error(_self(), errorCode);\n    }\n\n    function emitWalletCreated(address wallet, address by) public {\n        WalletCreated(_self(), wallet, by);\n    }\n\n    function emitWalletDeleted(address wallet) public {\n        WalletDeleted(_self(), wallet);\n    }\n}\n",
   "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/wallet/WalletsManagerEmitter.sol",
   "ast": {
     "attributes": {
       "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/wallet/WalletsManagerEmitter.sol",
       "exportedSymbols": {
         "WalletsManagerEmitter": [
-          36503
+          16946
         ]
       }
     },
@@ -169,39 +177,39 @@
             ".11"
           ]
         },
-        "id": 36417,
+        "id": 16883,
         "name": "PragmaDirective",
-        "src": "0:24:115"
+        "src": "0:24:41"
       },
       {
         "attributes": {
-          "SourceUnit": 6890,
+          "SourceUnit": 2335,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/event/MultiEventsHistoryAdapter.sol",
           "file": "../core/event/MultiEventsHistoryAdapter.sol",
-          "scope": 36504,
+          "scope": 16947,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 36418,
+        "id": 16884,
         "name": "ImportDirective",
-        "src": "26:53:115"
+        "src": "26:53:41"
       },
       {
         "attributes": {
           "contractDependencies": [
-            6889
+            2334
           ],
           "contractKind": "contract",
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            36503,
-            6889
+            16946,
+            2334
           ],
           "name": "WalletsManagerEmitter",
-          "scope": 36504
+          "scope": 16947
         },
         "children": [
           {
@@ -215,17 +223,17 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "MultiEventsHistoryAdapter",
-                  "referencedDeclaration": 6889,
+                  "referencedDeclaration": 2334,
                   "type": "contract MultiEventsHistoryAdapter"
                 },
-                "id": 36419,
+                "id": 16885,
                 "name": "UserDefinedTypeName",
-                "src": "115:25:115"
+                "src": "115:25:41"
               }
             ],
-            "id": 36420,
+            "id": 16886,
             "name": "InheritanceSpecifier",
-            "src": "115:25:115"
+            "src": "115:25:41"
           },
           {
             "attributes": {
@@ -240,7 +248,7 @@
                       "constant": false,
                       "indexed": true,
                       "name": "self",
-                      "scope": 36426,
+                      "scope": 16892,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -253,21 +261,21 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 36421,
+                        "id": 16887,
                         "name": "ElementaryTypeName",
-                        "src": "159:7:115"
+                        "src": "159:7:41"
                       }
                     ],
-                    "id": 36422,
+                    "id": 16888,
                     "name": "VariableDeclaration",
-                    "src": "159:20:115"
+                    "src": "159:20:41"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "indexed": false,
                       "name": "errorCode",
-                      "scope": 36426,
+                      "scope": 16892,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -280,123 +288,24 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 36423,
+                        "id": 16889,
                         "name": "ElementaryTypeName",
-                        "src": "181:4:115"
+                        "src": "181:4:41"
                       }
                     ],
-                    "id": 36424,
+                    "id": 16890,
                     "name": "VariableDeclaration",
-                    "src": "181:14:115"
+                    "src": "181:14:41"
                   }
                 ],
-                "id": 36425,
+                "id": 16891,
                 "name": "ParameterList",
-                "src": "158:38:115"
+                "src": "158:38:41"
               }
             ],
-            "id": 36426,
+            "id": 16892,
             "name": "EventDefinition",
-            "src": "147:50:115"
-          },
-          {
-            "attributes": {
-              "anonymous": false,
-              "name": "WalletAdded"
-            },
-            "children": [
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "indexed": true,
-                      "name": "self",
-                      "scope": 36434,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "type": "address"
-                        },
-                        "id": 36427,
-                        "name": "ElementaryTypeName",
-                        "src": "220:7:115"
-                      }
-                    ],
-                    "id": 36428,
-                    "name": "VariableDeclaration",
-                    "src": "220:20:115"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "indexed": false,
-                      "name": "wallet",
-                      "scope": 36434,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "type": "address"
-                        },
-                        "id": 36429,
-                        "name": "ElementaryTypeName",
-                        "src": "242:7:115"
-                      }
-                    ],
-                    "id": 36430,
-                    "name": "VariableDeclaration",
-                    "src": "242:14:115"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "indexed": true,
-                      "name": "by",
-                      "scope": 36434,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "type": "address"
-                        },
-                        "id": 36431,
-                        "name": "ElementaryTypeName",
-                        "src": "258:7:115"
-                      }
-                    ],
-                    "id": 36432,
-                    "name": "VariableDeclaration",
-                    "src": "258:18:115"
-                  }
-                ],
-                "id": 36433,
-                "name": "ParameterList",
-                "src": "219:58:115"
-              }
-            ],
-            "id": 36434,
-            "name": "EventDefinition",
-            "src": "202:76:115"
+            "src": "147:50:41"
           },
           {
             "attributes": {
@@ -411,7 +320,7 @@
                       "constant": false,
                       "indexed": true,
                       "name": "self",
-                      "scope": 36442,
+                      "scope": 16900,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -424,21 +333,21 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 36435,
+                        "id": 16893,
                         "name": "ElementaryTypeName",
-                        "src": "303:7:115"
+                        "src": "226:7:41"
                       }
                     ],
-                    "id": 36436,
+                    "id": 16894,
                     "name": "VariableDeclaration",
-                    "src": "303:20:115"
+                    "src": "226:20:41"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "indexed": false,
                       "name": "wallet",
-                      "scope": 36442,
+                      "scope": 16900,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -451,14 +360,113 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 36437,
+                        "id": 16895,
                         "name": "ElementaryTypeName",
-                        "src": "325:7:115"
+                        "src": "248:7:41"
                       }
                     ],
-                    "id": 36438,
+                    "id": 16896,
                     "name": "VariableDeclaration",
-                    "src": "325:14:115"
+                    "src": "248:14:41"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": true,
+                      "name": "by",
+                      "scope": 16900,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 16897,
+                        "name": "ElementaryTypeName",
+                        "src": "264:7:41"
+                      }
+                    ],
+                    "id": 16898,
+                    "name": "VariableDeclaration",
+                    "src": "264:18:41"
+                  }
+                ],
+                "id": 16899,
+                "name": "ParameterList",
+                "src": "225:58:41"
+              }
+            ],
+            "id": 16900,
+            "name": "EventDefinition",
+            "src": "206:78:41"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "name": "WalletDeleted"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": true,
+                      "name": "self",
+                      "scope": 16906,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 16901,
+                        "name": "ElementaryTypeName",
+                        "src": "309:7:41"
+                      }
+                    ],
+                    "id": 16902,
+                    "name": "VariableDeclaration",
+                    "src": "309:20:41"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "wallet",
+                      "scope": 16906,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 16903,
+                        "name": "ElementaryTypeName",
+                        "src": "331:7:41"
+                      }
+                    ],
+                    "id": 16904,
+                    "name": "VariableDeclaration",
+                    "src": "331:14:41"
                   },
                   {
                     "attributes": {
@@ -488,19 +496,30 @@
                     "src": "341:18:115"
                   }
                 ],
-                "id": 36441,
+                "id": 16905,
                 "name": "ParameterList",
-                "src": "302:58:115"
+                "src": "308:38:41"
               }
             ],
-            "id": 36442,
+            "id": 16906,
             "name": "EventDefinition",
-            "src": "283:78:115"
+            "src": "289:58:41"
           },
           {
             "attributes": {
               "anonymous": false,
-              "name": "WalletDeleted"
+              "name": "emitError",
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "payable": false,
+              "scope": 16946,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
             },
             "children": [
               {
@@ -509,28 +528,28 @@
                     "attributes": {
                       "constant": false,
                       "indexed": true,
-                      "name": "self",
-                      "scope": 36448,
+                      "name": "errorCode",
+                      "scope": 16918,
                       "stateVariable": false,
                       "storageLocation": "default",
-                      "type": "address",
+                      "type": "uint256",
                       "value": null,
                       "visibility": "internal"
                     },
                     "children": [
                       {
                         "attributes": {
-                          "name": "address",
-                          "type": "address"
+                          "name": "uint",
+                          "type": "uint256"
                         },
-                        "id": 36443,
+                        "id": 16907,
                         "name": "ElementaryTypeName",
-                        "src": "386:7:115"
+                        "src": "372:4:41"
                       }
                     ],
-                    "id": 36444,
+                    "id": 16908,
                     "name": "VariableDeclaration",
-                    "src": "386:20:115"
+                    "src": "372:14:41"
                   },
                   {
                     "attributes": {
@@ -560,63 +579,9 @@
                     "src": "408:14:115"
                   }
                 ],
-                "id": 36447,
+                "id": 16909,
                 "name": "ParameterList",
-                "src": "385:38:115"
-              }
-            ],
-            "id": 36448,
-            "name": "EventDefinition",
-            "src": "366:58:115"
-          },
-          {
-            "attributes": {
-              "constant": false,
-              "implemented": true,
-              "isConstructor": false,
-              "modifiers": [
-                null
-              ],
-              "name": "emitError",
-              "payable": false,
-              "scope": 36503,
-              "stateMutability": "nonpayable",
-              "superFunction": null,
-              "visibility": "public"
-            },
-            "children": [
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "errorCode",
-                      "scope": 36460,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 36449,
-                        "name": "ElementaryTypeName",
-                        "src": "449:4:115"
-                      }
-                    ],
-                    "id": 36450,
-                    "name": "VariableDeclaration",
-                    "src": "449:14:115"
-                  }
-                ],
-                "id": 36451,
-                "name": "ParameterList",
-                "src": "448:16:115"
+                "src": "371:16:41"
               },
               {
                 "attributes": {
@@ -625,9 +590,9 @@
                   ]
                 },
                 "children": [],
-                "id": 36452,
+                "id": 16910,
                 "name": "ParameterList",
-                "src": "472:0:115"
+                "src": "395:0:41"
               },
               {
                 "children": [
@@ -663,13 +628,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 36426,
+                              "referencedDeclaration": 16892,
                               "type": "function (address,uint256)",
                               "value": "Error"
                             },
-                            "id": 36453,
+                            "id": 16911,
                             "name": "Identifier",
-                            "src": "482:5:115"
+                            "src": "405:5:41"
                           },
                           {
                             "attributes": {
@@ -697,18 +662,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 6888,
+                                  "referencedDeclaration": 2333,
                                   "type": "function () view returns (address)",
                                   "value": "_self"
                                 },
-                                "id": 36454,
+                                "id": 16912,
                                 "name": "Identifier",
-                                "src": "488:5:115"
+                                "src": "411:5:41"
                               }
                             ],
-                            "id": 36455,
+                            "id": 16913,
                             "name": "FunctionCall",
-                            "src": "488:7:115"
+                            "src": "411:7:41"
                           },
                           {
                             "attributes": {
@@ -716,33 +681,33 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 36450,
+                              "referencedDeclaration": 16908,
                               "type": "uint256",
                               "value": "errorCode"
                             },
-                            "id": 36456,
+                            "id": 16914,
                             "name": "Identifier",
-                            "src": "497:9:115"
+                            "src": "420:9:41"
                           }
                         ],
-                        "id": 36457,
+                        "id": 16915,
                         "name": "FunctionCall",
-                        "src": "482:25:115"
+                        "src": "405:25:41"
                       }
                     ],
-                    "id": 36458,
+                    "id": 16916,
                     "name": "ExpressionStatement",
-                    "src": "482:25:115"
+                    "src": "405:25:41"
                   }
                 ],
-                "id": 36459,
+                "id": 16917,
                 "name": "Block",
-                "src": "472:42:115"
+                "src": "395:42:41"
               }
             ],
-            "id": 36460,
+            "id": 16918,
             "name": "FunctionDefinition",
-            "src": "430:84:115"
+            "src": "353:84:41"
           },
           {
             "attributes": {
@@ -752,9 +717,9 @@
               "modifiers": [
                 null
               ],
-              "name": "emitWalletAdded",
+              "name": "emitWalletCreated",
               "payable": false,
-              "scope": 36503,
+              "scope": 16946,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -766,7 +731,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "wallet",
-                      "scope": 36475,
+                      "scope": 16933,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -779,20 +744,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 36461,
+                        "id": 16919,
                         "name": "ElementaryTypeName",
-                        "src": "545:7:115"
+                        "src": "470:7:41"
                       }
                     ],
-                    "id": 36462,
+                    "id": 16920,
                     "name": "VariableDeclaration",
-                    "src": "545:14:115"
+                    "src": "470:14:41"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "by",
-                      "scope": 36475,
+                      "scope": 16933,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -805,19 +770,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 36463,
+                        "id": 16921,
                         "name": "ElementaryTypeName",
-                        "src": "561:7:115"
+                        "src": "486:7:41"
                       }
                     ],
-                    "id": 36464,
+                    "id": 16922,
                     "name": "VariableDeclaration",
-                    "src": "561:10:115"
+                    "src": "486:10:41"
                   }
                 ],
-                "id": 36465,
+                "id": 16923,
                 "name": "ParameterList",
-                "src": "544:28:115"
+                "src": "469:28:41"
               },
               {
                 "attributes": {
@@ -826,9 +791,9 @@
                   ]
                 },
                 "children": [],
-                "id": 36466,
+                "id": 16924,
                 "name": "ParameterList",
-                "src": "580:0:115"
+                "src": "505:0:41"
               },
               {
                 "children": [
@@ -868,13 +833,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 36434,
+                              "referencedDeclaration": 16900,
                               "type": "function (address,address,address)",
-                              "value": "WalletAdded"
+                              "value": "WalletCreated"
                             },
-                            "id": 36467,
+                            "id": 16925,
                             "name": "Identifier",
-                            "src": "590:11:115"
+                            "src": "515:13:41"
                           },
                           {
                             "attributes": {
@@ -902,18 +867,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 6888,
+                                  "referencedDeclaration": 2333,
                                   "type": "function () view returns (address)",
                                   "value": "_self"
                                 },
-                                "id": 36468,
+                                "id": 16926,
                                 "name": "Identifier",
-                                "src": "602:5:115"
+                                "src": "529:5:41"
                               }
                             ],
-                            "id": 36469,
+                            "id": 16927,
                             "name": "FunctionCall",
-                            "src": "602:7:115"
+                            "src": "529:7:41"
                           },
                           {
                             "attributes": {
@@ -921,13 +886,232 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 36462,
+                              "referencedDeclaration": 16920,
                               "type": "address",
                               "value": "wallet"
                             },
-                            "id": 36470,
+                            "id": 16928,
                             "name": "Identifier",
-                            "src": "611:6:115"
+                            "src": "538:6:41"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 16922,
+                              "type": "address",
+                              "value": "by"
+                            },
+                            "id": 16929,
+                            "name": "Identifier",
+                            "src": "546:2:41"
+                          }
+                        ],
+                        "id": 16930,
+                        "name": "FunctionCall",
+                        "src": "515:34:41"
+                      }
+                    ],
+                    "id": 16931,
+                    "name": "ExpressionStatement",
+                    "src": "515:34:41"
+                  }
+                ],
+                "id": 16932,
+                "name": "Block",
+                "src": "505:51:41"
+              }
+            ],
+            "id": 16933,
+            "name": "FunctionDefinition",
+            "src": "443:113:41"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "emitWalletDeleted",
+              "payable": false,
+              "scope": 16946,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "wallet",
+                      "scope": 16945,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 16934,
+                        "name": "ElementaryTypeName",
+                        "src": "589:7:41"
+                      }
+                    ],
+                    "id": 16935,
+                    "name": "VariableDeclaration",
+                    "src": "589:14:41"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "by",
+                      "scope": 36475,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 36463,
+                        "name": "ElementaryTypeName",
+                        "src": "561:7:115"
+                      }
+                    ],
+                    "id": 36464,
+                    "name": "VariableDeclaration",
+                    "src": "561:10:115"
+                  }
+                ],
+                "id": 16936,
+                "name": "ParameterList",
+                "src": "588:16:41"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 16937,
+                "name": "ParameterList",
+                "src": "612:0:41"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                },
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                },
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 16906,
+                              "type": "function (address,address)",
+                              "value": "WalletDeleted"
+                            },
+                            "id": 16938,
+                            "name": "Identifier",
+                            "src": "622:13:41"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "arguments": [
+                                null
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "isStructConstructorCall": false,
+                              "lValueRequested": false,
+                              "names": [
+                                null
+                              ],
+                              "type": "address",
+                              "type_conversion": false
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": [
+                                    null
+                                  ],
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 2333,
+                                  "type": "function () view returns (address)",
+                                  "value": "_self"
+                                },
+                                "id": 16939,
+                                "name": "Identifier",
+                                "src": "636:5:41"
+                              }
+                            ],
+                            "id": 16940,
+                            "name": "FunctionCall",
+                            "src": "636:7:41"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 16935,
+                              "type": "address",
+                              "value": "wallet"
+                            },
+                            "id": 16941,
+                            "name": "Identifier",
+                            "src": "645:6:41"
                           },
                           {
                             "attributes": {
@@ -944,24 +1128,24 @@
                             "src": "619:2:115"
                           }
                         ],
-                        "id": 36472,
+                        "id": 16942,
                         "name": "FunctionCall",
-                        "src": "590:32:115"
+                        "src": "622:30:41"
                       }
                     ],
-                    "id": 36473,
+                    "id": 16943,
                     "name": "ExpressionStatement",
-                    "src": "590:32:115"
+                    "src": "622:30:41"
                   }
                 ],
-                "id": 36474,
+                "id": 16944,
                 "name": "Block",
-                "src": "580:49:115"
+                "src": "612:47:41"
               }
             ],
-            "id": 36475,
+            "id": 16945,
             "name": "FunctionDefinition",
-            "src": "520:109:115"
+            "src": "562:97:41"
           },
           {
             "attributes": {
@@ -1358,14 +1542,14 @@
             "src": "754:97:115"
           }
         ],
-        "id": 36503,
+        "id": 16946,
         "name": "ContractDefinition",
-        "src": "81:772:115"
+        "src": "81:580:41"
       }
     ],
-    "id": 36504,
+    "id": 16947,
     "name": "SourceUnit",
-    "src": "0:854:115"
+    "src": "0:662:41"
   },
   "compiler": {
     "name": "solc",
@@ -1373,5 +1557,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-11-15T09:25:15.051Z"
+  "updatedAt": "2017-12-11T15:29:19.823Z"
 }

@@ -16,18 +16,18 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x60606040523415600e57600080fd5b60958061001c6000396000f300606060405260043610603e5763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166316ada54781146043575b600080fd5b3415604d57600080fd5b60536065565b60405190815260200160405180910390f35b42905600a165627a7a7230582022fec42a5d07b8e32f6cecbf45380b7d90e6780b0bfe3ff5fbbc5b6df68d18d50029",
-  "deployedBytecode": "0x606060405260043610603e5763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166316ada54781146043575b600080fd5b3415604d57600080fd5b60536065565b60405190815260200160405180910390f35b42905600a165627a7a7230582022fec42a5d07b8e32f6cecbf45380b7d90e6780b0bfe3ff5fbbc5b6df68d18d50029",
-  "sourceMap": "26:90:77:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "26:90:77:-;;;;;;;;;;;;;;;;;;;;;;;47:67;;;;;;;;;;;;;;;;;;;;;;;;;;;;104:3;47:67;:::o",
-  "source": "pragma solidity ^0.4.11;\n\ncontract Clock {\n    function time() constant returns (uint) {\n        return now;\n    }\n}\n",
+  "bytecode": "0x60606040523415600e57600080fd5b60958061001c6000396000f300606060405260043610603e5763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166316ada54781146043575b600080fd5b3415604d57600080fd5b60536065565b60405190815260200160405180910390f35b42905600a165627a7a723058202e367e6ee198656817507a173dd1ff069b69ba73ff1ac32513e5907b4591cd270029",
+  "deployedBytecode": "0x606060405260043610603e5763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166316ada54781146043575b600080fd5b3415604d57600080fd5b60536065565b60405190815260200160405180910390f35b42905600a165627a7a723058202e367e6ee198656817507a173dd1ff069b69ba73ff1ac32513e5907b4591cd270029",
+  "sourceMap": "26:93:28:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "26:93:28:-;;;;;;;;;;;;;;;;;;;;;;;47:70;;;;;;;;;;;;;;;;;;;;;;;;;;;;107:3;47:70;:::o",
+  "source": "pragma solidity ^0.4.11;\n\ncontract Clock {\n    function time() public view returns (uint) {\n        return now;\n    }\n}\n",
   "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/helpers/Clock.sol",
   "ast": {
     "attributes": {
       "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/helpers/Clock.sol",
       "exportedSymbols": {
         "Clock": [
-          23446
+          13270
         ]
       }
     },
@@ -41,9 +41,9 @@
             ".11"
           ]
         },
-        "id": 23437,
+        "id": 13261,
         "name": "PragmaDirective",
-        "src": "0:24:77"
+        "src": "0:24:28"
       },
       {
         "attributes": {
@@ -57,10 +57,10 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            23446
+            13270
           ],
           "name": "Clock",
-          "scope": 23447
+          "scope": 13271
         },
         "children": [
           {
@@ -73,7 +73,7 @@
               ],
               "name": "time",
               "payable": false,
-              "scope": 23446,
+              "scope": 13270,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "public"
@@ -86,9 +86,9 @@
                   ]
                 },
                 "children": [],
-                "id": 23438,
+                "id": 13262,
                 "name": "ParameterList",
-                "src": "60:2:77"
+                "src": "60:2:28"
               },
               {
                 "children": [
@@ -96,7 +96,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 23445,
+                      "scope": 13269,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -109,25 +109,25 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 23439,
+                        "id": 13263,
                         "name": "ElementaryTypeName",
-                        "src": "81:4:77"
+                        "src": "84:4:28"
                       }
                     ],
-                    "id": 23440,
+                    "id": 13264,
                     "name": "VariableDeclaration",
-                    "src": "81:4:77"
+                    "src": "84:4:28"
                   }
                 ],
-                "id": 23441,
+                "id": 13265,
                 "name": "ParameterList",
-                "src": "80:6:77"
+                "src": "83:6:28"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 23441
+                      "functionReturnParameters": 13265
                     },
                     "children": [
                       {
@@ -136,38 +136,38 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 36517,
+                          "referencedDeclaration": 16960,
                           "type": "uint256",
                           "value": "now"
                         },
-                        "id": 23442,
+                        "id": 13266,
                         "name": "Identifier",
-                        "src": "104:3:77"
+                        "src": "107:3:28"
                       }
                     ],
-                    "id": 23443,
+                    "id": 13267,
                     "name": "Return",
-                    "src": "97:10:77"
+                    "src": "100:10:28"
                   }
                 ],
-                "id": 23444,
+                "id": 13268,
                 "name": "Block",
-                "src": "87:27:77"
+                "src": "90:27:28"
               }
             ],
-            "id": 23445,
+            "id": 13269,
             "name": "FunctionDefinition",
-            "src": "47:67:77"
+            "src": "47:70:28"
           }
         ],
-        "id": 23446,
+        "id": 13270,
         "name": "ContractDefinition",
-        "src": "26:90:77"
+        "src": "26:93:28"
       }
     ],
-    "id": 23447,
+    "id": 13271,
     "name": "SourceUnit",
-    "src": "0:117:77"
+    "src": "0:120:28"
   },
   "compiler": {
     "name": "solc",
@@ -182,5 +182,5 @@
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-11-15T09:25:14.937Z"
+  "updatedAt": "2017-12-11T15:29:19.678Z"
 }

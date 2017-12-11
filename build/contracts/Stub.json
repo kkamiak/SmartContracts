@@ -7,18 +7,18 @@
       "type": "fallback"
     }
   ],
-  "bytecode": "0x60606040523415600e57600080fd5b603c80601b6000396000f30060606040523415600e57600080fd5b0000a165627a7a7230582042a1bd9a3cb04fb270b51ed3215e7bc0503a52870ade1e50aba94333ffbe56e90029",
-  "deployedBytecode": "0x60606040523415600e57600080fd5b0000a165627a7a7230582042a1bd9a3cb04fb270b51ed3215e7bc0503a52870ade1e50aba94333ffbe56e90029",
-  "sourceMap": "51:36:83:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "51:36:83:-;;;;;;;;;;;",
-  "source": "pragma solidity ^0.4.11;\n\n// For testing purposes.\ncontract Stub {\n    function () {}\n}\n",
+  "bytecode": "0x60606040523415600e57600080fd5b603c80601b6000396000f30060606040523415600e57600080fd5b0000a165627a7a72305820504e3bfd42d6ac3daeb8192f6b3b0bfc415cfe930ed1cb5ab2226852fd59bd870029",
+  "deployedBytecode": "0x60606040523415600e57600080fd5b0000a165627a7a72305820504e3bfd42d6ac3daeb8192f6b3b0bfc415cfe930ed1cb5ab2226852fd59bd870029",
+  "sourceMap": "51:42:32:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "51:42:32:-;;;;;;;;;;;",
+  "source": "pragma solidity ^0.4.11;\n\n// For testing purposes.\ncontract Stub {\n    function() public {}\n}\n",
   "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/helpers/Stub.sol",
   "ast": {
     "attributes": {
       "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/helpers/Stub.sol",
       "exportedSymbols": {
         "Stub": [
-          23710
+          13522
         ]
       }
     },
@@ -32,9 +32,9 @@
             ".11"
           ]
         },
-        "id": 23705,
+        "id": 13517,
         "name": "PragmaDirective",
-        "src": "0:24:83"
+        "src": "0:24:32"
       },
       {
         "attributes": {
@@ -48,10 +48,10 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            23710
+            13522
           ],
           "name": "Stub",
-          "scope": 23711
+          "scope": 13523
         },
         "children": [
           {
@@ -64,7 +64,7 @@
               ],
               "name": "",
               "payable": false,
-              "scope": 23710,
+              "scope": 13522,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -77,9 +77,9 @@
                   ]
                 },
                 "children": [],
-                "id": 23706,
+                "id": 13518,
                 "name": "ParameterList",
-                "src": "80:2:83"
+                "src": "79:2:32"
               },
               {
                 "attributes": {
@@ -88,9 +88,9 @@
                   ]
                 },
                 "children": [],
-                "id": 23707,
+                "id": 13519,
                 "name": "ParameterList",
-                "src": "83:0:83"
+                "src": "89:0:32"
               },
               {
                 "attributes": {
@@ -99,24 +99,24 @@
                   ]
                 },
                 "children": [],
-                "id": 23708,
+                "id": 13520,
                 "name": "Block",
-                "src": "83:2:83"
+                "src": "89:2:32"
               }
             ],
-            "id": 23709,
+            "id": 13521,
             "name": "FunctionDefinition",
-            "src": "71:14:83"
+            "src": "71:20:32"
           }
         ],
-        "id": 23710,
+        "id": 13522,
         "name": "ContractDefinition",
-        "src": "51:36:83"
+        "src": "51:42:32"
       }
     ],
-    "id": 23711,
+    "id": 13523,
     "name": "SourceUnit",
-    "src": "0:88:83"
+    "src": "0:94:32"
   },
   "compiler": {
     "name": "solc",
@@ -146,5 +146,5 @@
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-11-15T09:25:14.937Z"
+  "updatedAt": "2017-12-11T15:29:19.680Z"
 }

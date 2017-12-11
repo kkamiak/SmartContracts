@@ -63,7 +63,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 4369,
+          "SourceUnit": 4357,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/assets/extensions/TokenExtensionRouter.sol",
           "file": "./extensions/TokenExtensionRouter.sol",
           "scope": 1441,
@@ -82,7 +82,7 @@
             null
           ],
           "contractDependencies": [
-            4368
+            4356
           ],
           "contractKind": "contract",
           "documentation": "@title Token extension factory. Provides a way to create chronobank token extensions",
@@ -398,7 +398,7 @@
                                 "attributes": {
                                   "contractScope": null,
                                   "name": "TokenExtensionRouter",
-                                  "referencedDeclaration": 4368,
+                                  "referencedDeclaration": 4356,
                                   "type": "contract TokenExtensionRouter"
                                 },
                                 "id": 1430,
@@ -523,5 +523,5 @@
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-11-15T09:25:14.778Z"
+  "updatedAt": "2017-12-11T12:14:44.309Z"
 }

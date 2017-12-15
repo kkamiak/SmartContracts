@@ -19,8 +19,8 @@
   ],
   "bytecode": "0x60606040523415600e57600080fd5b6040516040806100f18339810160405280805191906020018051915060429050600083836401000000006009604882021704565b5050606e565b8254600160a060020a031916600160a060020a0392909216919091178255600190910155565b60758061007c6000396000f3006060604052600080fd5b825473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911782556001909101555600a165627a7a72305820a714383913461877fdf9e78b694cbe3910704c92c2c1f0cbdb9631414faf30170029",
   "deployedBytecode": "0x6060604052600080fd5b825473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911782556001909101555600a165627a7a72305820a714383913461877fdf9e78b694cbe3910704c92c2c1f0cbdb9631414faf30170029",
-  "sourceMap": "60:202:33:-;;;161:99;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;227:26:33;;-1:-1:-1;227:5:33;238:6;161:99;227:10;;;;;;:26;:::i;:::-;161:99;;60:202;;2920:141:34;3006:19;;-1:-1:-1;;;;;;3006:19:34;-1:-1:-1;;;;;3006:19:34;;;;;;;;;;-1:-1:-1;3035:10:34;;;:19;2920:141::o;60:202:33:-;;;;;;;",
-  "deployedSourceMap": "60:202:33:-;;;;;;2920:141:34;3006:19;;-1:-1:-1;;3006:19:34;;;;;;;;;;;;-1:-1:-1;3035:10:34;;;:19;2920:141::o",
+  "sourceMap": "60:202:19:-;;;161:99;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;227:26:19;;-1:-1:-1;227:5:19;238:6;161:99;227:10;;;;;;:26;:::i;:::-;161:99;;60:202;;2920:141:20;3006:19;;-1:-1:-1;;;;;;3006:19:20;-1:-1:-1;;;;;3006:19:20;;;;;;;;;;-1:-1:-1;3035:10:20;;;:19;2920:141::o;60:202:19:-;;;;;;;",
+  "deployedSourceMap": "60:202:19:-;;;;;;2920:141:20;3006:19;;-1:-1:-1;;3006:19:20;;;;;;;;;;;;-1:-1:-1;3035:10:20;;;:19;2920:141::o",
   "source": "pragma solidity ^0.4.11;\n\nimport './StorageInterface.sol';\n\ncontract StorageAdapter {\n    using StorageInterface for *;\n\n    StorageInterface.Config store;\n\n    function StorageAdapter(Storage _store, bytes32 _crate) {\n        store.init(_store, _crate);\n    }\n}\n",
   "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/storage/StorageAdapter.sol",
   "ast": {
@@ -28,7 +28,7 @@
       "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/storage/StorageAdapter.sol",
       "exportedSymbols": {
         "StorageAdapter": [
-          7981
+          3067
         ]
       }
     },
@@ -42,24 +42,24 @@
             ".11"
           ]
         },
-        "id": 7960,
+        "id": 3046,
         "name": "PragmaDirective",
-        "src": "0:24:33"
+        "src": "0:24:19"
       },
       {
         "attributes": {
-          "SourceUnit": 13526,
+          "SourceUnit": 8612,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/storage/StorageInterface.sol",
           "file": "./StorageInterface.sol",
-          "scope": 7982,
+          "scope": 3068,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 7961,
+        "id": 3047,
         "name": "ImportDirective",
-        "src": "26:32:33"
+        "src": "26:32:19"
       },
       {
         "attributes": {
@@ -73,10 +73,10 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            7981
+            3067
           ],
           "name": "StorageAdapter",
-          "scope": 7982
+          "scope": 3068
         },
         "children": [
           {
@@ -88,23 +88,23 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface",
-                  "referencedDeclaration": 13525,
+                  "referencedDeclaration": 8611,
                   "type": "library StorageInterface"
                 },
-                "id": 7962,
+                "id": 3048,
                 "name": "UserDefinedTypeName",
-                "src": "96:16:33"
+                "src": "96:16:19"
               }
             ],
-            "id": 7963,
+            "id": 3049,
             "name": "UsingForDirective",
-            "src": "90:29:33"
+            "src": "90:29:19"
           },
           {
             "attributes": {
               "constant": false,
               "name": "store",
-              "scope": 7981,
+              "scope": 3067,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "struct StorageInterface.Config storage ref",
@@ -116,17 +116,17 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.Config",
-                  "referencedDeclaration": 7989,
+                  "referencedDeclaration": 3075,
                   "type": "struct StorageInterface.Config storage pointer"
                 },
-                "id": 7964,
+                "id": 3050,
                 "name": "UserDefinedTypeName",
-                "src": "125:23:33"
+                "src": "125:23:19"
               }
             ],
-            "id": 7965,
+            "id": 3051,
             "name": "VariableDeclaration",
-            "src": "125:29:33"
+            "src": "125:29:19"
           },
           {
             "attributes": {
@@ -138,7 +138,7 @@
               ],
               "name": "StorageAdapter",
               "payable": false,
-              "scope": 7981,
+              "scope": 3067,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -150,7 +150,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_store",
-                      "scope": 7980,
+                      "scope": 3066,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "contract Storage",
@@ -162,23 +162,23 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "Storage",
-                          "referencedDeclaration": 7958,
+                          "referencedDeclaration": 3044,
                           "type": "contract Storage"
                         },
-                        "id": 7966,
+                        "id": 3052,
                         "name": "UserDefinedTypeName",
-                        "src": "185:7:33"
+                        "src": "185:7:19"
                       }
                     ],
-                    "id": 7967,
+                    "id": 3053,
                     "name": "VariableDeclaration",
-                    "src": "185:14:33"
+                    "src": "185:14:19"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_crate",
-                      "scope": 7980,
+                      "scope": 3066,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32",
@@ -191,19 +191,19 @@
                           "name": "bytes32",
                           "type": "bytes32"
                         },
-                        "id": 7968,
+                        "id": 3054,
                         "name": "ElementaryTypeName",
-                        "src": "201:7:33"
+                        "src": "201:7:19"
                       }
                     ],
-                    "id": 7969,
+                    "id": 3055,
                     "name": "VariableDeclaration",
-                    "src": "201:14:33"
+                    "src": "201:14:19"
                   }
                 ],
-                "id": 7970,
+                "id": 3056,
                 "name": "ParameterList",
-                "src": "184:32:33"
+                "src": "184:32:19"
               },
               {
                 "attributes": {
@@ -212,9 +212,9 @@
                   ]
                 },
                 "children": [],
-                "id": 7971,
+                "id": 3057,
                 "name": "ParameterList",
-                "src": "217:0:33"
+                "src": "217:0:19"
               },
               {
                 "children": [
@@ -239,7 +239,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_contract$_Storage_$7958",
+                                  "typeIdentifier": "t_contract$_Storage_$3044",
                                   "typeString": "contract Storage"
                                 },
                                 {
@@ -252,7 +252,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 8152,
+                              "referencedDeclaration": 3238,
                               "type": "function (struct StorageInterface.Config storage pointer,contract Storage,bytes32)"
                             },
                             "children": [
@@ -262,18 +262,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 7965,
+                                  "referencedDeclaration": 3051,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
-                                "id": 7972,
+                                "id": 3058,
                                 "name": "Identifier",
-                                "src": "227:5:33"
+                                "src": "227:5:19"
                               }
                             ],
-                            "id": 7974,
+                            "id": 3060,
                             "name": "MemberAccess",
-                            "src": "227:10:33"
+                            "src": "227:10:19"
                           },
                           {
                             "attributes": {
@@ -281,13 +281,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 7967,
+                              "referencedDeclaration": 3053,
                               "type": "contract Storage",
                               "value": "_store"
                             },
-                            "id": 7975,
+                            "id": 3061,
                             "name": "Identifier",
-                            "src": "238:6:33"
+                            "src": "238:6:19"
                           },
                           {
                             "attributes": {
@@ -295,43 +295,43 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 7969,
+                              "referencedDeclaration": 3055,
                               "type": "bytes32",
                               "value": "_crate"
                             },
-                            "id": 7976,
+                            "id": 3062,
                             "name": "Identifier",
-                            "src": "246:6:33"
+                            "src": "246:6:19"
                           }
                         ],
-                        "id": 7977,
+                        "id": 3063,
                         "name": "FunctionCall",
-                        "src": "227:26:33"
+                        "src": "227:26:19"
                       }
                     ],
-                    "id": 7978,
+                    "id": 3064,
                     "name": "ExpressionStatement",
-                    "src": "227:26:33"
+                    "src": "227:26:19"
                   }
                 ],
-                "id": 7979,
+                "id": 3065,
                 "name": "Block",
-                "src": "217:43:33"
+                "src": "217:43:19"
               }
             ],
-            "id": 7980,
+            "id": 3066,
             "name": "FunctionDefinition",
-            "src": "161:99:33"
+            "src": "161:99:19"
           }
         ],
-        "id": 7981,
+        "id": 3067,
         "name": "ContractDefinition",
-        "src": "60:202:33"
+        "src": "60:202:19"
       }
     ],
-    "id": 7982,
+    "id": 3068,
     "name": "SourceUnit",
-    "src": "0:263:33"
+    "src": "0:263:19"
   },
   "compiler": {
     "name": "solc",
@@ -339,5 +339,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-15T11:25:49.936Z"
+  "updatedAt": "2017-12-15T14:09:24.729Z"
 }

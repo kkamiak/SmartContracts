@@ -3,8 +3,8 @@
   "abi": [],
   "bytecode": "0x60606040523415600e57600080fd5b603580601b6000396000f3006060604052600080fd00a165627a7a72305820abf97ed8c4c1b5de620f90956ed5de0fc4608aa1020cb3a0bd7b78707aae953a0029",
   "deployedBytecode": "0x6060604052600080fd00a165627a7a72305820abf97ed8c4c1b5de620f90956ed5de0fc4608aa1020cb3a0bd7b78707aae953a0029",
-  "sourceMap": "80:243:20:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "80:243:20:-;;;;;",
+  "sourceMap": "80:243:14:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "80:243:14:-;;;;;",
   "source": "pragma solidity ^0.4.11;\n\n/**\n * @title General MultiEventsHistory user.\n *\n */\ncontract MultiEventsHistoryAdapter {\n\n    /**\n    *   @dev It is address of MultiEventsHistory caller assuming we are inside of delegate call.\n    */\n    function _self() constant internal returns (address) {\n        return msg.sender;\n    }\n}\n",
   "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/event/MultiEventsHistoryAdapter.sol",
   "ast": {
@@ -12,7 +12,7 @@
       "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/event/MultiEventsHistoryAdapter.sol",
       "exportedSymbols": {
         "MultiEventsHistoryAdapter": [
-          3938
+          2400
         ]
       }
     },
@@ -26,9 +26,9 @@
             ".11"
           ]
         },
-        "id": 3928,
+        "id": 2390,
         "name": "PragmaDirective",
-        "src": "0:24:20"
+        "src": "0:24:14"
       },
       {
         "attributes": {
@@ -42,10 +42,10 @@
           "documentation": "@title General MultiEventsHistory user.\n ",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            3938
+            2400
           ],
           "name": "MultiEventsHistoryAdapter",
-          "scope": 3939
+          "scope": 2401
         },
         "children": [
           {
@@ -58,7 +58,7 @@
               ],
               "name": "_self",
               "payable": false,
-              "scope": 3938,
+              "scope": 2400,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -71,9 +71,9 @@
                   ]
                 },
                 "children": [],
-                "id": 3929,
+                "id": 2391,
                 "name": "ParameterList",
-                "src": "248:2:20"
+                "src": "248:2:14"
               },
               {
                 "children": [
@@ -81,7 +81,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 3937,
+                      "scope": 2399,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -94,25 +94,25 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 3930,
+                        "id": 2392,
                         "name": "ElementaryTypeName",
-                        "src": "278:7:20"
+                        "src": "278:7:14"
                       }
                     ],
-                    "id": 3931,
+                    "id": 2393,
                     "name": "VariableDeclaration",
-                    "src": "278:7:20"
+                    "src": "278:7:14"
                   }
                 ],
-                "id": 3932,
+                "id": 2394,
                 "name": "ParameterList",
-                "src": "277:9:20"
+                "src": "277:9:14"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 3932
+                      "functionReturnParameters": 2394
                     },
                     "children": [
                       {
@@ -133,43 +133,43 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 20023,
+                              "referencedDeclaration": 12347,
                               "type": "msg",
                               "value": "msg"
                             },
-                            "id": 3933,
+                            "id": 2395,
                             "name": "Identifier",
-                            "src": "304:3:20"
+                            "src": "304:3:14"
                           }
                         ],
-                        "id": 3934,
+                        "id": 2396,
                         "name": "MemberAccess",
-                        "src": "304:10:20"
+                        "src": "304:10:14"
                       }
                     ],
-                    "id": 3935,
+                    "id": 2397,
                     "name": "Return",
-                    "src": "297:17:20"
+                    "src": "297:17:14"
                   }
                 ],
-                "id": 3936,
+                "id": 2398,
                 "name": "Block",
-                "src": "287:34:20"
+                "src": "287:34:14"
               }
             ],
-            "id": 3937,
+            "id": 2399,
             "name": "FunctionDefinition",
-            "src": "234:87:20"
+            "src": "234:87:14"
           }
         ],
-        "id": 3938,
+        "id": 2400,
         "name": "ContractDefinition",
-        "src": "80:243:20"
+        "src": "80:243:14"
       }
     ],
-    "id": 3939,
+    "id": 2401,
     "name": "SourceUnit",
-    "src": "0:324:20"
+    "src": "0:324:14"
   },
   "compiler": {
     "name": "solc",
@@ -177,5 +177,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-15T11:25:49.880Z"
+  "updatedAt": "2017-12-15T14:09:24.709Z"
 }

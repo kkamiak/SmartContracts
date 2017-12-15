@@ -14148,13 +14148,13 @@
               "type": "address"
             },
             {
-              "indexed": true,
-              "name": "user",
+              "indexed": false,
+              "name": "exchange",
               "type": "address"
             },
             {
               "indexed": false,
-              "name": "exchange",
+              "name": "asset",
               "type": "address"
             }
           ],
@@ -14312,13 +14312,67 @@
           ],
           "name": "Error",
           "type": "event"
+        },
+        "0xe6c96f91775b208c31528b64e2ab6d654c8f1c64103c9ab66c9d68974a26d64a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "asset",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeCreated",
+          "type": "event"
+        },
+        "0x0a3307a02fc265645972c8e076d45a4c916215400b1c0f3c94ba754e80ad8be4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "self",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "exchange",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "asset",
+              "type": "address"
+            }
+          ],
+          "name": "ExchangeAdded",
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0x27ba8d9e54915351fb1ef9083cf3b8e09d9864d7",
+      "address": "0x0c6fa49fdc2c9e5c955206a07bbaca1d5316da09",
       "updated_at": 1502111721124
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-15T10:40:17.814Z"
+  "updatedAt": "2017-12-15T11:29:05.910Z"
 }

@@ -83,8 +83,6 @@ contract Exchange is Object {
     /// On error
     event Error(address indexed exchange, uint errorCode);
 
-    /// Should use interface of the emitter, but address of events history.
-    ExchangeEmitter eventsHistory;
     /// service registry
     address contractsManager;
 
@@ -122,22 +120,6 @@ contract Exchange is Object {
             revert();
         }
 
-        return OK;
-    }
-
-    /// @notice Sets EventsHstory contract address.
-    /// Can be set only once, and only by contract owner.
-    ///
-    /// @param _eventsHistory MultiEventsHistory contract address.
-    ///
-    /// @return OK if success.
-    function setupEventsHistory(address _eventsHistory)
-    public
-    onlyContractOwner
-    returns (uint)
-    {
-        require(_eventsHistory != 0x0);
-        eventsHistory = ExchangeEmitter(_eventsHistory);
         return OK;
     }
 
@@ -433,7 +415,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_INVALID_INVOCATION);
         }
 
-        address exchangeManager = ContractsManager(contractsManager).getContractAddressByType("ExchangeManager");
+        address exchangeManager = lookupManager("ExchangeManager");
         errorCode = IExchangeManager(exchangeManager).removeExchange();
         if (errorCode != OK) {
             return _emitError(errorCode);
@@ -456,43 +438,53 @@ contract Exchange is Object {
         return OK;
     }
 
+    function getEventsHistory() public returns (ExchangeEmitter) {
+        return contractsManager != 0x0 ? ExchangeEmitter(lookupManager("MultiEventsHistory")) : ExchangeEmitter(this);
+    }
+
+    // Returns service by the given `type`
+    function lookupManager(bytes32 _identifier) internal view returns (address manager) {
+        manager = ContractsManager(contractsManager).getContractAddressByType(_identifier);
+        require(manager != 0x0);
+    }
+
     /* Events helpers */
 
     function _emitError(uint _errorCode) internal returns (uint) {
-        eventsHistory.emitError(_errorCode);
+        getEventsHistory().emitError(_errorCode);
         return _errorCode;
     }
 
     function _emitFeeUpdated(address _rewards, uint _feePercent, address _by) internal {
-        eventsHistory.emitFeeUpdated(_rewards, _feePercent, _by);
+        getEventsHistory().emitFeeUpdated(_rewards, _feePercent, _by);
     }
 
     function _emitPricesUpdated(uint _buyPrice, uint _buyDecimals, uint _sellPrice, uint _sellDecimals, address _by) internal {
-        eventsHistory.emitPricesUpdated(_buyPrice, _buyDecimals, _sellPrice, _sellDecimals, _by);
+        getEventsHistory().emitPricesUpdated(_buyPrice, _buyDecimals, _sellPrice, _sellDecimals, _by);
     }
 
     function _emitActiveChanged(bool _isActive, address _by) internal {
-        eventsHistory.emitActiveChanged(_isActive, _by);
+        getEventsHistory().emitActiveChanged(_isActive, _by);
     }
 
     function _emitBuy(address _who, uint _token, uint _eth) internal {
-        eventsHistory.emitBuy(_who, _token, _eth);
+        getEventsHistory().emitBuy(_who, _token, _eth);
     }
 
     function _emitSell(address _who, uint _token, uint _eth) internal {
-        eventsHistory.emitSell(_who, _token, _eth);
+        getEventsHistory().emitSell(_who, _token, _eth);
     }
 
     function _emitWithdrawEther(address _recipient, uint _amount, address _by) internal {
-        eventsHistory.emitWithdrawEther(_recipient, _amount, _by);
+        getEventsHistory().emitWithdrawEther(_recipient, _amount, _by);
     }
 
     function _emitWithdrawTokens(address _recipient, uint _amount, address _by) internal {
-        eventsHistory.emitWithdrawTokens(_recipient, _amount, _by);
+        getEventsHistory().emitWithdrawTokens(_recipient, _amount, _by);
     }
 
     function _emitReceivedEther(address _sender, uint _amount) internal {
-        eventsHistory.emitReceivedEther(_sender, _amount);
+        getEventsHistory().emitReceivedEther(_sender, _amount);
     }
 
     /* emit* methods are designed to be called only via EventsHistory */

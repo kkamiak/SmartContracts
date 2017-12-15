@@ -47,7 +47,6 @@ contract('Exchange', (accounts) => {
       .then(instance => exchange = instance)
       .then(() => MultiEventsHistory.deployed())
       .then(instance => eventsHistory = instance)
-      .then(() => exchange.setupEventsHistory(eventsHistory.address))
       .then(() => eventsHistory.authorize(exchange.address))
       .then(() => FakeCoin.deployed())
       .then(instance => coin = instance)

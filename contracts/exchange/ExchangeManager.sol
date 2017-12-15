@@ -117,8 +117,7 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
         }
 
         Exchange exchange = Exchange(getExchangeFactory().createExchange());
-
-        exchange.setupEventsHistory(getEventsHistory());
+        
         if (!MultiEventsHistory(getEventsHistory()).authorize(exchange)) {
             revert();
         }

@@ -61,7 +61,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 4512,
+          "SourceUnit": 4223,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/common/BaseManager.sol",
           "file": "../core/common/BaseManager.sol",
           "scope": 1251,
@@ -76,7 +76,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 4926,
+          "SourceUnit": 4482,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/common/Once.sol",
           "file": "../core/common/Once.sol",
           "scope": 1251,
@@ -91,7 +91,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 6746,
+          "SourceUnit": 6307,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/erc20/ERC20ManagerInterface.sol",
           "file": "../core/erc20/ERC20ManagerInterface.sol",
           "scope": 1251,
@@ -106,7 +106,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 8607,
+          "SourceUnit": 8168,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/platform/ChronoBankAssetProxyInterface.sol",
           "file": "../core/platform/ChronoBankAssetProxyInterface.sol",
           "scope": 1251,
@@ -121,7 +121,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 7894,
+          "SourceUnit": 7455,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/platform/ChronoBankAssetOwnershipManager.sol",
           "file": "../core/platform/ChronoBankAssetOwnershipManager.sol",
           "scope": 1251,
@@ -136,7 +136,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 11233,
+          "SourceUnit": 10794,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/platform/ChronoBankPlatformInterface.sol",
           "file": "../core/platform/ChronoBankPlatformInterface.sol",
           "scope": 1251,
@@ -151,7 +151,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 10751,
+          "SourceUnit": 10312,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/platform/ChronoBankPlatform.sol",
           "file": "../core/platform/ChronoBankPlatform.sol",
           "scope": 1251,
@@ -166,7 +166,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2983,
+          "SourceUnit": 2694,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/assets/TokenManagementInterface.sol",
           "file": "./TokenManagementInterface.sol",
           "scope": 1251,
@@ -211,7 +211,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2799,
+          "SourceUnit": 2540,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/assets/PlatformsManagerInterface.sol",
           "file": "./PlatformsManagerInterface.sol",
           "scope": 1251,
@@ -226,7 +226,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 7394,
+          "SourceUnit": 6955,
           "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/lib/AssetsManagerAggregations.sol",
           "file": "../core/lib/AssetsManagerAggregations.sol",
           "scope": 1251,
@@ -582,13 +582,13 @@
             1338,
             1398,
             1406,
-            4511,
-            4835,
-            4900,
-            5040,
-            6844,
-            8967,
-            11532
+            4222,
+            4391,
+            4456,
+            4596,
+            6405,
+            8528,
+            11105
           ],
           "contractKind": "contract",
           "documentation": "@title AssetsManager is a helper contract which allows centralized access to tokens' management\non top of chronobank platforms. It is used in pair with PlatformsManager and provides\na creation of token extensions for platforms.\nContract also has methods for quick access to token info such as:\n- token address by symbol,\n- if token exists in a system,\n- if a user is a owner of a token.\n* @dev This contract contains statistics getters but they are deprecated and will be removed soon.\n",
@@ -596,13 +596,13 @@
           "linearizedBaseContracts": [
             1250,
             1338,
-            6844,
-            4511,
-            4835,
-            4900,
-            5040,
-            11532,
-            8967,
+            6405,
+            4222,
+            4391,
+            4456,
+            4596,
+            11105,
+            8528,
             1406,
             1398
           ],
@@ -667,7 +667,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "AssetOwningListener",
-                  "referencedDeclaration": 8967,
+                  "referencedDeclaration": 8528,
                   "type": "contract AssetOwningListener"
                 },
                 "id": 193,
@@ -690,7 +690,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "BaseManager",
-                  "referencedDeclaration": 4511,
+                  "referencedDeclaration": 4222,
                   "type": "contract BaseManager"
                 },
                 "id": 195,
@@ -867,7 +867,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.Address",
-                  "referencedDeclaration": 11549,
+                  "referencedDeclaration": 11122,
                   "type": "struct StorageInterface.Address storage pointer"
                 },
                 "id": 208,
@@ -895,7 +895,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.Address",
-                  "referencedDeclaration": 11549,
+                  "referencedDeclaration": 11122,
                   "type": "struct StorageInterface.Address storage pointer"
                 },
                 "id": 210,
@@ -923,7 +923,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.AddressAddressMapping",
-                  "referencedDeclaration": 11579,
+                  "referencedDeclaration": 11152,
                   "type": "struct StorageInterface.AddressAddressMapping storage pointer"
                 },
                 "id": 212,
@@ -951,7 +951,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.OrderedAddressesSet",
-                  "referencedDeclaration": 11645,
+                  "referencedDeclaration": 11218,
                   "type": "struct StorageInterface.OrderedAddressesSet storage pointer"
                 },
                 "id": 214,
@@ -979,7 +979,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.AddressesSetMapping",
-                  "referencedDeclaration": 11651,
+                  "referencedDeclaration": 11224,
                   "type": "struct StorageInterface.AddressesSetMapping storage pointer"
                 },
                 "id": 216,
@@ -1007,7 +1007,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.Bytes32SetMapping",
-                  "referencedDeclaration": 11648,
+                  "referencedDeclaration": 11221,
                   "type": "struct StorageInterface.Bytes32SetMapping storage pointer"
                 },
                 "id": 218,
@@ -1035,7 +1035,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.AddressesSetMapping",
-                  "referencedDeclaration": 11651,
+                  "referencedDeclaration": 11224,
                   "type": "struct StorageInterface.AddressesSetMapping storage pointer"
                 },
                 "id": 220,
@@ -1221,7 +1221,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 30984,
+                                  "referencedDeclaration": 20125,
                                   "type": "msg",
                                   "value": "msg"
                                 },
@@ -1331,7 +1331,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 4764,
+                                  "referencedDeclaration": 4320,
                                   "type": "function (bytes32) view returns (address)",
                                   "value": "lookupManager"
                                 },
@@ -1379,7 +1379,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 30984,
+                                  "referencedDeclaration": 20125,
                                   "type": "msg",
                                   "value": "msg"
                                 },
@@ -1455,7 +1455,7 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "Storage",
-                          "referencedDeclaration": 11509,
+                          "referencedDeclaration": 11082,
                           "type": "contract Storage"
                         },
                         "id": 250,
@@ -1517,7 +1517,7 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 4511,
+                      "referencedDeclaration": 4222,
                       "type": "type(contract BaseManager)",
                       "value": "BaseManager"
                     },
@@ -1590,7 +1590,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 11763,
+                              "referencedDeclaration": 11336,
                               "type": "function (struct StorageInterface.Address storage pointer,bytes32)"
                             },
                             "children": [
@@ -1670,7 +1670,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 11763,
+                              "referencedDeclaration": 11336,
                               "type": "function (struct StorageInterface.Address storage pointer,bytes32)"
                             },
                             "children": [
@@ -1750,7 +1750,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 12019,
+                              "referencedDeclaration": 11592,
                               "type": "function (struct StorageInterface.AddressAddressMapping storage pointer,bytes32)"
                             },
                             "children": [
@@ -1830,7 +1830,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 12205,
+                              "referencedDeclaration": 11778,
                               "type": "function (struct StorageInterface.OrderedAddressesSet storage pointer,bytes32)"
                             },
                             "children": [
@@ -1910,7 +1910,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 12233,
+                              "referencedDeclaration": 11806,
                               "type": "function (struct StorageInterface.AddressesSetMapping storage pointer,bytes32)"
                             },
                             "children": [
@@ -1990,7 +1990,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 12219,
+                              "referencedDeclaration": 11792,
                               "type": "function (struct StorageInterface.Bytes32SetMapping storage pointer,bytes32)"
                             },
                             "children": [
@@ -2070,7 +2070,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 12233,
+                              "referencedDeclaration": 11806,
                               "type": "function (struct StorageInterface.AddressesSetMapping storage pointer,bytes32)"
                             },
                             "children": [
@@ -2274,7 +2274,7 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 4950,
+                      "referencedDeclaration": 4506,
                       "type": "modifier ()",
                       "value": "onlyContractOwner"
                     },
@@ -2323,7 +2323,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 4472,
+                              "referencedDeclaration": 4183,
                               "type": "function (address,bytes32) returns (uint256)"
                             },
                             "children": [
@@ -2333,7 +2333,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 4511,
+                                  "referencedDeclaration": 4222,
                                   "type": "type(contract BaseManager)",
                                   "value": "BaseManager"
                                 },
@@ -2518,7 +2518,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 4844,
+                          "referencedDeclaration": 4400,
                           "type": "uint256",
                           "value": "OK"
                         },
@@ -2627,7 +2627,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Address_$11549_storage",
+                                  "typeIdentifier": "t_struct$_Address_$11122_storage",
                                   "typeString": "struct StorageInterface.Address storage ref"
                                 }
                               ],
@@ -2636,7 +2636,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "get",
-                              "referencedDeclaration": 14334,
+                              "referencedDeclaration": 13907,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Address storage pointer) view returns (address)"
                             },
                             "children": [
@@ -2646,7 +2646,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -2785,7 +2785,7 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 4950,
+                      "referencedDeclaration": 4506,
                       "type": "modifier ()",
                       "value": "onlyContractOwner"
                     },
@@ -2828,7 +2828,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 30987,
+                              "referencedDeclaration": 20128,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -2918,7 +2918,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Address_$11549_storage",
+                                  "typeIdentifier": "t_struct$_Address_$11122_storage",
                                   "typeString": "struct StorageInterface.Address storage ref"
                                 },
                                 {
@@ -2931,7 +2931,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "set",
-                              "referencedDeclaration": 12409,
+                              "referencedDeclaration": 11982,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Address storage pointer,address)"
                             },
                             "children": [
@@ -2941,7 +2941,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -3003,7 +3003,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 4844,
+                          "referencedDeclaration": 4400,
                           "type": "uint256",
                           "value": "OK"
                         },
@@ -3112,7 +3112,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Address_$11549_storage",
+                                  "typeIdentifier": "t_struct$_Address_$11122_storage",
                                   "typeString": "struct StorageInterface.Address storage ref"
                                 }
                               ],
@@ -3121,7 +3121,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "get",
-                              "referencedDeclaration": 14334,
+                              "referencedDeclaration": 13907,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Address storage pointer) view returns (address)"
                             },
                             "children": [
@@ -3131,7 +3131,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -3270,7 +3270,7 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 4950,
+                      "referencedDeclaration": 4506,
                       "type": "modifier ()",
                       "value": "onlyContractOwner"
                     },
@@ -3313,7 +3313,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 30987,
+                              "referencedDeclaration": 20128,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -3403,7 +3403,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Address_$11549_storage",
+                                  "typeIdentifier": "t_struct$_Address_$11122_storage",
                                   "typeString": "struct StorageInterface.Address storage ref"
                                 },
                                 {
@@ -3416,7 +3416,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "set",
-                              "referencedDeclaration": 12409,
+                              "referencedDeclaration": 11982,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Address storage pointer,address)"
                             },
                             "children": [
@@ -3426,7 +3426,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -3488,7 +3488,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 4844,
+                          "referencedDeclaration": 4400,
                           "type": "uint256",
                           "value": "OK"
                         },
@@ -3619,7 +3619,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11645_storage",
+                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11218_storage",
                                   "typeString": "struct StorageInterface.OrderedAddressesSet storage ref"
                                 },
                                 {
@@ -3632,7 +3632,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "includes",
-                              "referencedDeclaration": 15164,
+                              "referencedDeclaration": 14737,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.OrderedAddressesSet storage pointer,address) view returns (bool)"
                             },
                             "children": [
@@ -3642,7 +3642,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -3712,7 +3712,7 @@
               "payable": false,
               "scope": 1250,
               "stateMutability": "nonpayable",
-              "superFunction": 8957,
+              "superFunction": 8518,
               "visibility": "public"
             },
             "children": [
@@ -3903,7 +3903,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 30978,
+                              "referencedDeclaration": 20119,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
@@ -3973,7 +3973,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                   "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                 },
                                 {
@@ -3990,7 +3990,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "includes",
-                              "referencedDeclaration": 15186,
+                              "referencedDeclaration": 14759,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32,bytes32) view returns (bool)"
                             },
                             "children": [
@@ -4000,7 +4000,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -4102,7 +4102,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
@@ -4119,7 +4119,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "add",
-                              "referencedDeclaration": 13496,
+                              "referencedDeclaration": 13069,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32,address)"
                             },
                             "children": [
@@ -4129,7 +4129,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -4254,7 +4254,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                   "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                 },
                                 {
@@ -4271,7 +4271,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "add",
-                              "referencedDeclaration": 13474,
+                              "referencedDeclaration": 13047,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32,bytes32)"
                             },
                             "children": [
@@ -4281,7 +4281,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -4367,7 +4367,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
@@ -4384,7 +4384,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "add",
-                              "referencedDeclaration": 13496,
+                              "referencedDeclaration": 13069,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32,address)"
                             },
                             "children": [
@@ -4394,7 +4394,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -4451,7 +4451,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 30978,
+                                  "referencedDeclaration": 20119,
                                   "type": "function () pure returns (bytes32)",
                                   "value": "keccak256"
                                 },
@@ -4535,7 +4535,7 @@
               "payable": false,
               "scope": 1250,
               "stateMutability": "nonpayable",
-              "superFunction": 8966,
+              "superFunction": 8527,
               "visibility": "public"
             },
             "children": [
@@ -4726,7 +4726,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 30978,
+                              "referencedDeclaration": 20119,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
@@ -4808,7 +4808,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                      "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                       "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                     },
                                     {
@@ -4825,7 +4825,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "includes",
-                                  "referencedDeclaration": 15186,
+                                  "referencedDeclaration": 14759,
                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32,bytes32) view returns (bool)"
                                 },
                                 "children": [
@@ -4835,7 +4835,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11516,
+                                      "referencedDeclaration": 11089,
                                       "type": "struct StorageInterface.Config storage ref",
                                       "value": "store"
                                     },
@@ -4942,7 +4942,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                   "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                 },
                                 {
@@ -4959,7 +4959,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "remove",
-                              "referencedDeclaration": 14121,
+                              "referencedDeclaration": 13694,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32,bytes32)"
                             },
                             "children": [
@@ -4969,7 +4969,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -5073,7 +5073,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                      "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                       "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                     },
                                     {
@@ -5086,7 +5086,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "count",
-                                  "referencedDeclaration": 15612,
+                                  "referencedDeclaration": 15185,
                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32) view returns (uint256)"
                                 },
                                 "children": [
@@ -5096,7 +5096,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11516,
+                                      "referencedDeclaration": 11089,
                                       "type": "struct StorageInterface.Config storage ref",
                                       "value": "store"
                                     },
@@ -5187,7 +5187,7 @@
                                     "attributes": {
                                       "argumentTypes": [
                                         {
-                                          "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                          "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                           "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                         },
                                         {
@@ -5204,7 +5204,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "remove",
-                                      "referencedDeclaration": 14143,
+                                      "referencedDeclaration": 13716,
                                       "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32,address)"
                                     },
                                     "children": [
@@ -5214,7 +5214,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 11516,
+                                          "referencedDeclaration": 11089,
                                           "type": "struct StorageInterface.Config storage ref",
                                           "value": "store"
                                         },
@@ -5349,7 +5349,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
@@ -5366,7 +5366,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "remove",
-                              "referencedDeclaration": 14143,
+                              "referencedDeclaration": 13716,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32,address)"
                             },
                             "children": [
@@ -5376,7 +5376,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -5433,7 +5433,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 30978,
+                                  "referencedDeclaration": 20119,
                                   "type": "function () pure returns (bytes32)",
                                   "value": "keccak256"
                                 },
@@ -5631,7 +5631,7 @@
                           "isPure": false,
                           "lValueRequested": false,
                           "member_name": "platform",
-                          "referencedDeclaration": 2924,
+                          "referencedDeclaration": 2635,
                           "type": "function () view external returns (address)"
                         },
                         "children": [
@@ -5661,7 +5661,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 2982,
+                                  "referencedDeclaration": 2693,
                                   "type": "type(contract TokenManagementInterface)",
                                   "value": "TokenManagementInterface"
                                 },
@@ -5729,7 +5729,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11645_storage",
+                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11218_storage",
                                   "typeString": "struct StorageInterface.OrderedAddressesSet storage ref"
                                 },
                                 {
@@ -5742,7 +5742,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "includes",
-                              "referencedDeclaration": 15164,
+                              "referencedDeclaration": 14737,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.OrderedAddressesSet storage pointer,address) view returns (bool)"
                             },
                             "children": [
@@ -5752,7 +5752,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -5934,7 +5934,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "platform",
-                              "referencedDeclaration": 2924,
+                              "referencedDeclaration": 2635,
                               "type": "function () view external returns (address)"
                             },
                             "children": [
@@ -5964,7 +5964,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 2982,
+                                      "referencedDeclaration": 2693,
                                       "type": "type(contract TokenManagementInterface)",
                                       "value": "TokenManagementInterface"
                                     },
@@ -6045,7 +6045,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_AddressAddressMapping_$11579_storage",
+                                      "typeIdentifier": "t_struct$_AddressAddressMapping_$11152_storage",
                                       "typeString": "struct StorageInterface.AddressAddressMapping storage ref"
                                     },
                                     {
@@ -6058,7 +6058,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "get",
-                                  "referencedDeclaration": 14762,
+                                  "referencedDeclaration": 14335,
                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressAddressMapping storage pointer,address) view returns (address)"
                                 },
                                 "children": [
@@ -6068,7 +6068,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11516,
+                                      "referencedDeclaration": 11089,
                                       "type": "struct StorageInterface.Config storage ref",
                                       "value": "store"
                                     },
@@ -6378,7 +6378,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 4844,
+                          "referencedDeclaration": 4400,
                           "type": "uint256",
                           "value": "OK"
                         },
@@ -6524,7 +6524,7 @@
                           "isPure": false,
                           "lValueRequested": false,
                           "member_name": "platform",
-                          "referencedDeclaration": 2924,
+                          "referencedDeclaration": 2635,
                           "type": "function () view external returns (address)"
                         },
                         "children": [
@@ -6554,7 +6554,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 2982,
+                                  "referencedDeclaration": 2693,
                                   "type": "type(contract TokenManagementInterface)",
                                   "value": "TokenManagementInterface"
                                 },
@@ -6634,7 +6634,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_OrderedAddressesSet_$11645_storage",
+                                      "typeIdentifier": "t_struct$_OrderedAddressesSet_$11218_storage",
                                       "typeString": "struct StorageInterface.OrderedAddressesSet storage ref"
                                     },
                                     {
@@ -6647,7 +6647,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "includes",
-                                  "referencedDeclaration": 15164,
+                                  "referencedDeclaration": 14737,
                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.OrderedAddressesSet storage pointer,address) view returns (bool)"
                                 },
                                 "children": [
@@ -6657,7 +6657,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11516,
+                                      "referencedDeclaration": 11089,
                                       "type": "struct StorageInterface.Config storage ref",
                                       "value": "store"
                                     },
@@ -6804,7 +6804,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11645_storage",
+                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11218_storage",
                                   "typeString": "struct StorageInterface.OrderedAddressesSet storage ref"
                                 },
                                 {
@@ -6817,7 +6817,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "remove",
-                              "referencedDeclaration": 14101,
+                              "referencedDeclaration": 13674,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.OrderedAddressesSet storage pointer,address)"
                             },
                             "children": [
@@ -6827,7 +6827,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -6899,7 +6899,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11579_storage",
+                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11152_storage",
                                   "typeString": "struct StorageInterface.AddressAddressMapping storage ref"
                                 },
                                 {
@@ -6916,7 +6916,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "set",
-                              "referencedDeclaration": 12892,
+                              "referencedDeclaration": 12465,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressAddressMapping storage pointer,address,address)"
                             },
                             "children": [
@@ -6926,7 +6926,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -6981,7 +6981,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "platform",
-                                  "referencedDeclaration": 2924,
+                                  "referencedDeclaration": 2635,
                                   "type": "function () view external returns (address)"
                                 },
                                 "children": [
@@ -7011,7 +7011,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 2982,
+                                          "referencedDeclaration": 2693,
                                           "type": "type(contract TokenManagementInterface)",
                                           "value": "TokenManagementInterface"
                                         },
@@ -7169,7 +7169,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 4492,
+                                          "referencedDeclaration": 4203,
                                           "type": "function () view returns (address)",
                                           "value": "getEventsHistory"
                                         },
@@ -7287,7 +7287,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 4844,
+                          "referencedDeclaration": 4400,
                           "type": "uint256",
                           "value": "OK"
                         },
@@ -7632,7 +7632,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 4844,
+                                  "referencedDeclaration": 4400,
                                   "type": "uint256",
                                   "value": "OK"
                                 },
@@ -7743,7 +7743,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_Address_$11549_storage",
+                                      "typeIdentifier": "t_struct$_Address_$11122_storage",
                                       "typeString": "struct StorageInterface.Address storage ref"
                                     }
                                   ],
@@ -7752,7 +7752,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "get",
-                                  "referencedDeclaration": 14334,
+                                  "referencedDeclaration": 13907,
                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Address storage pointer) view returns (address)"
                                 },
                                 "children": [
@@ -7762,7 +7762,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11516,
+                                      "referencedDeclaration": 11089,
                                       "type": "struct StorageInterface.Config storage ref",
                                       "value": "store"
                                     },
@@ -8078,7 +8078,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 4844,
+                          "referencedDeclaration": 4400,
                           "type": "uint256",
                           "value": "OK"
                         },
@@ -8209,7 +8209,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11579_storage",
+                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11152_storage",
                                   "typeString": "struct StorageInterface.AddressAddressMapping storage ref"
                                 },
                                 {
@@ -8222,7 +8222,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "get",
-                              "referencedDeclaration": 14762,
+                              "referencedDeclaration": 14335,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressAddressMapping storage pointer,address) view returns (address)"
                             },
                             "children": [
@@ -8232,7 +8232,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -8427,11 +8427,11 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Config_$11540_storage",
+                                  "typeIdentifier": "t_struct$_Config_$11113_storage",
                                   "typeString": "struct StorageInterface.Config storage ref"
                                 },
                                 {
-                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11579_storage",
+                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11152_storage",
                                   "typeString": "struct StorageInterface.AddressAddressMapping storage ref"
                                 },
                                 {
@@ -8452,7 +8452,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "isAssetOwner",
-                              "referencedDeclaration": 6921,
+                              "referencedDeclaration": 6482,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressAddressMapping storage pointer,bytes32,address,address) view returns (bool)"
                             },
                             "children": [
@@ -8462,7 +8462,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 7393,
+                                  "referencedDeclaration": 6954,
                                   "type": "type(library AssetsManagerAggregations)",
                                   "value": "AssetsManagerAggregations"
                                 },
@@ -8481,7 +8481,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 11516,
+                              "referencedDeclaration": 11089,
                               "type": "struct StorageInterface.Config storage ref",
                               "value": "store"
                             },
@@ -8915,7 +8915,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "getTokenAddressBySymbol",
-                              "referencedDeclaration": 6713,
+                              "referencedDeclaration": 6274,
                               "type": "function (bytes32) view external returns (address)"
                             },
                             "children": [
@@ -8945,7 +8945,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 6745,
+                                      "referencedDeclaration": 6306,
                                       "type": "type(contract ERC20ManagerInterface)",
                                       "value": "ERC20ManagerInterface"
                                     },
@@ -8979,7 +8979,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 4764,
+                                          "referencedDeclaration": 4320,
                                           "type": "function (bytes32) view returns (address)",
                                           "value": "lookupManager"
                                         },
@@ -9171,7 +9171,7 @@
                             "attributes": {
                               "contractScope": null,
                               "name": "PlatformsManagerInterface",
-                              "referencedDeclaration": 2798,
+                              "referencedDeclaration": 2539,
                               "type": "contract PlatformsManagerInterface"
                             },
                             "id": 791,
@@ -9209,7 +9209,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2798,
+                              "referencedDeclaration": 2539,
                               "type": "type(contract PlatformsManagerInterface)",
                               "value": "PlatformsManagerInterface"
                             },
@@ -9243,7 +9243,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 4764,
+                                  "referencedDeclaration": 4320,
                                   "type": "function (bytes32) view returns (address)",
                                   "value": "lookupManager"
                                 },
@@ -9335,7 +9335,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
@@ -9348,7 +9348,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "count",
-                              "referencedDeclaration": 15631,
+                              "referencedDeclaration": 15204,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32) view returns (uint256)"
                             },
                             "children": [
@@ -9358,7 +9358,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -9573,7 +9573,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "getPlatformsForUserCount",
-                                          "referencedDeclaration": 2782,
+                                          "referencedDeclaration": 2523,
                                           "type": "function (address) view external returns (uint256)"
                                         },
                                         "children": [
@@ -9907,7 +9907,7 @@
                                         "attributes": {
                                           "argumentTypes": [
                                             {
-                                              "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                              "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                               "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                             },
                                             {
@@ -9924,7 +9924,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "get",
-                                          "referencedDeclaration": 16013,
+                                          "referencedDeclaration": 15586,
                                           "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32,uint256) view returns (address)"
                                         },
                                         "children": [
@@ -9934,7 +9934,7 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 11516,
+                                              "referencedDeclaration": 11089,
                                               "type": "struct StorageInterface.Config storage ref",
                                               "value": "store"
                                             },
@@ -10303,7 +10303,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "getPlatformForUserAtIndex",
-                                          "referencedDeclaration": 2775,
+                                          "referencedDeclaration": 2516,
                                           "type": "function (address,uint256) view external returns (address)"
                                         },
                                         "children": [
@@ -10553,7 +10553,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "getAssetsForOwnerCount",
-                              "referencedDeclaration": 7063,
+                              "referencedDeclaration": 6624,
                               "type": "function (address,address) view returns (uint256)"
                             },
                             "children": [
@@ -10563,7 +10563,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 7393,
+                                  "referencedDeclaration": 6954,
                                   "type": "type(library AssetsManagerAggregations)",
                                   "value": "AssetsManagerAggregations"
                                 },
@@ -10840,7 +10840,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "getAssetForOwnerAtIndex",
-                              "referencedDeclaration": 6998,
+                              "referencedDeclaration": 6559,
                               "type": "function (address,address,uint256) view returns (bytes32)"
                             },
                             "children": [
@@ -10850,7 +10850,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 7393,
+                                  "referencedDeclaration": 6954,
                                   "type": "type(library AssetsManagerAggregations)",
                                   "value": "AssetsManagerAggregations"
                                 },
@@ -11072,15 +11072,15 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Config_$11540_storage",
+                                  "typeIdentifier": "t_struct$_Config_$11113_storage",
                                   "typeString": "struct StorageInterface.Config storage ref"
                                 },
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
-                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                  "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                   "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                 },
                                 {
@@ -11093,7 +11093,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "getSystemAssetsForOwnerCount",
-                              "referencedDeclaration": 7119,
+                              "referencedDeclaration": 6680,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,address) view returns (uint256)"
                             },
                             "children": [
@@ -11103,7 +11103,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 7393,
+                                  "referencedDeclaration": 6954,
                                   "type": "type(library AssetsManagerAggregations)",
                                   "value": "AssetsManagerAggregations"
                                 },
@@ -11122,7 +11122,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 11516,
+                              "referencedDeclaration": 11089,
                               "type": "struct StorageInterface.Config storage ref",
                               "value": "store"
                             },
@@ -11928,7 +11928,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
@@ -11941,7 +11941,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "count",
-                              "referencedDeclaration": 15631,
+                              "referencedDeclaration": 15204,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32) view returns (uint256)"
                             },
                             "children": [
@@ -11951,7 +11951,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -12310,7 +12310,7 @@
                                         "attributes": {
                                           "argumentTypes": [
                                             {
-                                              "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                              "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                               "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                             },
                                             {
@@ -12327,7 +12327,7 @@
                                           "isPure": false,
                                           "lValueRequested": false,
                                           "member_name": "get",
-                                          "referencedDeclaration": 16013,
+                                          "referencedDeclaration": 15586,
                                           "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32,uint256) view returns (address)"
                                         },
                                         "children": [
@@ -12337,7 +12337,7 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 11516,
+                                              "referencedDeclaration": 11089,
                                               "type": "struct StorageInterface.Config storage ref",
                                               "value": "store"
                                             },
@@ -12430,7 +12430,7 @@
                                     "attributes": {
                                       "contractScope": null,
                                       "name": "ChronoBankPlatformInterface",
-                                      "referencedDeclaration": 11232,
+                                      "referencedDeclaration": 10793,
                                       "type": "contract ChronoBankPlatformInterface"
                                     },
                                     "id": 1016,
@@ -12468,7 +12468,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11232,
+                                      "referencedDeclaration": 10793,
                                       "type": "type(contract ChronoBankPlatformInterface)",
                                       "value": "ChronoBankPlatformInterface"
                                     },
@@ -12557,7 +12557,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 30978,
+                                          "referencedDeclaration": 20119,
                                           "type": "function () pure returns (bytes32)",
                                           "value": "keccak256"
                                         },
@@ -12660,7 +12660,7 @@
                                     "attributes": {
                                       "argumentTypes": [
                                         {
-                                          "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                          "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                           "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                         },
                                         {
@@ -12673,7 +12673,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "count",
-                                      "referencedDeclaration": 15612,
+                                      "referencedDeclaration": 15185,
                                       "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32) view returns (uint256)"
                                     },
                                     "children": [
@@ -12683,7 +12683,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 11516,
+                                          "referencedDeclaration": 11089,
                                           "type": "struct StorageInterface.Config storage ref",
                                           "value": "store"
                                         },
@@ -13112,7 +13112,7 @@
                                                 "attributes": {
                                                   "argumentTypes": [
                                                     {
-                                                      "typeIdentifier": "t_struct$_Bytes32SetMapping_$11648_storage",
+                                                      "typeIdentifier": "t_struct$_Bytes32SetMapping_$11221_storage",
                                                       "typeString": "struct StorageInterface.Bytes32SetMapping storage ref"
                                                     },
                                                     {
@@ -13129,7 +13129,7 @@
                                                   "isPure": false,
                                                   "lValueRequested": false,
                                                   "member_name": "get",
-                                                  "referencedDeclaration": 15989,
+                                                  "referencedDeclaration": 15562,
                                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.Bytes32SetMapping storage pointer,bytes32,uint256) view returns (bytes32)"
                                                 },
                                                 "children": [
@@ -13139,7 +13139,7 @@
                                                       "overloadedDeclarations": [
                                                         null
                                                       ],
-                                                      "referencedDeclaration": 11516,
+                                                      "referencedDeclaration": 11089,
                                                       "type": "struct StorageInterface.Config storage ref",
                                                       "value": "store"
                                                     },
@@ -13293,7 +13293,7 @@
                                                   "isPure": false,
                                                   "lValueRequested": false,
                                                   "member_name": "proxies",
-                                                  "referencedDeclaration": 11031,
+                                                  "referencedDeclaration": 10592,
                                                   "type": "function (bytes32) view external returns (address)"
                                                 },
                                                 "children": [
@@ -13429,7 +13429,7 @@
                                                   "isPure": false,
                                                   "lValueRequested": false,
                                                   "member_name": "totalSupply",
-                                                  "referencedDeclaration": 11089,
+                                                  "referencedDeclaration": 10650,
                                                   "type": "function (bytes32) external returns (uint256)"
                                                 },
                                                 "children": [
@@ -13812,7 +13812,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "chronoBankPlatform",
-                              "referencedDeclaration": 8545,
+                              "referencedDeclaration": 8106,
                               "type": "function () view external returns (address)"
                             },
                             "children": [
@@ -13842,7 +13842,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 8606,
+                                      "referencedDeclaration": 8167,
                                       "type": "type(contract ChronoBankAssetProxyInterface)",
                                       "value": "ChronoBankAssetProxyInterface"
                                     },
@@ -13930,7 +13930,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                      "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                       "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                     },
                                     {
@@ -13943,7 +13943,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "get",
-                                  "referencedDeclaration": 15858,
+                                  "referencedDeclaration": 15431,
                                   "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,bytes32) view returns (address[] memory)"
                                 },
                                 "children": [
@@ -13953,7 +13953,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 11516,
+                                      "referencedDeclaration": 11089,
                                       "type": "struct StorageInterface.Config storage ref",
                                       "value": "store"
                                     },
@@ -14010,7 +14010,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 30978,
+                                      "referencedDeclaration": 20119,
                                       "type": "function () pure returns (bytes32)",
                                       "value": "keccak256"
                                     },
@@ -14195,11 +14195,11 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_Config_$11540_storage",
+                                  "typeIdentifier": "t_struct$_Config_$11113_storage",
                                   "typeString": "struct StorageInterface.Config storage ref"
                                 },
                                 {
-                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11651_storage",
+                                  "typeIdentifier": "t_struct$_AddressesSetMapping_$11224_storage",
                                   "typeString": "struct StorageInterface.AddressesSetMapping storage ref"
                                 },
                                 {
@@ -14216,7 +14216,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "getManagers",
-                              "referencedDeclaration": 7203,
+                              "referencedDeclaration": 6764,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressesSetMapping storage pointer,address,address) view returns (address[] memory)"
                             },
                             "children": [
@@ -14226,7 +14226,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 7393,
+                                  "referencedDeclaration": 6954,
                                   "type": "type(library AssetsManagerAggregations)",
                                   "value": "AssetsManagerAggregations"
                                 },
@@ -14245,7 +14245,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 11516,
+                              "referencedDeclaration": 11089,
                               "type": "struct StorageInterface.Config storage ref",
                               "value": "store"
                             },
@@ -14293,7 +14293,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 4764,
+                                  "referencedDeclaration": 4320,
                                   "type": "function (bytes32) view returns (address)",
                                   "value": "lookupManager"
                                 },
@@ -14473,7 +14473,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 30975,
+                              "referencedDeclaration": 20116,
                               "type": "function (bool) pure",
                               "value": "assert"
                             },
@@ -14573,7 +14573,7 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 4492,
+                                              "referencedDeclaration": 4203,
                                               "type": "function () view returns (address)",
                                               "value": "getEventsHistory"
                                             },
@@ -14646,7 +14646,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11645_storage",
+                                  "typeIdentifier": "t_struct$_OrderedAddressesSet_$11218_storage",
                                   "typeString": "struct StorageInterface.OrderedAddressesSet storage ref"
                                 },
                                 {
@@ -14659,7 +14659,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "add",
-                              "referencedDeclaration": 13620,
+                              "referencedDeclaration": 13193,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.OrderedAddressesSet storage pointer,address)"
                             },
                             "children": [
@@ -14669,7 +14669,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -14741,7 +14741,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11579_storage",
+                                  "typeIdentifier": "t_struct$_AddressAddressMapping_$11152_storage",
                                   "typeString": "struct StorageInterface.AddressAddressMapping storage ref"
                                 },
                                 {
@@ -14758,7 +14758,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "set",
-                              "referencedDeclaration": 12892,
+                              "referencedDeclaration": 12465,
                               "type": "function (struct StorageInterface.Config storage pointer,struct StorageInterface.AddressAddressMapping storage pointer,address,address)"
                             },
                             "children": [
@@ -14768,7 +14768,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11516,
+                                  "referencedDeclaration": 11089,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
@@ -15021,7 +15021,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 4492,
+                                          "referencedDeclaration": 4203,
                                           "type": "function () view returns (address)",
                                           "value": "getEventsHistory"
                                         },
@@ -15288,7 +15288,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 4492,
+                                          "referencedDeclaration": 4203,
                                           "type": "function () view returns (address)",
                                           "value": "getEventsHistory"
                                         },
@@ -15545,7 +15545,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 4492,
+                                          "referencedDeclaration": 4203,
                                           "type": "function () view returns (address)",
                                           "value": "getEventsHistory"
                                         },
@@ -15772,7 +15772,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 4492,
+                                          "referencedDeclaration": 4203,
                                           "type": "function () view returns (address)",
                                           "value": "getEventsHistory"
                                         },
@@ -15845,5 +15845,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-11T12:14:44.304Z"
+  "updatedAt": "2017-12-21T11:40:36.720Z"
 }

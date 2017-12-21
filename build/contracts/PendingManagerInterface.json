@@ -44,7 +44,7 @@
       "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/pending/PendingManagerInterface.sol",
       "exportedSymbols": {
         "PendingManagerInterface": [
-          11223
+          19001
         ]
       }
     },
@@ -58,9 +58,9 @@
             ".11"
           ]
         },
-        "id": 11209,
+        "id": 18987,
         "name": "PragmaDirective",
-        "src": "0:24:31"
+        "src": "0:24:50"
       },
       {
         "attributes": {
@@ -74,10 +74,10 @@
           "documentation": null,
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            11223
+            19001
           ],
           "name": "PendingManagerInterface",
-          "scope": 11224
+          "scope": 19002
         },
         "children": [
           {
@@ -91,7 +91,7 @@
               ],
               "name": "addTx",
               "payable": false,
-              "scope": 11223,
+              "scope": 19001,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -103,7 +103,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_hash",
-                      "scope": 11222,
+                      "scope": 19000,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32",
@@ -116,20 +116,20 @@
                           "name": "bytes32",
                           "type": "bytes32"
                         },
-                        "id": 11210,
+                        "id": 18988,
                         "name": "ElementaryTypeName",
-                        "src": "80:7:31"
+                        "src": "80:7:50"
                       }
                     ],
-                    "id": 11211,
+                    "id": 18989,
                     "name": "VariableDeclaration",
-                    "src": "80:13:31"
+                    "src": "80:13:50"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_data",
-                      "scope": 11222,
+                      "scope": 19000,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes memory",
@@ -142,20 +142,20 @@
                           "name": "bytes",
                           "type": "bytes storage pointer"
                         },
-                        "id": 11212,
+                        "id": 18990,
                         "name": "ElementaryTypeName",
-                        "src": "95:5:31"
+                        "src": "95:5:50"
                       }
                     ],
-                    "id": 11213,
+                    "id": 18991,
                     "name": "VariableDeclaration",
-                    "src": "95:11:31"
+                    "src": "95:11:50"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_to",
-                      "scope": 11222,
+                      "scope": 19000,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -168,20 +168,20 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 11214,
+                        "id": 18992,
                         "name": "ElementaryTypeName",
-                        "src": "108:7:31"
+                        "src": "108:7:50"
                       }
                     ],
-                    "id": 11215,
+                    "id": 18993,
                     "name": "VariableDeclaration",
-                    "src": "108:11:31"
+                    "src": "108:11:50"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_sender",
-                      "scope": 11222,
+                      "scope": 19000,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -194,19 +194,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 11216,
+                        "id": 18994,
                         "name": "ElementaryTypeName",
-                        "src": "121:7:31"
+                        "src": "121:7:50"
                       }
                     ],
-                    "id": 11217,
+                    "id": 18995,
                     "name": "VariableDeclaration",
-                    "src": "121:15:31"
+                    "src": "121:15:50"
                   }
                 ],
-                "id": 11218,
+                "id": 18996,
                 "name": "ParameterList",
-                "src": "79:58:31"
+                "src": "79:58:50"
               },
               {
                 "children": [
@@ -214,7 +214,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 11222,
+                      "scope": 19000,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -227,34 +227,34 @@
                           "name": "uint",
                           "type": "uint256"
                         },
-                        "id": 11219,
+                        "id": 18997,
                         "name": "ElementaryTypeName",
-                        "src": "147:4:31"
+                        "src": "147:4:50"
                       }
                     ],
-                    "id": 11220,
+                    "id": 18998,
                     "name": "VariableDeclaration",
-                    "src": "147:4:31"
+                    "src": "147:4:50"
                   }
                 ],
-                "id": 11221,
+                "id": 18999,
                 "name": "ParameterList",
-                "src": "146:6:31"
+                "src": "146:6:50"
               }
             ],
-            "id": 11222,
+            "id": 19000,
             "name": "FunctionDefinition",
-            "src": "65:88:31"
+            "src": "65:88:50"
           }
         ],
-        "id": 11223,
+        "id": 19001,
         "name": "ContractDefinition",
-        "src": "26:129:31"
+        "src": "26:129:50"
       }
     ],
-    "id": 11224,
+    "id": 19002,
     "name": "SourceUnit",
-    "src": "0:156:31"
+    "src": "0:156:50"
   },
   "compiler": {
     "name": "solc",
@@ -262,5 +262,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-15T14:09:24.805Z"
+  "updatedAt": "2017-12-21T11:40:37.132Z"
 }

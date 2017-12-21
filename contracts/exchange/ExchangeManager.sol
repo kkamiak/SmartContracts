@@ -83,22 +83,18 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
     function createExchange(
         bytes32 _symbol,
         uint _buyPrice,
-        uint _buyDecimals,
         uint _sellPrice,
-        uint _sellDecimals,
         address _authorizedManager,
         bool _isActive)
     public
     returns (uint errorCode) {
-        return _createExchange(_symbol, _buyPrice, _buyDecimals, _sellPrice, _sellDecimals, _authorizedManager, _isActive, [uint(0)]);
+        return _createExchange(_symbol, _buyPrice, _sellPrice, _authorizedManager, _isActive, [uint(0)]);
     }
 
     function _createExchange(
         bytes32 _symbol,
         uint _buyPrice,
-        uint _buyDecimals,
         uint _sellPrice,
-        uint _sellDecimals,
         address _authorizedManager,
         bool _isActive,
         uint[1] memory _result)
@@ -117,7 +113,7 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
         }
 
         Exchange exchange = Exchange(getExchangeFactory().createExchange());
-        
+
         if (!MultiEventsHistory(getEventsHistory()).authorize(exchange)) {
             revert();
         }
@@ -125,7 +121,7 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
         exchange.init(contractsManager, token, rewards, getFee());
 
         if (_buyPrice > 0 && _sellPrice > 0) {
-            if (exchange.setPrices(_buyPrice, _buyDecimals, _sellPrice, _sellDecimals) != OK) {
+            if (exchange.setPrices(_buyPrice, _sellPrice) != OK) {
                 revert();
             }
         }
@@ -216,17 +212,13 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
     view
     returns (bytes32 [] symbols,
              uint [] buyPrices,
-             uint [] buyDecimals,
              uint [] sellPrices,
-             uint [] sellDecimals,
              uint [] assetBalances,
              uint [] ethBalances)
     {
         symbols = new bytes32 [] (_exchanges.length);
         buyPrices = new uint [] (_exchanges.length);
-        buyDecimals = new uint [] (_exchanges.length);
         sellPrices = new uint [] (_exchanges.length);
-        sellDecimals = new uint [] (_exchanges.length);
         assetBalances = new uint [] (_exchanges.length);
         ethBalances = new uint [] (_exchanges.length);
 
@@ -235,8 +227,8 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
                 Exchange exchange = Exchange(_exchanges[idx]);
 
                 symbols[idx] = getSymbol(address(exchange.asset()));
-                (buyPrices[idx], buyDecimals[idx]) = exchange.getBuyPrice();
-                (sellPrices[idx], sellDecimals[idx]) = exchange.getSellPrice();
+                buyPrices[idx] = exchange.buyPrice();
+                sellPrices[idx] = exchange.sellPrice();
                 assetBalances[idx] = exchange.assetBalance();
                 ethBalances[idx] = exchange.balance;
             }

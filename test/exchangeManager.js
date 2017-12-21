@@ -28,10 +28,10 @@ contract('Exchange Manager', function(accounts) {
   })
 
   it("should allow to create a new exchange", async () => {
-    let result = await Setup.exchangeManager.createExchange.call(SYMBOL, 1, 0, 2, 0, manager, true);
+    let result = await Setup.exchangeManager.createExchange.call(SYMBOL, 1, 2, manager, true);
     assert.equal(result, ErrorsEnum.OK);
 
-    let createExchangeTx = await Setup.exchangeManager.createExchange(SYMBOL, 1, 0, 2, 0, manager, true);
+    let createExchangeTx = await Setup.exchangeManager.createExchange(SYMBOL, 1, 2, manager, true);
 
     let events = eventsHelper.extractEvents(createExchangeTx, "ExchangeCreated");
     assert.equal(events.length, 1);
@@ -47,7 +47,7 @@ contract('Exchange Manager', function(accounts) {
   });
 
   it("should cleanup an exchange info after Exchange#kill() execution", async () => {
-    let createExchangeTx = await Setup.exchangeManager.createExchange(SYMBOL, 1, 0, 2, 0, 0x0, false);
+    let createExchangeTx = await Setup.exchangeManager.createExchange(SYMBOL, 1, 2, 0x0, false);
 
     let events = eventsHelper.extractEvents(createExchangeTx, "ExchangeCreated");
     assert.equal(events.length, 1);

@@ -18,6 +18,11 @@
       ]
     ]
   },
+  "standard-version": {
+    "skip": {
+      "bump": true
+    }
+  },
   "author": "Mike Fluff <mf@mikefluff.com> (http://mikefluff.com)",
   "license": "GPLv3",
   "dependencies": {

@@ -22,6 +22,8 @@ contract("FeatureFeeManager", function(accounts) {
     let timeHolder3 = accounts[4];
     let timeHolder4 = accounts[5];
 
+    let owner = accounts[0];
+
     const CreateWalletFeatureRequiredBalance = 2;
     const CreateWalletFeatureFee = 1;
 
@@ -93,6 +95,53 @@ contract("FeatureFeeManager", function(accounts) {
         .then(events => assert.equal(events.length, 0))
         .then(() => timeHolder.depositBalance.call(timeHolder4))
         .then(_balance => assert.equal(holderBalance.toNumber(), _balance.toNumber()))
+    })
+
+    it("should allow to execute ExchangeManager#createExchnage() account with deposit > feature_price",  async () => {
+        const CreateExchangeFeatureRequiredBalance = 2;
+        const CreateExchangeFeatureFee = 1;
+
+        let sig = Setup.exchangeManager.contract.createExchange.getData("",0,0, 0x0, false).slice(0, 10);
+        await featureFeeManager.setFeatureFee(Setup.exchangeManager.address, sig, CreateExchangeFeatureRequiredBalance, CreateExchangeFeatureFee);
+
+        let holderBalance = await timeHolder.depositBalance.call(timeHolder1);
+        assert.isTrue(holderBalance >= CreateExchangeFeatureRequiredBalance);
+        assert.isTrue(holderBalance >= CreateExchangeFeatureFee);
+
+        let feeWalletBalance = await TIME.balanceOf(feeHolderWallet);
+
+        let result = await Setup.exchangeManager.createExchange.call("TIME", 1, 2, owner, true, {from: timeHolder1});
+        assert.equal(result, ErrorsEnum.OK);
+
+        let createExchangeTx = await Setup.exchangeManager.createExchange("TIME", 1, 2, owner, true, {from: timeHolder1});
+
+        let events = eventsHelper.extractEvents(createExchangeTx, "ExchangeCreated");
+        assert.equal(events.length, 1);
+
+        assert.equal(web3.toBigNumber(holderBalance).sub(CreateExchangeFeatureFee).cmp(await timeHolder.depositBalance.call(timeHolder1)), 0);
+        assert.equal(web3.toBigNumber(feeWalletBalance).add(CreateExchangeFeatureFee).cmp(await TIME.balanceOf(feeHolderWallet)), 0);
+    })
+
+    it("should not allow to execute ExchangeManager#createExchnage() account with deposit < feature_price",  async () => {
+        const CreateExchangeFeatureRequiredBalance = 2;
+        const CreateExchangeFeatureFee = 1;
+
+        let sig = Setup.exchangeManager.contract.createExchange.getData("",0,0, 0x0, false).slice(0, 10);
+        await featureFeeManager.setFeatureFee(Setup.exchangeManager.address, sig, CreateExchangeFeatureRequiredBalance, CreateExchangeFeatureFee);
+
+        let holderBalance = await timeHolder.depositBalance.call(timeHolder4);
+        assert.isTrue(holderBalance < CreateExchangeFeatureRequiredBalance);
+        assert.isTrue(holderBalance < CreateExchangeFeatureFee);
+
+        let feeWalletBalance = await TIME.balanceOf(feeHolderWallet);
+
+        let result = await Setup.exchangeManager.createExchange.call("TIME", 1, 2, owner, true, {from: timeHolder4});
+        assert.equal(result, ErrorsEnum.FEATURE_IS_UNAVAILABE);
+
+        let createExchangeTx = await Setup.exchangeManager.createExchange("TIME", 1, 2, owner, true, {from: timeHolder4});
+
+        assert.equal(web3.toBigNumber(holderBalance).cmp(await timeHolder.depositBalance.call(timeHolder4)), 0);
+        assert.equal(web3.toBigNumber(feeWalletBalance).cmp(await TIME.balanceOf(feeHolderWallet)), 0);
     })
 
     it("should allow to execute TokenManagementInterface#createAssetWithoutFee() account with deposit > feature_price")

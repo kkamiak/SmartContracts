@@ -4,11 +4,13 @@ import "../core/common/Object.sol";
 import "../core/lib/SafeMath.sol";
 import {ERC20Interface as Asset} from "../core/erc20/ERC20Interface.sol";
 import "../core/contracts/ContractsManager.sol";
+import "../core/erc20/ERC20Manager.sol";
+import "../priceticker/PriceTicker.sol";
 
 contract ExchangeEmitter {
     function emitError(uint errorCode) public returns (uint);
     function emitFeeUpdated(address rewards, uint feePercent, address by) public;
-    function emitPricesUpdated(uint buyPrice, uint sellPrice, address by) public;
+    function emitPricesUpdated(uint buyPrice, uint sellPrice, bool usePriceTicker, address by) public;
     function emitActiveChanged(bool isActive, address by) public;
     function emitBuy(address who, uint token, uint eth) public;
     function emitSell(address who, uint token, uint eth) public;
@@ -48,16 +50,18 @@ contract Exchange is Object {
     Asset public asset;
     //Switch for turn on and off the exchange operations
     bool public isActive;
-    /// Price in wei at which exchange buys tokens.
-    uint public buyPrice;
-    /// Price in wei at which exchange sells tokens.
-    uint public sellPrice;
     /// Fee wallet
     address public rewards;
     /// Fee value for operations 10000 is 0.01.
     uint public feePercent;
     /// Authorized price managers
     mapping (address => bool) authorized;
+    /// Use external (system provided) price ticker
+    bool public usePriceTicker = false;
+    /// Price in wei at which exchange buys tokens.
+    uint staticBuyPrice;
+    /// Price in wei at which exchange sells tokens.
+    uint staticSellPrice;
 
     /// User sold tokens and received wei.
     event ExchangeSell(address indexed exchange, address indexed who, uint token, uint eth);
@@ -72,7 +76,7 @@ contract Exchange is Object {
     /// On Fee updated
     event ExchangeFeeUpdated(address indexed exchange, address rewards, uint feeValue, address indexed by);
     /// On prices updated
-    event ExchangePricesUpdated(address indexed exchange, uint buyPrice, uint sellPrice, address indexed by);
+    event ExchangePricesUpdated(address indexed exchange, uint buyPrice, uint sellPrice, bool usePriceTicker, address indexed by);
     /// On state changed
     event ExchangeActiveChanged(address indexed exchange, bool isActive, address indexed by);
     /// On error
@@ -154,11 +158,14 @@ contract Exchange is Object {
     ///
     /// Can be set only by contract owner.
     ///
-    /// @param _buyPrice price in wei at which exchange buys tokens.
+    /// @param _buyPrice price in wei at which exchange buys tokens
+    ///                  or but price coeff if price ticker is enabled
     /// @param _sellPrice price in wei at which exchange sells tokens.
+    ///                  or sell price coeff if price ticker is enabled
+    /// @param _usePriceTicker force use prices from external price ticker
     ///
     /// @return OK if success.
-    function setPrices(uint _buyPrice, uint _sellPrice)
+    function setPrices(uint _buyPrice, uint _sellPrice, bool _usePriceTicker)
     public
     onlyAuthorized
     returns (uint)
@@ -166,15 +173,19 @@ contract Exchange is Object {
         // buy price <= sell price
         require(_buyPrice <= _sellPrice);
 
-        if (buyPrice != _buyPrice ) {
-            buyPrice = _buyPrice;
+        if (staticBuyPrice != _buyPrice ) {
+            staticBuyPrice = _buyPrice;
         }
 
-        if (sellPrice != _sellPrice) {
-            sellPrice = _sellPrice;
+        if (staticSellPrice != _sellPrice) {
+            staticSellPrice = _sellPrice;
         }
 
-        _emitPricesUpdated(buyPrice, sellPrice, msg.sender);
+        if (_usePriceTicker != usePriceTicker) {
+            usePriceTicker = _usePriceTicker;
+        }
+
+        _emitPricesUpdated(staticBuyPrice, staticSellPrice, usePriceTicker, msg.sender);
         return OK;
     }
 
@@ -201,6 +212,44 @@ contract Exchange is Object {
         return _balanceOf(this);
     }
 
+    /// @notice Returns the sell price
+    /// @return sell price
+    function sellPrice() public view returns (uint) {
+        if (!usePriceTicker) {
+            return staticSellPrice;
+        } else {
+            return getPriceTickerPrice().mul(staticSellPrice) / 10000;
+        }
+    }
+
+    /// @notice Returns the buy price
+    /// @return buy price
+    function buyPrice() public view returns (uint) {
+        if (!usePriceTicker) {
+            return staticBuyPrice;
+        } else {
+            return getPriceTickerPrice().mul(staticBuyPrice) / 10000;
+        }
+    }
+
+    /// @notice Returns price fetched from external price ticker
+    function getPriceTickerPrice() public view returns (uint price) {
+        PriceProvider priceProvider = PriceProvider(lookupManager("PriceManager"));
+        if (!priceProvider.isPriceAvailable(getTokenSymbol(), "ETH")) {
+            revert();
+        }
+        price = priceProvider.price(getTokenSymbol(), "ETH");
+        require(price > 0);
+    }
+
+    /// @notice Returns symbol of the asset
+    /// @return symbol
+    function getTokenSymbol() public view returns (bytes32) {
+        var (,,symbol,,,,) = ERC20Manager(lookupManager("ERC20Manager"))
+                                        .getTokenMetaData(address(asset));
+        return symbol;
+    }
+
     /// @notice Returns assigned token address balance.
     ///
     /// @param _address address to get balance.
@@ -224,7 +273,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_MAINTENANCE_MODE);
         }
 
-        if (_price != buyPrice) {
+        if (_price != buyPrice()) {
             return _emitError(ERROR_EXCHANGE_INVALID_PRICE);
         }
 
@@ -232,7 +281,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_BALANCE);
         }
 
-        uint total = _amount.mul(buyPrice) / (10 ** uint(asset.decimals()));
+        uint total = _amount.mul(buyPrice()) / (10 ** uint(asset.decimals()));
         if (this.balance < total) {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_ETHER_SUPPLY);
         }
@@ -262,7 +311,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_MAINTENANCE_MODE);
         }
 
-        if (_price != sellPrice) {
+        if (_price != sellPrice()) {
             return _emitError(ERROR_EXCHANGE_INVALID_PRICE);
         }
 
@@ -270,7 +319,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_BALANCE);
         }
 
-        uint total = _amount.mul(sellPrice) / (10 ** uint(asset.decimals()));
+        uint total = _amount.mul(sellPrice()) / (10 ** uint(asset.decimals()));
         if (msg.value != total) {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_ETHER_SUPPLY);
         }
@@ -443,8 +492,8 @@ contract Exchange is Object {
         getEventsHistory().emitFeeUpdated(_rewards, _feePercent, _by);
     }
 
-    function _emitPricesUpdated(uint _buyPrice, uint _sellPrice, address _by) internal {
-        getEventsHistory().emitPricesUpdated(_buyPrice, _sellPrice, _by);
+    function _emitPricesUpdated(uint _buyPrice, uint _sellPrice, bool _usePriceTicker, address _by) internal {
+        getEventsHistory().emitPricesUpdated(_buyPrice, _sellPrice, _usePriceTicker, _by);
     }
 
     function _emitActiveChanged(bool _isActive, address _by) internal {
@@ -482,8 +531,8 @@ contract Exchange is Object {
         ExchangeFeeUpdated(msg.sender, _rewards, _feePercent, _by);
     }
 
-    function emitPricesUpdated(uint _buyPrice, uint _sellPrice, address _by) public {
-        ExchangePricesUpdated(msg.sender, _buyPrice, _sellPrice, _by);
+    function emitPricesUpdated(uint _buyPrice, uint _sellPrice, bool _usePriceTicker, address _by) public {
+        ExchangePricesUpdated(msg.sender, _buyPrice, _sellPrice, _usePriceTicker, _by);
     }
 
     function emitActiveChanged(bool _isActive, address _by) public {

@@ -84,17 +84,19 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
         bytes32 _symbol,
         uint _buyPrice,
         uint _sellPrice,
+        bool _useExternalPriceTicker,
         address _authorizedManager,
         bool _isActive)
     public
     returns (uint errorCode) {
-        return _createExchange(_symbol, _buyPrice, _sellPrice, _authorizedManager, _isActive, [uint(0)]);
+        return _createExchange(_symbol, _buyPrice, _sellPrice, _useExternalPriceTicker, _authorizedManager, _isActive, [uint(0)]);
     }
 
     function _createExchange(
         bytes32 _symbol,
         uint _buyPrice,
         uint _sellPrice,
+        bool _useExternalPriceTicker,
         address _authorizedManager,
         bool _isActive,
         uint[1] memory _result)
@@ -121,7 +123,7 @@ contract ExchangeManager is FeatureFeeAdapter, ExchangeManagerEmitter, BaseManag
         exchange.init(contractsManager, token, rewards, getFee());
 
         if (_buyPrice > 0 && _sellPrice > 0) {
-            if (exchange.setPrices(_buyPrice, _sellPrice) != OK) {
+            if (exchange.setPrices(_buyPrice, _sellPrice, _useExternalPriceTicker) != OK) {
                 revert();
             }
         }

@@ -12,13 +12,13 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.11;\n\n/**\n* @title Routing contract that is able to provide a way for delegating invocations with dynamic destination address.\n*/\ncontract BaseRouter {\n\n    function() payable public {\n        uint r;\n        address _backend = backend();\n\n        // Make the call\n        assembly {\n            calldatacopy(mload(0x40), 0, calldatasize)\n            r := delegatecall(sub(gas, 700), _backend, mload(0x40), calldatasize, mload(0x40), 32) // WARNING: 32 - size of the return value\n        }\n\n        // Throw if the call failed\n        if (r != 1) revert();\n\n        // Pass on the return value\n        assembly {\n            return(mload(0x40), 32) // WARNING: 32 - size of the return value\n        }\n    }\n\n    /**\n    * @dev Returns destination address for future calls\n    *\n    * @return destination address\n    */\n    function backend() internal constant returns (address);\n}\n",
-  "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/assets/extensions/BaseRouter.sol",
+  "sourcePath": "/Users/mikefluff/Documents/Programming/Chronobank/test/SmartContracts/contracts/assets/extensions/BaseRouter.sol",
   "ast": {
     "attributes": {
-      "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/assets/extensions/BaseRouter.sol",
+      "absolutePath": "/Users/mikefluff/Documents/Programming/Chronobank/test/SmartContracts/contracts/assets/extensions/BaseRouter.sol",
       "exportedSymbols": {
         "BaseRouter": [
-          3011
+          3023
         ]
       }
     },
@@ -32,9 +32,9 @@
             ".11"
           ]
         },
-        "id": 2984,
+        "id": 2996,
         "name": "PragmaDirective",
-        "src": "0:24:14"
+        "src": "0:24:16"
       },
       {
         "attributes": {
@@ -48,10 +48,10 @@
           "documentation": "@title Routing contract that is able to provide a way for delegating invocations with dynamic destination address.",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            3011
+            3023
           ],
           "name": "BaseRouter",
-          "scope": 3012
+          "scope": 3024
         },
         "children": [
           {
@@ -64,7 +64,7 @@
               ],
               "name": "",
               "payable": true,
-              "scope": 3011,
+              "scope": 3023,
               "stateMutability": "payable",
               "superFunction": null,
               "visibility": "public"
@@ -77,9 +77,9 @@
                   ]
                 },
                 "children": [],
-                "id": 2985,
+                "id": 2997,
                 "name": "ParameterList",
-                "src": "185:2:14"
+                "src": "185:2:16"
               },
               {
                 "attributes": {
@@ -88,9 +88,9 @@
                   ]
                 },
                 "children": [],
-                "id": 2986,
+                "id": 2998,
                 "name": "ParameterList",
-                "src": "203:0:14"
+                "src": "203:0:16"
               },
               {
                 "children": [
@@ -106,7 +106,7 @@
                         "attributes": {
                           "constant": false,
                           "name": "r",
-                          "scope": 3005,
+                          "scope": 3017,
                           "stateVariable": false,
                           "storageLocation": "default",
                           "type": "uint256",
@@ -119,24 +119,24 @@
                               "name": "uint",
                               "type": "uint256"
                             },
-                            "id": 2987,
+                            "id": 2999,
                             "name": "ElementaryTypeName",
-                            "src": "213:4:14"
+                            "src": "213:4:16"
                           }
                         ],
-                        "id": 2988,
+                        "id": 3000,
                         "name": "VariableDeclaration",
-                        "src": "213:6:14"
+                        "src": "213:6:16"
                       }
                     ],
-                    "id": 2989,
+                    "id": 3001,
                     "name": "VariableDeclarationStatement",
-                    "src": "213:6:14"
+                    "src": "213:6:16"
                   },
                   {
                     "attributes": {
                       "assignments": [
-                        2991
+                        3003
                       ]
                     },
                     "children": [
@@ -144,7 +144,7 @@
                         "attributes": {
                           "constant": false,
                           "name": "_backend",
-                          "scope": 3005,
+                          "scope": 3017,
                           "stateVariable": false,
                           "storageLocation": "default",
                           "type": "address",
@@ -157,14 +157,14 @@
                               "name": "address",
                               "type": "address"
                             },
-                            "id": 2990,
+                            "id": 3002,
                             "name": "ElementaryTypeName",
-                            "src": "229:7:14"
+                            "src": "229:7:16"
                           }
                         ],
-                        "id": 2991,
+                        "id": 3003,
                         "name": "VariableDeclaration",
-                        "src": "229:16:14"
+                        "src": "229:16:16"
                       },
                       {
                         "attributes": {
@@ -192,56 +192,42 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 3010,
+                              "referencedDeclaration": 3022,
                               "type": "function () view returns (address)",
                               "value": "backend"
                             },
-                            "id": 2992,
+                            "id": 3004,
                             "name": "Identifier",
-                            "src": "248:7:14"
+                            "src": "248:7:16"
                           }
                         ],
-                        "id": 2993,
+                        "id": 3005,
                         "name": "FunctionCall",
-                        "src": "248:9:14"
+                        "src": "248:9:16"
                       }
                     ],
-                    "id": 2994,
+                    "id": 3006,
                     "name": "VariableDeclarationStatement",
-                    "src": "229:28:14"
+                    "src": "229:28:16"
                   },
                   {
                     "attributes": {
                       "externalReferences": [
                         {
                           "r": {
-                            "declaration": 2988,
+                            "declaration": 3000,
                             "isOffset": false,
                             "isSlot": false,
-                            "src": "371:1:14",
-                            "valueSize": 1
-                          },
-                          "_backend": {
-                            "declaration": 265,
-                            "isOffset": false,
-                            "isSlot": false,
-                            "src": "404:8:4",
+                            "src": "371:1:16",
                             "valueSize": 1
                           }
                         },
                         {
                           "_backend": {
-                            "declaration": 2991,
+                            "declaration": 3003,
                             "isOffset": false,
                             "isSlot": false,
-                            "src": "404:8:14",
-                            "valueSize": 1
-                          },
-                          "r": {
-                            "declaration": 262,
-                            "isOffset": false,
-                            "isSlot": false,
-                            "src": "371:1:4",
+                            "src": "404:8:16",
                             "valueSize": 1
                           }
                         }
@@ -249,9 +235,9 @@
                       "operations": "{\n    calldatacopy(mload(0x40), 0, calldatasize)\n    r := delegatecall(sub(gas, 700), _backend, mload(0x40), calldatasize, mload(0x40), 32)\n}"
                     },
                     "children": [],
-                    "id": 2995,
+                    "id": 3007,
                     "name": "InlineAssembly",
-                    "src": "293:264:14"
+                    "src": "293:264:16"
                   },
                   {
                     "attributes": {
@@ -279,13 +265,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2988,
+                              "referencedDeclaration": 3000,
                               "type": "uint256",
                               "value": "r"
                             },
-                            "id": 2996,
+                            "id": 3008,
                             "name": "Identifier",
-                            "src": "559:1:14"
+                            "src": "559:1:16"
                           },
                           {
                             "attributes": {
@@ -300,14 +286,14 @@
                               "type": "int_const 1",
                               "value": "1"
                             },
-                            "id": 2997,
+                            "id": 3009,
                             "name": "Literal",
-                            "src": "564:1:14"
+                            "src": "564:1:16"
                           }
                         ],
-                        "id": 2998,
+                        "id": 3010,
                         "name": "BinaryOperation",
-                        "src": "559:6:14"
+                        "src": "559:6:16"
                       },
                       {
                         "children": [
@@ -337,28 +323,28 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 34604,
+                                  "referencedDeclaration": 36978,
                                   "type": "function () pure",
                                   "value": "revert"
                                 },
-                                "id": 2999,
+                                "id": 3011,
                                 "name": "Identifier",
-                                "src": "567:6:14"
+                                "src": "567:6:16"
                               }
                             ],
-                            "id": 3000,
+                            "id": 3012,
                             "name": "FunctionCall",
-                            "src": "567:8:14"
+                            "src": "567:8:16"
                           }
                         ],
-                        "id": 3001,
+                        "id": 3013,
                         "name": "ExpressionStatement",
-                        "src": "567:8:14"
+                        "src": "567:8:16"
                       }
                     ],
-                    "id": 3002,
+                    "id": 3014,
                     "name": "IfStatement",
-                    "src": "555:20:14"
+                    "src": "555:20:16"
                   },
                   {
                     "attributes": {
@@ -368,19 +354,19 @@
                       "operations": "{\n    return(mload(0x40), 32)\n}"
                     },
                     "children": [],
-                    "id": 3003,
+                    "id": 3015,
                     "name": "InlineAssembly",
-                    "src": "622:104:14"
+                    "src": "622:104:16"
                   }
                 ],
-                "id": 3004,
+                "id": 3016,
                 "name": "Block",
-                "src": "203:523:14"
+                "src": "203:523:16"
               }
             ],
-            "id": 3005,
+            "id": 3017,
             "name": "FunctionDefinition",
-            "src": "177:549:14"
+            "src": "177:549:16"
           },
           {
             "attributes": {
@@ -393,7 +379,7 @@
               ],
               "name": "backend",
               "payable": false,
-              "scope": 3011,
+              "scope": 3023,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "internal"
@@ -406,9 +392,9 @@
                   ]
                 },
                 "children": [],
-                "id": 3006,
+                "id": 3018,
                 "name": "ParameterList",
-                "src": "859:2:14"
+                "src": "859:2:16"
               },
               {
                 "children": [
@@ -416,7 +402,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 3010,
+                      "scope": 3022,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -429,34 +415,34 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 3007,
+                        "id": 3019,
                         "name": "ElementaryTypeName",
-                        "src": "889:7:14"
+                        "src": "889:7:16"
                       }
                     ],
-                    "id": 3008,
+                    "id": 3020,
                     "name": "VariableDeclaration",
-                    "src": "889:7:14"
+                    "src": "889:7:16"
                   }
                 ],
-                "id": 3009,
+                "id": 3021,
                 "name": "ParameterList",
-                "src": "888:9:14"
+                "src": "888:9:16"
               }
             ],
-            "id": 3010,
+            "id": 3022,
             "name": "FunctionDefinition",
-            "src": "843:55:14"
+            "src": "843:55:16"
           }
         ],
-        "id": 3011,
+        "id": 3023,
         "name": "ContractDefinition",
-        "src": "150:750:14"
+        "src": "150:750:16"
       }
     ],
-    "id": 3012,
+    "id": 3024,
     "name": "SourceUnit",
-    "src": "0:901:14"
+    "src": "0:901:16"
   },
   "compiler": {
     "name": "solc",
@@ -464,5 +450,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-11T22:35:11.293Z"
+  "updatedAt": "2018-01-12T11:40:44.782Z"
 }

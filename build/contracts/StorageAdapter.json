@@ -17,18 +17,18 @@
       "type": "constructor"
     }
   ],
-  "bytecode": "0x60606040523415600e57600080fd5b6040516040806100f18339810160405280805191906020018051915060429050600083836401000000006009604882021704565b5050606e565b8254600160a060020a031916600160a060020a0392909216919091178255600190910155565b60758061007c6000396000f3006060604052600080fd5b825473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911782556001909101555600a165627a7a7230582034b68406dd392a51e6b469e4b9dc73b4bb18779fe17c86219f4ecdabe1058bbc0029",
-  "deployedBytecode": "0x6060604052600080fd5b825473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911782556001909101555600a165627a7a7230582034b68406dd392a51e6b469e4b9dc73b4bb18779fe17c86219f4ecdabe1058bbc0029",
-  "sourceMap": "60:202:48:-;;;161:99;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;227:26:48;;-1:-1:-1;227:5:48;238:6;161:99;227:10;;;;;;:26;:::i;:::-;161:99;;60:202;;2920:141:49;3006:19;;-1:-1:-1;;;;;;3006:19:49;-1:-1:-1;;;;;3006:19:49;;;;;;;;;;-1:-1:-1;3035:10:49;;;:19;2920:141::o;60:202:48:-;;;;;;;",
-  "deployedSourceMap": "60:202:48:-;;;;;;2920:141:49;3006:19;;-1:-1:-1;;3006:19:49;;;;;;;;;;;;-1:-1:-1;3035:10:49;;;:19;2920:141::o",
+  "bytecode": "0x60606040523415600e57600080fd5b6040516040806100f18339810160405280805191906020018051915060429050600083836401000000006009604882021704565b5050606e565b8254600160a060020a031916600160a060020a0392909216919091178255600190910155565b60758061007c6000396000f3006060604052600080fd5b825473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911782556001909101555600a165627a7a723058201d7ecf262b60f4337f6dd3a5d3432909485f06dbb73f5a8344595aefb2cc0da40029",
+  "deployedBytecode": "0x6060604052600080fd5b825473ffffffffffffffffffffffffffffffffffffffff191673ffffffffffffffffffffffffffffffffffffffff929092169190911782556001909101555600a165627a7a723058201d7ecf262b60f4337f6dd3a5d3432909485f06dbb73f5a8344595aefb2cc0da40029",
+  "sourceMap": "60:202:53:-;;;161:99;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;227:26:53;;-1:-1:-1;227:5:53;238:6;161:99;227:10;;;;;;:26;:::i;:::-;161:99;;60:202;;2920:141:54;3006:19;;-1:-1:-1;;;;;;3006:19:54;-1:-1:-1;;;;;3006:19:54;;;;;;;;;;-1:-1:-1;3035:10:54;;;:19;2920:141::o;60:202:53:-;;;;;;;",
+  "deployedSourceMap": "60:202:53:-;;;;;;2920:141:54;3006:19;;-1:-1:-1;;3006:19:54;;;;;;;;;;;;-1:-1:-1;3035:10:54;;;:19;2920:141::o",
   "source": "pragma solidity ^0.4.11;\n\nimport './StorageInterface.sol';\n\ncontract StorageAdapter {\n    using StorageInterface for *;\n\n    StorageInterface.Config store;\n\n    function StorageAdapter(Storage _store, bytes32 _crate) {\n        store.init(_store, _crate);\n    }\n}\n",
-  "sourcePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/storage/StorageAdapter.sol",
+  "sourcePath": "/Users/mikefluff/Documents/Programming/Chronobank/test/SmartContracts/contracts/core/storage/StorageAdapter.sol",
   "ast": {
     "attributes": {
-      "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/storage/StorageAdapter.sol",
+      "absolutePath": "/Users/mikefluff/Documents/Programming/Chronobank/test/SmartContracts/contracts/core/storage/StorageAdapter.sol",
       "exportedSymbols": {
         "StorageAdapter": [
-          11537
+          11600
         ]
       }
     },
@@ -42,24 +42,24 @@
             ".11"
           ]
         },
-        "id": 11516,
+        "id": 11579,
         "name": "PragmaDirective",
-        "src": "0:24:48"
+        "src": "0:24:53"
       },
       {
         "attributes": {
-          "SourceUnit": 17082,
-          "absolutePath": "/Users/ahiatsevich/Development/chronobank/SmartContracts/contracts/core/storage/StorageInterface.sol",
+          "SourceUnit": 17145,
+          "absolutePath": "/Users/mikefluff/Documents/Programming/Chronobank/test/SmartContracts/contracts/core/storage/StorageInterface.sol",
           "file": "./StorageInterface.sol",
-          "scope": 11538,
+          "scope": 11601,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 11517,
+        "id": 11580,
         "name": "ImportDirective",
-        "src": "26:32:48"
+        "src": "26:32:53"
       },
       {
         "attributes": {
@@ -73,10 +73,10 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            11537
+            11600
           ],
           "name": "StorageAdapter",
-          "scope": 11538
+          "scope": 11601
         },
         "children": [
           {
@@ -88,23 +88,23 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface",
-                  "referencedDeclaration": 17081,
+                  "referencedDeclaration": 17144,
                   "type": "library StorageInterface"
                 },
-                "id": 11518,
+                "id": 11581,
                 "name": "UserDefinedTypeName",
-                "src": "96:16:48"
+                "src": "96:16:53"
               }
             ],
-            "id": 11519,
+            "id": 11582,
             "name": "UsingForDirective",
-            "src": "90:29:48"
+            "src": "90:29:53"
           },
           {
             "attributes": {
               "constant": false,
               "name": "store",
-              "scope": 11537,
+              "scope": 11600,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "struct StorageInterface.Config storage ref",
@@ -116,17 +116,17 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "StorageInterface.Config",
-                  "referencedDeclaration": 11545,
+                  "referencedDeclaration": 11608,
                   "type": "struct StorageInterface.Config storage pointer"
                 },
-                "id": 11520,
+                "id": 11583,
                 "name": "UserDefinedTypeName",
-                "src": "125:23:48"
+                "src": "125:23:53"
               }
             ],
-            "id": 11521,
+            "id": 11584,
             "name": "VariableDeclaration",
-            "src": "125:29:48"
+            "src": "125:29:53"
           },
           {
             "attributes": {
@@ -138,7 +138,7 @@
               ],
               "name": "StorageAdapter",
               "payable": false,
-              "scope": 11537,
+              "scope": 11600,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -150,7 +150,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_store",
-                      "scope": 11536,
+                      "scope": 11599,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "contract Storage",
@@ -162,23 +162,23 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "Storage",
-                          "referencedDeclaration": 11514,
+                          "referencedDeclaration": 11577,
                           "type": "contract Storage"
                         },
-                        "id": 11522,
+                        "id": 11585,
                         "name": "UserDefinedTypeName",
-                        "src": "185:7:48"
+                        "src": "185:7:53"
                       }
                     ],
-                    "id": 11523,
+                    "id": 11586,
                     "name": "VariableDeclaration",
-                    "src": "185:14:48"
+                    "src": "185:14:53"
                   },
                   {
                     "attributes": {
                       "constant": false,
                       "name": "_crate",
-                      "scope": 11536,
+                      "scope": 11599,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32",
@@ -191,19 +191,19 @@
                           "name": "bytes32",
                           "type": "bytes32"
                         },
-                        "id": 11524,
+                        "id": 11587,
                         "name": "ElementaryTypeName",
-                        "src": "201:7:48"
+                        "src": "201:7:53"
                       }
                     ],
-                    "id": 11525,
+                    "id": 11588,
                     "name": "VariableDeclaration",
-                    "src": "201:14:48"
+                    "src": "201:14:53"
                   }
                 ],
-                "id": 11526,
+                "id": 11589,
                 "name": "ParameterList",
-                "src": "184:32:48"
+                "src": "184:32:53"
               },
               {
                 "attributes": {
@@ -212,9 +212,9 @@
                   ]
                 },
                 "children": [],
-                "id": 11527,
+                "id": 11590,
                 "name": "ParameterList",
-                "src": "217:0:48"
+                "src": "217:0:53"
               },
               {
                 "children": [
@@ -239,7 +239,7 @@
                             "attributes": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_contract$_Storage_$11514",
+                                  "typeIdentifier": "t_contract$_Storage_$11577",
                                   "typeString": "contract Storage"
                                 },
                                 {
@@ -252,7 +252,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "init",
-                              "referencedDeclaration": 11708,
+                              "referencedDeclaration": 11771,
                               "type": "function (struct StorageInterface.Config storage pointer,contract Storage,bytes32)"
                             },
                             "children": [
@@ -262,18 +262,18 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 11521,
+                                  "referencedDeclaration": 11584,
                                   "type": "struct StorageInterface.Config storage ref",
                                   "value": "store"
                                 },
-                                "id": 11528,
+                                "id": 11591,
                                 "name": "Identifier",
-                                "src": "227:5:48"
+                                "src": "227:5:53"
                               }
                             ],
-                            "id": 11530,
+                            "id": 11593,
                             "name": "MemberAccess",
-                            "src": "227:10:48"
+                            "src": "227:10:53"
                           },
                           {
                             "attributes": {
@@ -281,13 +281,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 11523,
+                              "referencedDeclaration": 11586,
                               "type": "contract Storage",
                               "value": "_store"
                             },
-                            "id": 11531,
+                            "id": 11594,
                             "name": "Identifier",
-                            "src": "238:6:48"
+                            "src": "238:6:53"
                           },
                           {
                             "attributes": {
@@ -295,43 +295,43 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 11525,
+                              "referencedDeclaration": 11588,
                               "type": "bytes32",
                               "value": "_crate"
                             },
-                            "id": 11532,
+                            "id": 11595,
                             "name": "Identifier",
-                            "src": "246:6:48"
+                            "src": "246:6:53"
                           }
                         ],
-                        "id": 11533,
+                        "id": 11596,
                         "name": "FunctionCall",
-                        "src": "227:26:48"
+                        "src": "227:26:53"
                       }
                     ],
-                    "id": 11534,
+                    "id": 11597,
                     "name": "ExpressionStatement",
-                    "src": "227:26:48"
+                    "src": "227:26:53"
                   }
                 ],
-                "id": 11535,
+                "id": 11598,
                 "name": "Block",
-                "src": "217:43:48"
+                "src": "217:43:53"
               }
             ],
-            "id": 11536,
+            "id": 11599,
             "name": "FunctionDefinition",
-            "src": "161:99:48"
+            "src": "161:99:53"
           }
         ],
-        "id": 11537,
+        "id": 11600,
         "name": "ContractDefinition",
-        "src": "60:202:48"
+        "src": "60:202:53"
       }
     ],
-    "id": 11538,
+    "id": 11601,
     "name": "SourceUnit",
-    "src": "0:263:48"
+    "src": "0:263:53"
   },
   "compiler": {
     "name": "solc",
@@ -339,5 +339,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-11T22:35:11.565Z"
+  "updatedAt": "2018-01-12T11:40:45.265Z"
 }

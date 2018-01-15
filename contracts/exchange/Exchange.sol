@@ -4,11 +4,13 @@ import "../core/common/Object.sol";
 import "../core/lib/SafeMath.sol";
 import {ERC20Interface as Asset} from "../core/erc20/ERC20Interface.sol";
 import "../core/contracts/ContractsManager.sol";
+import "../core/erc20/ERC20Manager.sol";
+import "../priceticker/PriceTicker.sol";
 
 contract ExchangeEmitter {
     function emitError(uint errorCode) public returns (uint);
     function emitFeeUpdated(address rewards, uint feePercent, address by) public;
-    function emitPricesUpdated(uint buyPrice, uint buyDecimals, uint sellPrice, uint sellDecimals, address by) public;
+    function emitPricesUpdated(uint buyPrice, uint sellPrice, bool usePriceTicker, address by) public;
     function emitActiveChanged(bool isActive, address by) public;
     function emitBuy(address who, uint token, uint eth) public;
     function emitSell(address who, uint token, uint eth) public;
@@ -44,25 +46,22 @@ contract Exchange is Object {
     uint constant ERROR_EXCHANGE_PAYMENT_FAILED = 6006;
     uint constant ERROR_EXCHANGE_TRANSFER_FAILED = 6007;
 
-    /// Price structure. Price representation: 1.1 == 11* 10^1 == Price(10, 1)
-    struct Price {
-        uint base;
-        uint decimals;
-    }
     /// Assigned ERC20 token.
     Asset public asset;
     //Switch for turn on and off the exchange operations
     bool public isActive;
-    /// Price in wei at which exchange buys tokens.
-    Price buyPrice;
-    /// Price in wei at which exchange sells tokens.
-    Price sellPrice;
     /// Fee wallet
     address public rewards;
     /// Fee value for operations 10000 is 0.01.
     uint public feePercent;
     /// Authorized price managers
     mapping (address => bool) authorized;
+    /// Use external (system provided) price ticker
+    bool public usePriceTicker = false;
+    /// Price in wei at which exchange buys tokens.
+    uint staticBuyPrice;
+    /// Price in wei at which exchange sells tokens.
+    uint staticSellPrice;
 
     /// User sold tokens and received wei.
     event ExchangeSell(address indexed exchange, address indexed who, uint token, uint eth);
@@ -77,14 +76,12 @@ contract Exchange is Object {
     /// On Fee updated
     event ExchangeFeeUpdated(address indexed exchange, address rewards, uint feeValue, address indexed by);
     /// On prices updated
-    event ExchangePricesUpdated(address indexed exchange, uint buyPrice, uint buyDecimals, uint sellPrice, uint sellDecimals, address indexed by);
+    event ExchangePricesUpdated(address indexed exchange, uint buyPrice, uint sellPrice, bool usePriceTicker, address indexed by);
     /// On state changed
     event ExchangeActiveChanged(address indexed exchange, bool isActive, address indexed by);
     /// On error
     event Error(address indexed exchange, uint errorCode);
 
-    /// Should use interface of the emitter, but address of events history.
-    ExchangeEmitter eventsHistory;
     /// service registry
     address contractsManager;
 
@@ -125,22 +122,6 @@ contract Exchange is Object {
         return OK;
     }
 
-    /// @notice Sets EventsHstory contract address.
-    /// Can be set only once, and only by contract owner.
-    ///
-    /// @param _eventsHistory MultiEventsHistory contract address.
-    ///
-    /// @return OK if success.
-    function setupEventsHistory(address _eventsHistory)
-    public
-    onlyContractOwner
-    returns (uint)
-    {
-        require(_eventsHistory != 0x0);
-        eventsHistory = ExchangeEmitter(_eventsHistory);
-        return OK;
-    }
-
     /// @notice Authorizes given address to execute restricted methods.
     /// @dev Can be called only by contract owner.
     ///
@@ -168,7 +149,7 @@ contract Exchange is Object {
     /// @notice Tells whether given address is authorized or not
     ///
     /// @return `true` if given address is authorized to make secured changes.
-    function isAuthorized(address _authorized) public constant returns (bool) {
+    function isAuthorized(address _authorized) public view returns (bool) {
         return authorized[_authorized];
     }
 
@@ -177,28 +158,34 @@ contract Exchange is Object {
     ///
     /// Can be set only by contract owner.
     ///
-    /// @param _buyPrice price in wei at which exchange buys tokens.
+    /// @param _buyPrice price in wei at which exchange buys tokens
+    ///                  or but price coeff if price ticker is enabled
     /// @param _sellPrice price in wei at which exchange sells tokens.
+    ///                  or sell price coeff if price ticker is enabled
+    /// @param _usePriceTicker force use prices from external price ticker
     ///
     /// @return OK if success.
-    function setPrices(uint _buyPrice, uint _buyDecimals, uint _sellPrice, uint _sellDecimals)
+    function setPrices(uint _buyPrice, uint _sellPrice, bool _usePriceTicker)
     public
     onlyAuthorized
     returns (uint)
     {
         // buy price <= sell price
-        uint max_dec = 10**max(_buyDecimals, _sellDecimals);
-        require(_buyPrice * max_dec / 10**_buyDecimals <= _sellPrice * max_dec / 10**_sellDecimals);
+        require(_buyPrice <= _sellPrice);
 
-        if (buyPrice.base != _buyPrice || buyPrice.decimals != _buyDecimals) {
-            buyPrice = Price(_buyPrice, _buyDecimals);
+        if (staticBuyPrice != _buyPrice ) {
+            staticBuyPrice = _buyPrice;
         }
 
-        if (sellPrice.base != _sellPrice || sellPrice.decimals != _sellDecimals) {
-            sellPrice = Price(_sellPrice, _sellDecimals);
+        if (staticSellPrice != _sellPrice) {
+            staticSellPrice = _sellPrice;
         }
 
-        _emitPricesUpdated(_buyPrice, _buyDecimals, _sellPrice, _sellDecimals, msg.sender);
+        if (_usePriceTicker != usePriceTicker) {
+            usePriceTicker = _usePriceTicker;
+        }
+
+        _emitPricesUpdated(staticBuyPrice, staticSellPrice, usePriceTicker, msg.sender);
         return OK;
     }
 
@@ -221,8 +208,46 @@ contract Exchange is Object {
 
     /// @notice Returns ERC20 balance of an exchange
     /// @return balance.
-    function assetBalance() public constant returns (uint) {
+    function assetBalance() public view returns (uint) {
         return _balanceOf(this);
+    }
+
+    /// @notice Returns the sell price
+    /// @return sell price
+    function sellPrice() public view returns (uint) {
+        if (!usePriceTicker) {
+            return staticSellPrice;
+        } else {
+            return getPriceTickerPrice().mul(staticSellPrice) / 10000;
+        }
+    }
+
+    /// @notice Returns the buy price
+    /// @return buy price
+    function buyPrice() public view returns (uint) {
+        if (!usePriceTicker) {
+            return staticBuyPrice;
+        } else {
+            return getPriceTickerPrice().mul(staticBuyPrice) / 10000;
+        }
+    }
+
+    /// @notice Returns price fetched from external price ticker
+    function getPriceTickerPrice() public view returns (uint price) {
+        PriceProvider priceProvider = PriceProvider(lookupManager("PriceManager"));
+        if (!priceProvider.isPriceAvailable(getTokenSymbol(), "ETH")) {
+            revert();
+        }
+        price = priceProvider.price(getTokenSymbol(), "ETH");
+        require(price > 0);
+    }
+
+    /// @notice Returns symbol of the asset
+    /// @return symbol
+    function getTokenSymbol() public view returns (bytes32) {
+        var (,,symbol,,,,) = ERC20Manager(lookupManager("ERC20Manager"))
+                                        .getTokenMetaData(address(asset));
+        return symbol;
     }
 
     /// @notice Returns assigned token address balance.
@@ -230,18 +255,8 @@ contract Exchange is Object {
     /// @param _address address to get balance.
     ///
     /// @return token balance.
-    function _balanceOf(address _address) constant internal returns (uint) {
+    function _balanceOf(address _address) internal view returns (uint) {
         return asset.balanceOf(_address);
-    }
-
-    /// @notice Returns sell price
-    function getSellPrice() public view returns (uint base, uint decimals) {
-        return (sellPrice.base, sellPrice.decimals);
-    }
-
-    /// @notice Returns buy price
-    function getBuyPrice() public view returns (uint base, uint decimals) {
-        return (buyPrice.base, buyPrice.decimals);
     }
 
     /// @notice Sell tokens for ether at specified price. Tokens are taken from caller
@@ -253,12 +268,12 @@ contract Exchange is Object {
     /// @param _price price in wei at which sell will happen.
     ///
     /// @return OK if success.
-    function sell(uint _amount, uint _price, uint _priceDecimals) public returns (uint) {
+    function sell(uint _amount, uint _price) public returns (uint) {
         if (!isActive) {
             return _emitError(ERROR_EXCHANGE_MAINTENANCE_MODE);
         }
 
-        if (_price != buyPrice.base || _priceDecimals != buyPrice.decimals) {
+        if (_price != buyPrice()) {
             return _emitError(ERROR_EXCHANGE_INVALID_PRICE);
         }
 
@@ -266,7 +281,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_BALANCE);
         }
 
-        uint total = _amount.mul(buyPrice.base) / 10**buyPrice.decimals;
+        uint total = _amount.mul(buyPrice()) / (10 ** uint(asset.decimals()));
         if (this.balance < total) {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_ETHER_SUPPLY);
         }
@@ -291,12 +306,12 @@ contract Exchange is Object {
     /// @param _price price in wei at which buy will happen.
     ///
     /// @return OK if success.
-    function buy(uint _amount, uint _price, uint _priceDecimals) payable public returns (uint) {
+    function buy(uint _amount, uint _price) payable public returns (uint) {
         if (!isActive) {
             return _emitError(ERROR_EXCHANGE_MAINTENANCE_MODE);
         }
 
-        if (_price != sellPrice.base || _priceDecimals != sellPrice.decimals) {
+        if (_price != sellPrice()) {
             return _emitError(ERROR_EXCHANGE_INVALID_PRICE);
         }
 
@@ -304,7 +319,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_BALANCE);
         }
 
-        uint total = _amount.mul(sellPrice.base) / 10**sellPrice.decimals;
+        uint total = _amount.mul(sellPrice()) / (10 ** uint(asset.decimals()));
         if (msg.value != total) {
             return _emitError(ERROR_EXCHANGE_INSUFFICIENT_ETHER_SUPPLY);
         }
@@ -433,7 +448,7 @@ contract Exchange is Object {
             return _emitError(ERROR_EXCHANGE_INVALID_INVOCATION);
         }
 
-        address exchangeManager = ContractsManager(contractsManager).getContractAddressByType("ExchangeManager");
+        address exchangeManager = lookupManager("ExchangeManager");
         errorCode = IExchangeManager(exchangeManager).removeExchange();
         if (errorCode != OK) {
             return _emitError(errorCode);
@@ -456,43 +471,53 @@ contract Exchange is Object {
         return OK;
     }
 
+    function getEventsHistory() public view returns (ExchangeEmitter) {
+        return contractsManager != 0x0 ? ExchangeEmitter(lookupManager("MultiEventsHistory")) : ExchangeEmitter(this);
+    }
+
+    // Returns service by the given `type`
+    function lookupManager(bytes32 _identifier) internal view returns (address manager) {
+        manager = ContractsManager(contractsManager).getContractAddressByType(_identifier);
+        require(manager != 0x0);
+    }
+
     /* Events helpers */
 
     function _emitError(uint _errorCode) internal returns (uint) {
-        eventsHistory.emitError(_errorCode);
+        getEventsHistory().emitError(_errorCode);
         return _errorCode;
     }
 
     function _emitFeeUpdated(address _rewards, uint _feePercent, address _by) internal {
-        eventsHistory.emitFeeUpdated(_rewards, _feePercent, _by);
+        getEventsHistory().emitFeeUpdated(_rewards, _feePercent, _by);
     }
 
-    function _emitPricesUpdated(uint _buyPrice, uint _buyDecimals, uint _sellPrice, uint _sellDecimals, address _by) internal {
-        eventsHistory.emitPricesUpdated(_buyPrice, _buyDecimals, _sellPrice, _sellDecimals, _by);
+    function _emitPricesUpdated(uint _buyPrice, uint _sellPrice, bool _usePriceTicker, address _by) internal {
+        getEventsHistory().emitPricesUpdated(_buyPrice, _sellPrice, _usePriceTicker, _by);
     }
 
     function _emitActiveChanged(bool _isActive, address _by) internal {
-        eventsHistory.emitActiveChanged(_isActive, _by);
+        getEventsHistory().emitActiveChanged(_isActive, _by);
     }
 
     function _emitBuy(address _who, uint _token, uint _eth) internal {
-        eventsHistory.emitBuy(_who, _token, _eth);
+        getEventsHistory().emitBuy(_who, _token, _eth);
     }
 
     function _emitSell(address _who, uint _token, uint _eth) internal {
-        eventsHistory.emitSell(_who, _token, _eth);
+        getEventsHistory().emitSell(_who, _token, _eth);
     }
 
     function _emitWithdrawEther(address _recipient, uint _amount, address _by) internal {
-        eventsHistory.emitWithdrawEther(_recipient, _amount, _by);
+        getEventsHistory().emitWithdrawEther(_recipient, _amount, _by);
     }
 
     function _emitWithdrawTokens(address _recipient, uint _amount, address _by) internal {
-        eventsHistory.emitWithdrawTokens(_recipient, _amount, _by);
+        getEventsHistory().emitWithdrawTokens(_recipient, _amount, _by);
     }
 
     function _emitReceivedEther(address _sender, uint _amount) internal {
-        eventsHistory.emitReceivedEther(_sender, _amount);
+        getEventsHistory().emitReceivedEther(_sender, _amount);
     }
 
     /* emit* methods are designed to be called only via EventsHistory */
@@ -506,8 +531,8 @@ contract Exchange is Object {
         ExchangeFeeUpdated(msg.sender, _rewards, _feePercent, _by);
     }
 
-    function emitPricesUpdated(uint _buyPrice, uint _buyDecimals, uint _sellPrice, uint _sellDecimals, address _by) public {
-        ExchangePricesUpdated(msg.sender, _buyPrice, _buyDecimals, _sellPrice, _sellDecimals, _by);
+    function emitPricesUpdated(uint _buyPrice, uint _sellPrice, bool _usePriceTicker, address _by) public {
+        ExchangePricesUpdated(msg.sender, _buyPrice, _sellPrice, _usePriceTicker, _by);
     }
 
     function emitActiveChanged(bool _isActive, address _by) public {
@@ -541,9 +566,5 @@ contract Exchange is Object {
         } else {
             revert();
         }
-    }
-
-    function max(uint a, uint b) private pure returns (uint256) {
-        return a >= b ? a : b;
     }
 }

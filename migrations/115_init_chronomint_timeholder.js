@@ -7,7 +7,6 @@ const ERC20Manager = artifacts.require("./ERC20Manager.sol");
 const ERC20Interface = artifacts.require('ERC20Interface.sol')
 const ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
 const TimeHolderWallet = artifacts.require('./TimeHolderWallet.sol')
-const VoteActor = artifacts.require('./VoteActor.sol')
 
 module.exports = function(deployer, network, accounts) {
     const systemOwner = accounts[0]
@@ -24,7 +23,6 @@ module.exports = function(deployer, network, accounts) {
     .then(_timeAddress => timeHolder.init(ContractsManager.address, _timeAddress, TimeHolderWallet.address, systemOwner))
     .then(() => MultiEventsHistory.deployed())
     .then(_history => _history.authorize(timeHolder.address))
-    .then(() => timeHolder.addListener(VoteActor.address))
 
     .then(() => console.log("[MIGRATION] [" + parseInt(require("path").basename(__filename)) + "] TimeHolder setup: #done"))
 }

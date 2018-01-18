@@ -20,6 +20,12 @@ module.exports = async (deployer, network) => {
         let _timeholder = await TimeHolder.deployed()
         await _timeholder.addListener(VotingManager.address)
 
+        if (network === "development") {
+            await _votingManager.setVotesPercent(1000);
+            console.log("Set votes percent in dev network:", await _votingManager.getVotesPercent());
+        }
+
+
         console.log("[MIGRATION] [" + parseInt(require("path").basename(__filename)) + "] Voting Manager init: #done")
     })
 }

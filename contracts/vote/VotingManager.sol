@@ -119,6 +119,11 @@ contract VotingManager is BaseManager, VotingManagerEmitter, ListenerInterface, 
         return OK;
     }
 
+    /// @notice Returns votes percent value
+    function getVotesPercent() public view returns (uint) {
+        return store.get(sharesPercentStorage);
+    }
+
     /// @notice Sets poll backend address that will be used for future polls
     function setBackend(address _backend) onlyContractOwner public returns (uint) {
         require(_backend != 0x0);
